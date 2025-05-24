@@ -24,7 +24,7 @@ function OrderConfirmationPage() {
   };
 
   return (
-    <Container className="my-5 p-5">
+    <Container className="my-5 py-5">
       <Row className="justify-content-center">
         <Col md={8}>
           <Card className="shadow-sm border-0">

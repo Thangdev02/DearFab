@@ -14,7 +14,7 @@ export const getProducts = async () => {
 };
 export const getProductById = async (id) => {
   try {
-    const response = await fetch(`http://localhost:5000/products/${id}`);
+    const response = await fetch(`https://dearfab.onrender.com/products/${id}`);
     if (!response.ok) {
       throw new Error('Failed to fetch product');
     }
