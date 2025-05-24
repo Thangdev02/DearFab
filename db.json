@@ -1,0 +1,459 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "user@gmail.com",
+      "password": "123123",
+      "name": "Nguyen Van A",
+      "role": "user",
+      "address": "123 Đường Láng, Đống Đa",
+      "phone": "0901234567",
+      "city": "Hà Nội"
+    },
+    {
+      "id": 2,
+      "email": "admin1@example.com",
+      "password": "admin123",
+      "name": "Tran Thi B",
+      "role": "admin",
+      "address": "456 Nguyễn Huệ, Quận 1",
+      "phone": "0912345678",
+      "city": "TP. Hồ Chí Minh"
+    },
+    {
+      "id": 1748068377107,
+      "email": "thangdev02@gmail.com",
+      "password": "123123",
+      "name": "Lê Quốc Thắng",
+      "address": "218/4 Ngô Quyền",
+      "phone": "0949450800",
+      "city": "Tỉnh Kiên Giang",
+      "role": "user"
+    },
+    {
+      "id": 1748070679073,
+      "email": "thang@gmail.com",
+      "password": "thang123",
+      "name": "Lê Quốc Test",
+      "address": "218 Ngô Quyền",
+      "phone": "0949450800",
+      "city": "Tỉnh Kiên Giang",
+      "role": "user"
+    },
+    {
+      "id": 1748072796727,
+      "email": "songnam@gmail.com",
+      "password": "123123",
+      "name": "Song Nam",
+      "address": "211 HCM",
+      "phone": "09123123123",
+      "city": "Tỉnh Kiên Giang",
+      "role": "user"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "name": "Tranh Vải Tái Chế - Hoa Sen",
+      "price": 400000,
+      "description": "Tác phẩm nghệ thuật tinh tế từ vải tái chế, tái hiện hình ảnh hoa sen thanh tao, biểu tượng của sự tinh khiết và thanh cao. Hoàn hảo để trang trí phòng khách, mang đến không gian sống thêm phần trang nhã.",
+      "image": "https://i.pinimg.com/736x/c9/59/0e/c9590e571af77a1127f9a15945556bea.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 20,
+      "isNew": true,
+      "isFeatured": true,
+      "sizes": {
+        "S": {
+          "price": 400000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "2",
+      "name": "Tranh Vải Tái Chế - Cánh Đồng",
+      "price": 400000,
+      "description": "Bức tranh vải tái chế tái hiện khung cảnh cánh đồng xanh mướt, yên bình dưới ánh nắng vàng dịu nhẹ. Tác phẩm mang lại cảm giác thư thái, lý tưởng để làm mới không gian sống của bạn.",
+      "image": "https://i.pinimg.com/736x/03/42/da/0342da7bd3e4f6d42b12bbc572b44648.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 15,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 400000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "3",
+      "name": "Tranh Vải Tái Chế - Cô Gái",
+      "price": 390000,
+      "description": "Chân dung cô gái đầy cảm xúc được tạo nên từ những mảnh vải tái chế, kết hợp màu sắc tinh tế và đường nét mềm mại. Tác phẩm là điểm nhấn hoàn hảo cho không gian sống hiện đại.",
+      "image": "https://i.pinimg.com/736x/f6/9c/e2/f69ce28f7067e2eed9645c148b8020d2.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 10,
+      "isNew": false,
+      "isFeatured": true,
+      "sizes": {
+        "S": {
+          "price": 390000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "4",
+      "name": "Tranh Vải Tái Chế - Biển Cả",
+      "price": 450000,
+      "description": "Khám phá vẻ đẹp hùng vĩ của đại dương qua bức tranh vải tái chế, với sắc xanh lam sâu thẳm và những đợt sóng trắng tinh khôi. Tác phẩm mang đến cảm giác mát mẻ, thư giãn cho không gian của bạn.",
+      "image": "https://i.pinimg.com/736x/93/9a/68/939a68ef8d8612260571c9fe54d3b984.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 12,
+      "isNew": false,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 450000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 460000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "5",
+      "name": "Tranh Vải Tái Chế - Lá Xanh",
+      "price": 310000,
+      "description": "Bức tranh vải tái chế với họa tiết lá xanh tươi mát trên nền trắng tinh khôi, mang đến sự đơn giản nhưng đầy tinh tế. Lý tưởng để trang trí phòng làm việc hoặc không gian nhỏ gọn.",
+      "image": "https://i.pinimg.com/736x/bf/78/8d/bf788d4cd2acfad846481e8e9e742f17.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 25,
+      "isNew": true,
+      "isFeatured": true,
+      "sizes": {
+        "S": {
+          "price": 310000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "6",
+      "name": "Tranh Vải Tái Chế - Thành Phố",
+      "price": 470000,
+      "description": "Khung cảnh thành phố về đêm lung linh ánh đèn được tái hiện sống động qua từng mảnh vải tái chế. Tác phẩm nghệ thuật này là lựa chọn hoàn hảo cho những ai yêu thích vẻ đẹp đô thị hiện đại.",
+      "image": "https://i.pinimg.com/736x/cb/9f/65/cb9f6546a77d51e736f93f26db99d2c7.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 8,
+      "isNew": false,
+      "isFeatured": true,
+      "sizes": {
+        "S": {
+          "price": 470000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 490000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "7",
+      "name": "Tranh Vải Tái Chế - Trừu Tượng",
+      "price": 360000,
+      "description": "Tác phẩm nghệ thuật trừu tượng đầy sáng tạo, sử dụng các mảnh vải tái chế với sự kết hợp màu sắc táo bạo. Bức tranh này sẽ thổi hồn vào không gian sống, phù hợp với những ai yêu thích sự phá cách.",
+      "image": "https://i.pinimg.com/736x/48/5d/a3/485da30f6de419986043cbd139f33dde.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 30,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 360000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "8",
+      "name": "Tranh Vải Tái Chế - Núi Rừng",
+      "description": "Phong cảnh núi rừng hùng vĩ được tái hiện sống động qua chất liệu vải tái chế, với từng chi tiết sắc nét và màu sắc hài hòa. Tác phẩm mang đến cảm giác gần gũi với thiên nhiên, lý tưởng cho không gian thư giãn.",
+      "image": "https://i.pinimg.com/736x/95/ed/96/95ed96db2f9b883249e154b11f538ea5.jpg",
+      "category": "Tranh vải tái chế",
+      "isNew": true,
+      "price": 400000,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 400000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "9",
+      "name": "Tranh Vải Tái Chế - Mặt Trăng",
+      "price": 330000,
+      "description": "Bức tranh vải tái chế khắc họa hình ảnh mặt trăng huyền ảo, tỏa ánh sáng dịu dàng trong không gian đêm. Tác phẩm mang đến cảm giác bình yên, hoàn hảo cho phòng ngủ hoặc góc thư giãn của bạn.",
+      "image": "https://i.pinimg.com/736x/6a/27/da/6a27daaefeaed6765c37fa9cc20e38ea.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 22,
+      "isNew": false,
+      "isFeatured": true,
+      "sizes": {
+        "S": {
+          "price": 330000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 450000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    },
+    {
+      "id": "10",
+      "name": "Tranh Vải Tái Chế - Chim Công",
+      "price": 490000,
+      "description": "Hình ảnh chim công kiêu sa với bộ lông rực rỡ được tái hiện tinh xảo từ những mảnh vải tái chế. Biểu tượng của sự sang trọng và quý phái, bức tranh này sẽ làm nổi bật không gian nội thất của bạn.",
+      "image": "https://i.pinimg.com/736x/c6/06/d9/c606d955aefe0e36dc0b1f733699e798.jpg",
+      "category": "Tranh vải tái chế",
+      "quantity": 18,
+      "isNew": false,
+      "isFeatured": true,
+      "sizes": {
+        "S": {
+          "price": 490000,
+          "quantity": 6
+        },
+        "M": {
+          "price": 495000,
+          "quantity": 7
+        },
+        "L": {
+          "price": 500000,
+          "quantity": 5
+        }
+      }
+    }
+  ],
+  "orders": [
+    {
+      "id": "1be6",
+      "orderedItems": [
+        {
+          "id": "1",
+          "name": "Tranh Vải Tái Chế - Hoa Sen",
+          "price": 350000,
+          "description": "Tác phẩm nghệ thuật tinh tế từ vải tái chế, tái hiện hình ảnh hoa sen thanh tao, biểu tượng của sự tinh khiết và thanh cao. Hoàn hảo để trang trí phòng khách, mang đến không gian sống thêm phần trang nhã.",
+          "image": "https://i.pinimg.com/736x/c9/59/0e/c9590e571af77a1127f9a15945556bea.jpg",
+          "category": "Tranh vải tái chế",
+          "quantity": 1,
+          "isNew": true,
+          "isFeatured": true,
+          "sizes": {
+            "S": {
+              "price": 350000,
+              "quantity": 6
+            },
+            "M": {
+              "price": 450000,
+              "quantity": 7
+            },
+            "L": {
+              "price": 500000,
+              "quantity": 5
+            }
+          },
+          "size": "L"
+        }
+      ],
+      "totalPrice": 350000,
+      "shippingInfo": {
+        "fullName": "Nguyen Van A",
+        "address": "123 Đường Láng, Đống Đa",
+        "phone": "0901234567",
+        "city": "Hà Nội"
+      },
+      "paymentMethod": "cash-on-delivery",
+      "orderDate": "02:00 24 thg 5, 2025",
+      "orderNumber": "ORD-279117",
+      "status": "pending"
+    },
+    {
+      "id": "162c",
+      "orderedItems": [
+        {
+          "id": "1",
+          "name": "Tranh Vải Tái Chế - Hoa Sen",
+          "price": 400000,
+          "description": "Tác phẩm nghệ thuật tinh tế từ vải tái chế, tái hiện hình ảnh hoa sen thanh tao, biểu tượng của sự tinh khiết và thanh cao. Hoàn hảo để trang trí phòng khách, mang đến không gian sống thêm phần trang nhã.",
+          "image": "https://i.pinimg.com/736x/c9/59/0e/c9590e571af77a1127f9a15945556bea.jpg",
+          "category": "Tranh vải tái chế",
+          "quantity": 1,
+          "isNew": true,
+          "isFeatured": true,
+          "sizes": {
+            "S": {
+              "price": 400000,
+              "quantity": 6
+            },
+            "M": {
+              "price": 450000,
+              "quantity": 7
+            },
+            "L": {
+              "price": 500000,
+              "quantity": 5
+            }
+          },
+          "size": "M"
+        }
+      ],
+      "totalPrice": 400000,
+      "shippingInfo": {
+        "fullName": "Lê Quốc Test",
+        "address": "218 Ngô Quyền",
+        "phone": "0949450800",
+        "city": "Tỉnh Kiên Giang"
+      },
+      "paymentMethod": "cash-on-delivery",
+      "orderDate": "02:00 24 thg 5, 2025",
+      "orderNumber": "ORD-19549",
+      "status": "pending"
+    },
+    {
+      "id": "c576",
+      "orderedItems": [
+        {
+          "id": "1",
+          "name": "Tranh Vải Tái Chế - Hoa Sen",
+          "price": 400000,
+          "description": "Tác phẩm nghệ thuật tinh tế từ vải tái chế, tái hiện hình ảnh hoa sen thanh tao, biểu tượng của sự tinh khiết và thanh cao. Hoàn hảo để trang trí phòng khách, mang đến không gian sống thêm phần trang nhã.",
+          "image": "https://i.pinimg.com/736x/c9/59/0e/c9590e571af77a1127f9a15945556bea.jpg",
+          "category": "Tranh vải tái chế",
+          "quantity": 2,
+          "isNew": true,
+          "isFeatured": true,
+          "sizes": {
+            "S": {
+              "price": 400000,
+              "quantity": 6
+            },
+            "M": {
+              "price": 450000,
+              "quantity": 7
+            },
+            "L": {
+              "price": 500000,
+              "quantity": 5
+            }
+          },
+          "size": "M"
+        },
+        {
+          "id": "2",
+          "name": "Tranh Vải Tái Chế - Cánh Đồng",
+          "price": 400000,
+          "description": "Bức tranh vải tái chế tái hiện khung cảnh cánh đồng xanh mướt, yên bình dưới ánh nắng vàng dịu nhẹ. Tác phẩm mang lại cảm giác thư thái, lý tưởng để làm mới không gian sống của bạn.",
+          "image": "https://i.pinimg.com/736x/03/42/da/0342da7bd3e4f6d42b12bbc572b44648.jpg",
+          "category": "Tranh vải tái chế",
+          "quantity": 1,
+          "isNew": true,
+          "isFeatured": false,
+          "sizes": {
+            "S": {
+              "price": 400000,
+              "quantity": 6
+            },
+            "M": {
+              "price": 450000,
+              "quantity": 7
+            },
+            "L": {
+              "price": 500000,
+              "quantity": 5
+            }
+          },
+          "size": "M"
+        }
+      ],
+      "totalPrice": 1200000,
+      "shippingInfo": {
+        "fullName": "Song Nam",
+        "address": "211 HCM",
+        "phone": "09123123123",
+        "city": "Tỉnh Kiên Giang"
+      },
+      "paymentMethod": "online-payment",
+      "orderDate": "02:00 24 thg 5, 2025",
+      "orderNumber": "ORD-254380",
+      "status": "pending"
+    }
+  ]
+}

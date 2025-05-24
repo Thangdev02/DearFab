@@ -1,0 +1,144 @@
+:root {
+    --primary-color: #4caf50;
+    --secondary-color: #2e7d32;
+    --light-color: #e8f5e9;
+    --dark-color: #1b5e20;
+    --accent-color: #8bc34a;
+    --text-color: #333333;
+    --text-light: #757575;
+    --bg-color: #f8f9fa;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 0;
+  }
+  
+  a {
+    text-decoration: none;
+    color: var(--primary-color);
+  }
+  
+  a:hover {
+    color: var(--secondary-color);
+  }
+  
+  .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+  }
+  
+  .btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  .section-title {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-weight: 600;
+  }
+  
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background-color: var(--primary-color);
+  }
+  
+  .card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: var(--transition);
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .fade-in {
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  .fade-in.visible {
+    opacity: 1;
+  }
+  
+  .page-container {
+    min-height: calc(100vh - 160px); /* Accounting for navbar and footer */
+    padding: 2rem 0;
+  }
+  
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+  
+  .bg-primary {
+    background-color: var(--primary-color) !important;
+  }
+  
+  .eco-badge {
+    background-color: var(--accent-color);
+    color: white;
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    border-radius: 20px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .section-title {
+      text-align: center;
+    }
+    
+    .section-title::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+  .green-pagination .page-item .page-link {
+    color: #28a745; /* Green text for inactive items */
+    border: 1px solid #28a745; /* Green border */
+    background-color: #fff; /* White background for inactive items */
+  }
+  
+  .green-pagination .page-item .page-link:hover {
+    background-color: #e6f4ea; /* Light green on hover */
+    color: #155724; /* Darker green text on hover */
+  }
+  
+  .green-pagination .page-item.active .page-link {
+    background-color: #28a745; /* Green background for active item */
+    border-color: #28a745; /* Green border for active item */
+    color: #fff; /* White text for active item */
+  }
+  
+  .green-pagination .page-item.active .page-link:hover {
+    background-color: #218838; /* Slightly darker green on hover for active item */
+  }
