@@ -57,7 +57,7 @@ function RegisterPage() {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/users', newUser);
+      const response = await axios.post('https://dearfab.onrender.com/users', newUser);
       if (response.status === 201) {
         setShowToast(true);
         setEmail('');

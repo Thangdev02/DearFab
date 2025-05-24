@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/orders'; // Adjust based on your json-server setup
+const API_URL = 'https://dearfab.onrender.com/orders'; // Adjust based on your json-server setup
 
 export const saveOrder = async (orderData) => {
   try {
