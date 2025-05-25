@@ -21,6 +21,16 @@
       "city": "TP. Hồ Chí Minh"
     },
     {
+      "id": 3,
+      "email": "dearFab@gmail.com",
+      "password": "dearfabadmin",
+      "name": "DearFab",
+      "role": "admin",
+      "address": "456 Nguyễn Huệ, Quận 1",
+      "phone": "0912345678",
+      "city": "TP. Hồ Chí Minh"
+    },
+    {
       "id": 1748068377107,
       "email": "thangdev02@gmail.com",
       "password": "123123",

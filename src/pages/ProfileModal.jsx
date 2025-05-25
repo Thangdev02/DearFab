@@ -1,16 +1,23 @@
 import React from 'react';
 import { Modal, Button, Image, Tabs, Tab, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
-function ProfileModal({ show, handleClose, user, handleLogout }) {
+function ProfileModal({ show, handleClose, user }) {
   // Default avatar URL (using the provided placeholder)
   const defaultAvatar = 'https://t4.ftcdn.net/jpg/06/43/68/65/360_F_643686558_Efl6HB1ITw98bx1PdAd1wy56QpUTMh47.jpg';
-
+const navigate = useNavigate();
   // Split full name into first name and last name
   const [firstName, ...lastNameParts] = (user?.name || '').split(' ') || ['', ''];
   const lastName = lastNameParts.join(' ');
 
+  const handleLogout = () => {
+      Cookies.remove('user');
+      handleClose();
+      navigate('/login');
+  }
   // Debug user object to ensure email is accessible
-  console.log('User object:', user);
+//   console.log('User object:', user);
 
   return (
     <Modal show={show} onHide={handleClose} centered size="lg" style={{ borderRadius: '8px' }}>
@@ -161,13 +168,7 @@ function ProfileModal({ show, handleClose, user, handleLogout }) {
         >
            Đăng Xuất
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleClose}
-          style={{ borderRadius: '4px', padding: '6px 12px' }}
-        >
-          <span style={{ marginRight: '5px' }}>✓</span> Chỉnh Sửa
-        </Button>
+      
       </Modal.Footer>
     </Modal>
   );

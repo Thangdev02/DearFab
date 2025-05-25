@@ -4,7 +4,7 @@ import ScrollReveal from 'scrollreveal';
 import NavBar from './components/common/NavBar';
 import Footer from './components/common/Footer';
 import routes from './routes';
-import { CartProvider } from './context/CartContext'; // Giả sử bạn đã có context này
+import { CartProvider } from './context/CartContext';
 import CartSidebar from './pages/CartPage';
 
 ScrollReveal().reveal('.reveal', {
@@ -24,19 +24,36 @@ function App() {
     <CartProvider>
       <Router>
         <div className="App">
-          <NavBar onCartClick={handleShowCart} /> {/* Truyền prop để mở giỏ hàng từ NavBar */}
-          
           <Routes>
             {routes.map((route) => (
               <Route
                 key={route.path}
                 path={route.path}
-                element={route.element}
-              />
+                element={
+                  // Wrap non-admin routes with NavBar and Footer
+                  route.path === '/admin' || route.path.startsWith('/admin/') ? (
+                    route.element
+                  ) : (
+                    <>
+                      <NavBar onCartClick={handleShowCart} />
+                      {route.element}
+                      <Footer />
+                    </>
+                  )
+                }
+              >
+                {/* Handle nested routes for admin */}
+                {route.children &&
+                  route.children.map((childRoute) => (
+                    <Route
+                      key={childRoute.path}
+                      path={childRoute.path}
+                      element={childRoute.element}
+                    />
+                  ))}
+              </Route>
             ))}
           </Routes>
-
-          <Footer />
 
           {/* Sidebar giỏ hàng */}
           <CartSidebar show={showCart} handleClose={handleCloseCart} />

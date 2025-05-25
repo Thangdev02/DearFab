@@ -181,7 +181,7 @@ function ProductsPage() {
       </ToastContainer>
 
       <ProductListBanner />
-      <Container className="reveal my-5">
+      <Container className=" my-5">
         <Row>
           {/* Sidebar */}
           <Col md={3} className="sidebar">
@@ -233,7 +233,7 @@ function ProductsPage() {
             {/* Products Grid */}
             <Row>
               {currentProducts.map((product) => (
-                <Col key={product.id} sm={12} md={6} lg={4} className="mb-4 product-card">
+                <Col key={product.id} sm={12} md={6} lg={4} className="mb-4 ">
                   <Card className="h-100 shadow-sm border-0">
                     <Card.Img
                       variant="top"

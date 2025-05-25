@@ -6,6 +6,7 @@ import CartSidebar from '../../pages/CartPage';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import Cookies from 'js-cookie';
 import ProfileModal from '../../pages/ProfileModal';
+import Logo from '../../../public/logo.png';
 
 function NavBar() {
   const { user: contextUser, logout } = useContext(UserContext);
@@ -14,13 +15,23 @@ function NavBar() {
   const navigate = useNavigate();
   const [cookieUser, setCookieUser] = useState(null);
 
-  // Fetch user data from cookie on mount
+  // Fetch user data from cookie and re-check on changes
   useEffect(() => {
-    const userCookie = Cookies.get('user');
-    if (userCookie) {
-      setCookieUser(JSON.parse(userCookie));
-    }
-  }, []);
+    const checkCookie = () => {
+      const userCookie = Cookies.get('user');
+      if (userCookie) {
+        const parsedUser = JSON.parse(userCookie);
+        setCookieUser(parsedUser);
+      } else {
+        setCookieUser(null); // Reset if no cookie
+      }
+    };
+
+    checkCookie(); // Initial check
+    const interval = setInterval(checkCookie, 1000); // Check every second (adjust as needed)
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []); // Empty dependency array to run only on mount
 
   const handleCloseCart = () => setShowCart(false);
   const handleShowCart = () => setShowCart(true);
@@ -34,6 +45,16 @@ function NavBar() {
   };
 
   const handleCloseProfileModal = () => setShowProfileModal(false);
+
+  // Handle logout
+  const handleLogout = () => {
+    Cookies.remove('user');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+    logout(); // Call context logout if implemented
+    setCookieUser(null); // Update state immediately
+    navigate('/login');
+  };
 
   return (
     <>
@@ -51,7 +72,7 @@ function NavBar() {
             to="/"
             style={{ color: 'green', fontWeight: 'bold', fontSize: '1.5rem' }}
           >
-            DearFab
+            <img src={Logo} alt="Logo" style={{ width: '100%', height: '50px' }}></img>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
@@ -84,9 +105,10 @@ function NavBar() {
         show={showProfileModal}
         handleClose={handleCloseProfileModal}
         user={cookieUser}
+        handleLogout={handleLogout} // Pass logout function to ProfileModal
       />
     </>
   );
 }
 
-export default NavBar;
+export default NavBar; // Corrected export

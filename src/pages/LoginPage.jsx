@@ -23,6 +23,7 @@ function LoginPage() {
       // Store user data in a cookie
       const userData = {
         name: result.user.name,
+        email: result.user.email,
         role: result.role,
         address: result.user.address,
         phone: result.user.phone,
@@ -35,7 +36,7 @@ function LoginPage() {
       localStorage.setItem('userName', result.user.name);
 
       if (result.role === 'admin') {
-        navigate('/admin-dashboard');
+        navigate('/admin');
       } else {
         navigate('/');
       }
