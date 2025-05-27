@@ -42,7 +42,7 @@ function AboutUsPage() {
           <Col md={4}>
             <div style={styles.teamMemberWrapper}>
               <Image
-                src="../../public/TNQA.jpg" 
+                src="https://i.ibb.co/G4T7P4Kc/TNQA.jpg" 
                 alt="Leader"
                 fluid
                 style={styles.teamImage}
@@ -79,7 +79,7 @@ function AboutUsPage() {
               <Col md={3}>
                 <div style={styles.teamMemberWrapper}>
                   <Image
-                    src="../../public/LMT.jpg" // Placeholder for Designer 1
+                    src="https://i.ibb.co/5XG1ZqtH/LMT.jpg" // Placeholder for Designer 1
                     alt="Designer 1"
                     fluid
                     style={styles.teamImage}
@@ -96,7 +96,7 @@ function AboutUsPage() {
               <Col md={3}>
                 <div style={styles.teamMemberWrapper}>
                   <Image
-                    src="../../public/NTB.jpg" 
+                    src="https://i.ibb.co/jZjrvKXK/NTB.jpg" 
                     alt="Designer 2"
                     fluid
                     style={styles.teamImage}
@@ -113,7 +113,7 @@ function AboutUsPage() {
               <Col md={3}>
                 <div style={styles.teamMemberWrapper}>
                   <Image
-                    src="../../public/NTNT.jpg" // Placeholder for Artist 1
+                    src="https://i.ibb.co/qMWVM7XH/NTNT.jpg" // Placeholder for Artist 1
                     alt="Artist 1"
                     fluid
                     style={styles.teamImage}
@@ -130,7 +130,7 @@ function AboutUsPage() {
               <Col md={3}>
                 <div style={styles.teamMemberWrapper}>
                   <Image
-                    src="../../public/DHM.jpg" // Placeholder for Creator 1
+                    src="https://i.ibb.co/fzbkTBVB/DHM.jpg" // Placeholder for Creator 1
                     alt="Creator 1"
                     fluid
                     style={styles.teamImage}
