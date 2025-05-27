@@ -22,7 +22,7 @@ function AdvancedFunctionalities() {
 
   return (
     <div className="reveal my-5">
-      <h2 className="text-center mb-4">Tính năng vượt trội</h2>
+      <h2 className="text-center mb-4 text-success" >Tính năng vượt trội</h2>
       <Row>
         {functionalities.map((func, index) => (
           <Col key={index} md={4} className="mb-4">

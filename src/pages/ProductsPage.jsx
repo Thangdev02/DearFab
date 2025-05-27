@@ -228,7 +228,7 @@ function ProductsPage() {
 
           {/* Main Content */}
           <Col md={9}>
-            <h1 className="text-center mb-4">Tất cả sản phẩm</h1>
+            <h1 className="text-center mb-4 text-success">Tất cả sản phẩm</h1>
 
             {/* Products Grid */}
             <Row>

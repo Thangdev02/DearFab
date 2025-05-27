@@ -46,7 +46,7 @@ const FeaturesSection = () => {
         <Col key={index} md={6} lg={3} className="feature-item">
           <div
             className="d-flex flex-column align-items-center h-100"
-            style={{ minHeight: '250px' }} // Ensure a minimum height for consistency
+            style={{ minHeight: '250px' }} 
           >
             <div className="flex-grow-0">
               {feature.icon}

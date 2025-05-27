@@ -6,7 +6,7 @@ function UltimateCompanion() {
     <div className="reveal my-5">
       <Row className="align-items-center">
         <Col md={6}>
-          <h2 className="text-success ">Người bạn đồng hành tuyệt vời</h2>
+          <h2 className="text-success">Người bạn đồng hành tuyệt vời</h2>
           <p>
             Các sản phẩm tái chế của chúng tôi không chỉ là vật dụng, mà còn là người bạn đồng hành trong hành trình sống xanh của bạn. Hãy để chúng tôi cùng bạn tạo nên một tương lai bền vững.
           </p>

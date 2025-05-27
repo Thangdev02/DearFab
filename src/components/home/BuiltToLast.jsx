@@ -36,7 +36,7 @@ function BuiltToLast() {
           />
         </Col>
         <Col md={6}>
-          <h2>Được thiết kế để bền vững</h2>
+          <h2 className="text-success">Được thiết kế để bền vững</h2>
           <p>
             Sản phẩm của chúng tôi được làm từ vật liệu vải tái chế chất lượng cao, đảm bảo độ bền và thân thiện với môi trường. Mỗi sản phẩm đều được kiểm định kỹ lưỡng để mang lại giá trị lâu dài.
           </p>

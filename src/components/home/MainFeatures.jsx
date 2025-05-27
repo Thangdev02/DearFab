@@ -33,7 +33,7 @@ function MainFeatures() {
 
     return (
         <div className="reveal my-5">
-            <h2 className="text-center mb-4">Tính năng chính</h2>
+            <h2 className="text-center mb-5 text-success">Tính năng chính</h2>
             <Row>
                 {features.map((feature, index) => (
                     <Col key={index} md={4} className="text-center mb-4 feature-item">

@@ -37,8 +37,8 @@ function TopRatedProducts() {
     <Container className="my-5">
       <div className="d-flex justify-content-between align-items-center mb-4 ">
         <div></div>
-        <h2>Sản phẩm đánh giá cao</h2>
-        <Button as={Link} to="/products" variant="outline-dark">
+        <h2 className="text-success ">Sản phẩm đánh giá cao</h2>
+        <Button as={Link} to="/products" variant="outline-success">
           Xem thêm
         </Button>
       </div>

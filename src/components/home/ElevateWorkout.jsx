@@ -10,7 +10,7 @@ function ElevateWorkout() {
 
   return (
     <div className="reveal my-5">
-      <h2 className="text-center mb-4">Nâng tầm phong cách sống xanh</h2>
+      <h2 className="text-center mb-4 text-success">Nâng tầm phong cách sống xanh</h2>
       <Row>
         {benefits.map((benefit, index) => (
           <Col key={index} md={4} className="text-center mb-4">
