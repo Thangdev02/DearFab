@@ -10,16 +10,7 @@
       "phone": "0901234567",
       "city": "Hà Nội"
     },
-    {
-      "id": 2,
-      "email": "admin1@example.com",
-      "password": "admin123",
-      "name": "Tran Thi B",
-      "role": "admin",
-      "address": "456 Nguyễn Huệ, Quận 1",
-      "phone": "0912345678",
-      "city": "TP. Hồ Chí Minh"
-    },
+   
     {
       "id": 3,
       "email": "dearFab@gmail.com",
@@ -29,37 +20,8 @@
       "address": "456 Nguyễn Huệ, Quận 1",
       "phone": "0912345678",
       "city": "TP. Hồ Chí Minh"
-    },
-    {
-      "id": 1748068377107,
-      "email": "thangdev02@gmail.com",
-      "password": "123123",
-      "name": "Lê Quốc Thắng",
-      "address": "218/4 Ngô Quyền",
-      "phone": "0949450800",
-      "city": "Tỉnh Kiên Giang",
-      "role": "user"
-    },
-    {
-      "id": 1748070679073,
-      "email": "thang@gmail.com",
-      "password": "thang123",
-      "name": "Lê Quốc Test",
-      "address": "218 Ngô Quyền",
-      "phone": "0949450800",
-      "city": "Tỉnh Kiên Giang",
-      "role": "user"
-    },
-    {
-      "id": 1748072796727,
-      "email": "songnam@gmail.com",
-      "password": "123123",
-      "name": "Song Nam",
-      "address": "211 HCM",
-      "phone": "09123123123",
-      "city": "Tỉnh Kiên Giang",
-      "role": "user"
     }
+   
   ],
   "products": [
     {
