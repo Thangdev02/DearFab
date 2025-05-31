@@ -74,7 +74,7 @@
 //   }
 // };
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://dearfab.onrender.com';
 
 export const getProducts = async () => {
   try {
