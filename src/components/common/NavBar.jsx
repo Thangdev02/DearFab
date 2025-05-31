@@ -1,19 +1,22 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Navbar, Nav, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container, Badge } from 'react-bootstrap'; // Thêm Badge từ react-bootstrap
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
-import CartSidebar from '../../pages/CartPage';
+import { CartContext } from '../../context/CartContext'; // Thêm CartContext để lấy cartItems
+import ProfileModal from '../../pages/ProfileModal';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import Cookies from 'js-cookie';
-import ProfileModal from '../../pages/ProfileModal';
 import Logo from '../../../public/logo.png';
 
 function NavBar() {
   const { user: contextUser, logout } = useContext(UserContext);
-  const [showCart, setShowCart] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false); // State for ProfileModal visibility
+  const { cartItems } = useContext(CartContext); // Lấy cartItems từ CartContext
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const navigate = useNavigate();
   const [cookieUser, setCookieUser] = useState(null);
+
+  // Tính tổng số lượng sản phẩm trong giỏ hàng
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   // Fetch user data from cookie and re-check on changes
   useEffect(() => {
@@ -23,22 +26,23 @@ function NavBar() {
         const parsedUser = JSON.parse(userCookie);
         setCookieUser(parsedUser);
       } else {
-        setCookieUser(null); // Reset if no cookie
+        setCookieUser(null);
       }
     };
 
-    checkCookie(); // Initial check
-    const interval = setInterval(checkCookie, 1000); // Check every second (adjust as needed)
+    checkCookie();
+    const interval = setInterval(checkCookie, 1000);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, []); // Empty dependency array to run only on mount
+    return () => clearInterval(interval);
+  }, []);
 
-  const handleCloseCart = () => setShowCart(false);
-  const handleShowCart = () => setShowCart(true);
+  const handleShowCart = () => {
+    navigate('/cart');
+  };
 
   const handleUserClick = () => {
     if (cookieUser || contextUser) {
-      setShowProfileModal(true); // Open ProfileModal instead of navigating to /profile
+      setShowProfileModal(true);
     } else {
       navigate('/login');
     }
@@ -46,13 +50,12 @@ function NavBar() {
 
   const handleCloseProfileModal = () => setShowProfileModal(false);
 
-  // Handle logout
   const handleLogout = () => {
     Cookies.remove('user');
     localStorage.removeItem('userRole');
     localStorage.removeItem('userName');
-    logout(); // Call context logout if implemented
-    setCookieUser(null); // Update state immediately
+    logout();
+    setCookieUser(null);
     navigate('/login');
   };
 
@@ -64,51 +67,64 @@ function NavBar() {
         expand="lg"
         className="reveal"
         fixed="top"
-        style={{ borderBottom: '1px solid #ccc' }}
+        style={{ borderBottom: '1px solid #ccc', padding: '0 4%' }}
       >
-        <Container>
-          <Navbar.Brand
-            as={Link}
-            to="/"
-            style={{ color: 'green', fontWeight: 'bold', fontSize: '1.5rem' }}
-          >
-            <img src={Logo} alt="Logo" style={{ width: '100%', height: '50px' }}></img>
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link as={Link} to="/" style={{ color: 'green' }}>Trang Chủ</Nav.Link>
-              <Nav.Link as={Link} to="/products" style={{ color: 'green' }}>Sản Phẩm</Nav.Link>
-              <Nav.Link as={Link} to="/about" style={{ color: 'green' }}>Giới Thiệu</Nav.Link>
-            </Nav>
-            <Nav className="align-items-center gap-3">
-              <Nav.Link onClick={handleShowCart} style={{ color: 'green', fontSize: '1.5rem' }}>
-                <FaShoppingCart />
-              </Nav.Link>
-              <Nav.Link onClick={handleUserClick} style={{ color: 'green', fontSize: '1rem' }}>
-                {cookieUser ? (
-                  <span style={{ fontWeight: '500' }}>{cookieUser.name}</span>
-                ) : (
-                  <FaUser style={{ fontSize: '1.5rem' }} />
-                )}
-              </Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
+        <Navbar.Brand
+          as={Link}
+          to="/"
+          style={{ color: 'green', fontWeight: 'bolder', fontSize: '2rem' }}
+        >
+          <img src={Logo} alt="Logo" style={{ width: '100%', height: '50px' }} />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/" style={{ color: 'green', fontWeight: 'bolder' }}>
+              Trang Chủ
+            </Nav.Link>
+            <Nav.Link as={Link} to="/products" style={{ color: 'green', fontWeight: 'bolder' }}>
+              Sản Phẩm
+            </Nav.Link>
+            <Nav.Link as={Link} to="/about" style={{ color: 'green', fontWeight: 'bolder' }}>
+              Giới Thiệu
+            </Nav.Link>
+          </Nav>
+          <Nav className="align-items-center gap-3">
+            <Nav.Link onClick={handleShowCart} style={{ color: 'green', fontSize: '1.5rem', position: 'relative' }}>
+              <FaShoppingCart />
+              {cartCount > 0 && (
+                <Badge
+                  bg="danger"
+                  style={{
+                    position: 'absolute',
+                    fontSize: '0.7rem',
+                    padding: '3px 6px',
+                  }}
+                >
+                  {cartCount}
+                </Badge>
+              )}
+            </Nav.Link>
+            <Nav.Link onClick={handleUserClick} style={{ color: 'green', fontSize: '1rem' }}>
+              {cookieUser ? (
+                <span style={{ fontWeight: '500' }}>{cookieUser.name}</span>
+              ) : (
+                <FaUser style={{ fontSize: '1.5rem' }} />
+              )}
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
       </Navbar>
-
-      {/* Offcanvas giỏ hàng */}
-      <CartSidebar show={showCart} handleClose={handleCloseCart} />
 
       {/* Profile Modal */}
       <ProfileModal
         show={showProfileModal}
         handleClose={handleCloseProfileModal}
         user={cookieUser}
-        handleLogout={handleLogout} // Pass logout function to ProfileModal
+        handleLogout={handleLogout}
       />
     </>
   );
 }
 
-export default NavBar; // Corrected export
+export default NavBar;

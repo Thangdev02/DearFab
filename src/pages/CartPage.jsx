@@ -1,129 +1,211 @@
-import React, { useContext } from 'react';
-import { Offcanvas, Button, ListGroup, Image, Form } from 'react-bootstrap';
-import { CartContext } from '../context/CartContext';
+// CartPage.jsx
+import React, { useContext, useState, useEffect } from 'react';
+import { Container, Row, Col, ListGroup, Image, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-
-function CartSidebar({ show, handleClose }) {
-  const { cartItems = [], removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
+import Cookies from 'js-cookie';
+import { CartContext } from '../context/CartContext';
+import { FaTrash } from 'react-icons/fa'; // Import FaTrash
+function CartPage() {
+  const { cartItems, setCartItems, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
+  const [shippingMode, setShippingMode] = useState('storePickup');
 
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  useEffect(() => {
+    Cookies.set('cartItems', JSON.stringify(cartItems), { expires: 7 }); // Lưu trong 7 ngày
+  }, [cartItems]);
+
+  // Khôi phục giỏ hàng từ cookies khi trang được tải
+  useEffect(() => {
+    const savedCart = Cookies.get('cartItems');
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+  }, [setCartItems]);
+
+  const basePrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const shippingCost = shippingMode === 'storePickup' ? 0 : 9900;
+  const totalPrice = basePrice + shippingCost;
 
   const handleProductClick = (id) => {
-    handleClose();
     navigate(`/product/${id}`);
   };
 
   const handleCheckout = () => {
-    // Pass cart items and total price to OrderConfirmationPage
     navigate('/order', {
       state: { orderedItems: cartItems, totalPrice }
     });
-    // Clear the cart after successful checkout (optional, depends on your flow)
     clearCart();
-    handleClose();
+  };
+
+  const handleContinueShopping = () => {
+    navigate('/products');
   };
 
   return (
-    <Offcanvas
-      show={show}
-      onHide={handleClose}
-      placement="end"
-      style={{ width: '500px' }}
-      backdrop={true}
-    >
-      <Offcanvas.Header closeButton>
-        <Offcanvas.Title style={{ fontWeight: '700', fontSize: '1.5rem' }}>
-          Giỏ hàng của bạn
-        </Offcanvas.Title>
-      </Offcanvas.Header>
-      <Offcanvas.Body
-        style={{
-          background: 'rgba(255, 255, 255, 0.08)',
-          backdropFilter: 'blur(12px)',
-          color: 'white',
-          height: '100%',
-          paddingTop: '1rem',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
-        {cartItems.length === 0 ? (
-          <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '1.2rem' }}>
-            Giỏ hàng đang trống
-          </p>
-        ) : (
-          <ListGroup variant="flush" style={{ flexGrow: 1, overflowY: 'auto' }}>
-            {cartItems.map(item => (
-              <ListGroup.Item
-                key={item.id}
-                className="d-flex justify-content-between align-items-center"
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  padding: '1rem 0',
-                  fontSize: '1.1rem',
-                  cursor: 'pointer',
-                }}
-              >
-                <div
+    <Container style={{ padding: '8% 0', minHeight: '100vh' }}>
+      <Row className="mb-4">
+        <Col>
+          <div className="d-flex justify-content-between align-items-center">
+            <h1 style={{ fontWeight: '700', fontSize: '2.5rem', color: '#333' }}>
+              Giỏ Hàng Của Bạn
+            </h1>
+            <Button
+              variant="link"
+              onClick={handleContinueShopping}
+              style={{ color: '#006400', fontWeight: '500', textDecoration: 'underline' }}
+            >
+              Tiếp Tục Mua Sắm
+            </Button>
+          </div>
+        </Col>
+      </Row>
+
+      {cartItems.length === 0 ? (
+        <p style={{ textAlign: 'center', marginTop: '2rem', fontSize: '1.2rem', color: '#666' }}>
+          Giỏ hàng đang trống
+        </p>
+      ) : (
+        <Row>
+          <Col md={8}>
+            <Row className="mb-3">
+              <Col md={4}>
+                <strong style={{ color: '#666' }}>Sản Phẩm</strong>
+              </Col>
+              <Col md={3}>
+                <strong style={{ color: '#666' }}>Kích thước & Giá</strong>
+              </Col>
+              <Col md={2}>
+                <strong style={{ color: '#666' }}>Số Lượng</strong>
+              </Col>
+              <Col md={3} className="text-end">
+                <strong style={{ color: '#666' }}>Tổng</strong>
+              </Col>
+            </Row>
+
+            <ListGroup variant="flush">
+              {cartItems.map(item => (
+                <ListGroup.Item
+                  key={`${item.id}-${item.selectedSize}`} // Đảm bảo key duy nhất dựa trên id và size
                   className="d-flex align-items-center"
-                  style={{ gap: '1rem' }}
-                  onClick={() => handleProductClick(item.id)}
+                  style={{ border: 'none', padding: '15px 0', borderBottom: '1px solid #eee' }}
                 >
-                  <Image
-                    src={item.image || 'https://via.placeholder.com/50'}
-                    rounded
-                    style={{ width: 50, height: 50, objectFit: 'cover' }}
-                    alt={item.name}
-                  />
-                  <div>
-                    <strong>{item.name}</strong>
-                    <br />
-                    <small>Giá: {item.price.toLocaleString('vi-VN')} VND</small>
-                  </div>
-                </div>
-                <div className="text-end">
-                  <Form.Control
-                    type="number"
-                    min="1"
-                    value={item.quantity}
-                    onChange={(e) => updateQuantity(item.id, e.target.value)}
-                    style={{ width: '70px', display: 'inline-block' }}
-                  />
-                  <div className="mt-1">
-                    <span style={{ fontSize: '0.9rem' }}>
-                      Tổng: {(item.price * item.quantity).toLocaleString('vi-VN')} VND
-                    </span>
+                  <Col md={4} className="d-flex align-items-center">
+                    <Image
+                      src={item.image || 'https://via.placeholder.com/50'}
+                      alt={item.name}
+                      style={{ width: 60, height: 60, objectFit: 'cover', marginRight: '15px' }}
+                    />
+                    <div onClick={() => handleProductClick(item.id)} style={{ cursor: 'pointer' }}>
+                      <strong>{item.name}</strong>
+                      <p style={{ fontSize: '1rem', color: '#333', margin: 0 }}>
+                      Size: {item.selectedSize || 'N/A'}<br />
+                    </p>
+                    </div>
+                  </Col>
+                  <Col md={3}>
+                    <p style={{ fontSize: '1rem', color: '#333', margin: 0 }}>
+                      {item.price.toLocaleString('vi-VN')} VND
+                    </p>
+                    {item.extras && (
+                      <p style={{ fontSize: '0.9rem', color: '#666', margin: 0 }}>
+                        + {item.extrasPrice?.toLocaleString('vi-VN')} VND ({item.extras})
+                      </p>
+                    )}
+                  </Col>
+                  <Col md={2} className="d-flex align-items-center">
                     <Button
-                      variant="danger"
+                      variant="outline-secondary"
                       size="sm"
-                      onClick={() => removeFromCart(item.id)}
-                      className="ms-2"
+                      onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
+                      disabled={item.quantity <= 1}
+                      style={{ borderRadius: '50%', width: '30px', height: '30px', padding: 0 }}
                     >
-                      Xóa
+                      -
                     </Button>
-                  </div>
-                </div>
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        )}
-        <hr style={{ borderColor: 'rgba(255,255,255,0.2)', margin: '1rem 0' }} />
-        <h5 style={{ fontWeight: '700' }}>
-          Tổng tiền: {totalPrice.toLocaleString('vi-VN')} VND
-        </h5>
-        <Button
-          variant="success"
-          className="w-100 mt-3"
-          onClick={handleCheckout}
-          style={{ fontWeight: '600', fontSize: '1.1rem' }}
-        >
-          Thanh toán
-        </Button>
-      </Offcanvas.Body>
-    </Offcanvas>
+                    <span style={{ margin: '0 10px', fontSize: '1rem' }}>{item.quantity}</span>
+                    <Button
+                      variant="outline-secondary"
+                      size="sm"
+                      onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
+                      style={{ borderRadius: '50%', width: '30px', height: '30px', padding: 0 }}
+                    >
+                      +
+                    </Button>
+                  </Col>
+                  <Col md={3} className="text-end">
+                    <p style={{ fontSize: '1rem', color: '#333', margin: 0 }}>
+                      {(item.price * item.quantity).toLocaleString('vi-VN')} VND
+                    </p>
+                    <Button
+                      variant="link"
+                      onClick={() => removeFromCart(item.id, item.selectedSize)}
+                      style={{ color: '#ff0000', textDecoration: 'none', fontSize: '1.2rem' }}
+                    >
+                      <FaTrash/>
+                    </Button>
+                  </Col>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+          </Col>
+
+          <Col md={4}>
+            <div
+              style={{
+                background: '#f8f9fa',
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+              }}
+            >
+              <h5 style={{ fontWeight: '700', marginBottom: '15px' }}>
+                Chọn phương thức vận chuyển:
+              </h5>
+              <Form.Check
+                type="radio"
+                label="Nhận tại cửa hàng (miễn phí trong 20 phút)"
+                name="shippingMode"
+                value="storePickup"
+                checked={shippingMode === 'storePickup'}
+                onChange={() => setShippingMode('storePickup')}
+                style={{ marginBottom: '10px' }}
+              />
+                <Form.Check
+                type="radio"
+                label="Giao Hàng"
+                name="shippingMode"
+                value="storePickup"
+                checked={shippingMode === 'storePickup'}
+                onChange={() => setShippingMode('storePickup')}
+                style={{ marginBottom: '10px' }}
+              />
+              <hr />
+              <div className="d-flex justify-content-between">
+                <span>Tổng phụ TTC:</span>
+                <span>{basePrice.toLocaleString('vi-VN')} VND</span>
+              </div>
+              <div className="d-flex justify-content-between mt-2">
+                <span>Vận chuyển:</span>
+                <span>{shippingCost === 0 ? 'Miễn phí' : `${shippingCost.toLocaleString('vi-VN')} VND`}</span>
+              </div>
+              <div className="d-flex justify-content-between mt-2">
+                <strong>Tổng cộng:</strong>
+                <strong>{totalPrice.toLocaleString('vi-VN')} VND</strong>
+              </div>
+              <Button
+                variant="success"
+                className="w-100 mt-3"
+                onClick={handleCheckout}
+                style={{ fontWeight: '600', fontSize: '1.1rem' }}
+              >
+                Thanh Toán {totalPrice.toLocaleString('vi-VN')} VND
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      )}
+    </Container>
   );
 }
 
-export default CartSidebar;
+export default CartPage;

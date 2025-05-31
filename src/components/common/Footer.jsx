@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import Logo from '../../../public/logo.png';
 
 function Footer() {
   return (
@@ -8,7 +9,7 @@ function Footer() {
         {/* Email Signup Section */}
         <Row className="justify-content-center mb-4">
           <Col md={6} className="text-center">
-            <div style={styles.logo}><img style={{width: '50%'}} src='../../public/logo.png'/></div>
+            <div style={styles.logo}><img style={{width: '50%'}} src={Logo}/></div>
             <h2 style={styles.signupTitle}>
               Tranh ghép vải làm từ vải tái chế
             </h2>
@@ -27,7 +28,7 @@ function Footer() {
         </Row>
 
         {/* Navigation Links */}
-        <Row className="justify-content-center mb-4">
+        <Row className="justify-content-center mb-2">
           <Col className="text-center">
             <ul style={styles.navList}>
               <li style={styles.navItem}>Tính năng</li>
@@ -41,11 +42,7 @@ function Footer() {
             </ul>
           </Col>
         </Row>
-        <Row className=" d-flex justify-content-center ">
-          <h6 style={{ textAlign: 'center' }}>
-            @Design by WinnerTech
-          </h6>
-        </Row>
+      
       </Container>
     </footer>
   );

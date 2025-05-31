@@ -22,6 +22,7 @@ function LoginPage() {
     if (result.success) {
       // Store user data in a cookie
       const userData = {
+        id: result.user.id || result.user._id,
         name: result.user.name,
         email: result.user.email,
         role: result.role,

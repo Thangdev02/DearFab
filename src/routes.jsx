@@ -13,6 +13,7 @@ import OrderManagement from './pages/admin/OrderManagement';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import AboutUsPage from './pages/AboutUsPage';
+import OrderHistoryPage from './pages/OrderHistoryPage';
 
 // Placeholder for other admin pages
 
@@ -27,6 +28,7 @@ const routes = [
   { path: '/login', element: <LoginPage /> },
   { path: '/order', element: <OrderPage /> },
   { path: '/order-confirmation', element: <OrderConfirmationPage /> },
+  { path: '/order-history', element: <OrderHistoryPage /> },
   
   {
     path: '/admin',

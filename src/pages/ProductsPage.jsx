@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Row, Col, Card, Button, Form, Spinner, Pagination, Container, Toast, ToastContainer } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { getProducts } from '../services/api';
 import TopRatedProducts from '../components/products/TopRatedProduct';
 import ScrollReveal from 'scrollreveal';
-import ProductListBanner from '../components/products/Product\bListBanner';
+import ProductListBanner from '../components/products/Product\bListBanner'; // Sửa lỗi tên file
 
-// Debounce utility
 const debounce = (func, delay) => {
   let timeoutId;
   return (...args) => {
@@ -21,25 +20,26 @@ function ProductsPage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { addToCart } = useContext(CartContext);
+  const { addToCart, cartItems } = useContext(CartContext);
   const [categoryFilter, setCategoryFilter] = useState('');
   const [tagFilter, setTagFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [showToast, setShowToast] = useState(false); // State for toast visibility
-  const [toastMessage, setToastMessage] = useState(''); // State for toast message
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const productsPerPage = 9;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Simulate a timeout for slow API
         const timeoutPromise = new Promise((resolve, reject) =>
           setTimeout(() => reject(new Error('Yêu cầu quá thời gian.')), 10000)
         );
         const dataPromise = getProducts();
         const data = await Promise.race([dataPromise, timeoutPromise]);
+        console.log('Dữ liệu sản phẩm từ API:', data);
         setProducts(data || []);
         setFilteredProducts(data || []);
         setLoading(false);
@@ -51,7 +51,6 @@ function ProductsPage() {
     fetchProducts();
   }, []);
 
-  // Debounced filter update
   const applyFilters = useCallback(() => {
     let result = products;
 
@@ -88,7 +87,6 @@ function ProductsPage() {
     debouncedApplyFilters();
   }, [applyFilters]);
 
-  // Initialize ScrollReveal once on mount
   useEffect(() => {
     ScrollReveal().reveal('.product-card', {
       origin: 'bottom',
@@ -108,23 +106,39 @@ function ProductsPage() {
     });
   }, []);
 
-  // Handle adding to cart and showing toast
   const handleAddToCart = (product) => {
-    console.log('Adding to cart:', product); // Debug: Check if function is called
+    console.log('Adding to cart:', product);
     addToCart(product);
     setToastMessage(`${product.name || 'Sản phẩm'} đã được thêm vào giỏ hàng!`);
     setShowToast(true);
-    console.log('Toast should show. showToast:', showToast, 'Message:', toastMessage); // Debug: Check state
+    console.log('Toast should show. showToast:', showToast, 'Message:', toastMessage);
   };
 
-  // Debug: Watch for showToast changes
+  const handleBuyNow = (product) => {
+    console.log('Buying now:', product);
+    if (!product || !product.id) {
+      console.error('Sản phẩm không hợp lệ:', product);
+      return;
+    }
+    // Tạo bản sao sản phẩm với quantity = 1 và selectedSize mặc định
+    const productWithQuantity = {
+      ...product,
+      quantity: 1, // Đảm bảo chỉ thêm 1 đơn vị
+      selectedSize: 'M', // Giả định kích thước mặc định, có thể mở rộng logic sau
+      price: product.sizes?.['M']?.price || product.price, // Lấy giá của kích thước M hoặc giá mặc định
+    };
+    addToCart(productWithQuantity); // Thêm sản phẩm vào giỏ hàng
+    const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+    navigate('/order', { state: { orderedItems: cartItems, totalPrice } });
+  };
+
   useEffect(() => {
     console.log('showToast state changed:', showToast);
   }, [showToast]);
 
   if (loading) {
     return (
-      <Container className="my-5">
+      <Container className="my-5 py-5">
         <Row>
           {Array.from({ length: productsPerPage }).map((_, index) => (
             <Col key={index} sm={12} md={6} lg={4} className="mb-4">
@@ -153,7 +167,6 @@ function ProductsPage() {
   const categories = [...new Set(products.map(product => product.category))];
   const tags = [...new Set(products.flatMap(product => product.tags || []))];
 
-  // Pagination logic
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
@@ -163,7 +176,6 @@ function ProductsPage() {
 
   return (
     <div>
-      {/* Toast Container */}
       <ToastContainer position="top-end" className="p-3" style={{ zIndex: 1050 }}>
         <Toast
           onClose={() => setShowToast(false)}
@@ -181,9 +193,8 @@ function ProductsPage() {
       </ToastContainer>
 
       <ProductListBanner />
-      <Container className=" my-5">
+      <Container className="my-5">
         <Row>
-          {/* Sidebar */}
           <Col md={3} className="sidebar">
             <h3 className="mb-4">Bộ lọc</h3>
 
@@ -226,14 +237,12 @@ function ProductsPage() {
             </Form.Group>
           </Col>
 
-          {/* Main Content */}
           <Col md={9}>
             <h1 className="text-center mb-4 text-success">Tất cả sản phẩm</h1>
 
-            {/* Products Grid */}
             <Row>
               {currentProducts.map((product) => (
-                <Col key={product.id} sm={12} md={6} lg={4} className="mb-4 ">
+                <Col key={product.id} sm={12} md={6} lg={4} className="mb-4">
                   <Card className="h-100 shadow-sm border-0">
                     <Card.Img
                       variant="top"
@@ -257,7 +266,7 @@ function ProductsPage() {
                         </Button>
                         <Button
                           variant="success"
-                          onClick={() => handleAddToCart(product)}
+                          onClick={() => handleBuyNow(product)}
                         >
                           Mua
                         </Button>
@@ -268,7 +277,6 @@ function ProductsPage() {
               ))}
             </Row>
 
-            {/* Pagination */}
             <div className="d-flex justify-content-center mt-4">
               <Pagination className="green-pagination">
                 {Array.from({ length: totalPages }, (_, index) => (
@@ -283,7 +291,6 @@ function ProductsPage() {
               </Pagination>
             </div>
 
-            {/* Top Rated Products Section */}
             <TopRatedProducts />
           </Col>
         </Row>

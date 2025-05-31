@@ -3,21 +3,16 @@ import { Container, Row, Col, Card, Button, ListGroup, Image, Form, Alert } from
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import Cookies from 'js-cookie';
-import { saveOrder } from '../services/orderApi'; // Import the new API service
+import { saveOrder } from '../services/orderApi';
 
 function OrderPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { cartItems = [], clearCart } = useContext(CartContext);
 
-  // Extract order details from navigation state
-  const orderedItems = state?.orderedItems || [];
-  const totalPrice = state?.totalPrice || 0;
-
-  // Get user data from cookie
+  const orderedItems = state?.orderedItems?.length ? state.orderedItems : cartItems;
   const userData = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : {};
 
-  // State for shipping information and payment method, pre-filled with cookie data
   const [shippingInfo, setShippingInfo] = useState({
     fullName: userData.name || '',
     address: userData.address || '',
@@ -25,10 +20,9 @@ function OrderPage() {
     city: userData.city || '',
   });
 
-  // State for sizes of each item (initialize with default size "M")
   const [sizes, setSizes] = useState(
     orderedItems.reduce((acc, item) => {
-      acc[item.id] = 'M'; // Default size
+      acc[item.id] = 'M';
       return acc;
     }, {})
   );
@@ -36,29 +30,37 @@ function OrderPage() {
   const [paymentMethod, setPaymentMethod] = useState('cash-on-delivery');
   const [error, setError] = useState('');
 
-  // Current date and time (02:00 AM +07, May 24, 2025)
-  const orderDate = new Date('2025-05-24T02:00:00+07:00').toLocaleString('vi-VN', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
+  const [orderDate] = useState(
+    new Date().toLocaleString('vi-VN', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    })
+  );
 
-  // Handle input changes for shipping info
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setShippingInfo(prev => ({ ...prev, [name]: value }));
+    setShippingInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle size change for each item
   const handleSizeChange = (itemId, value) => {
-    setSizes(prev => ({ ...prev, [itemId]: value }));
+    setSizes((prev) => ({ ...prev, [itemId]: value }));
   };
 
-  // Handle payment method change
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
   };
 
-  // Handle order submission
+  // 👉 Tổng tiền được tính theo size đã chọn
+  const calculateTotalPrice = () => {
+    return orderedItems.reduce((acc, item) => {
+      const selectedSize = sizes[item.id] || 'M';
+      const priceBySize = item.sizes?.[selectedSize]?.price || item.price;
+      return acc + priceBySize * item.quantity;
+    }, 0);
+  };
+
+  const totalPrice = calculateTotalPrice();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!shippingInfo.fullName || !shippingInfo.address || !shippingInfo.phone || !shippingInfo.city) {
@@ -66,31 +68,34 @@ function OrderPage() {
       return;
     }
 
-    // Add selected sizes to ordered items
-    const updatedOrderedItems = orderedItems.map(item => ({
-      ...item,
-      size: sizes[item.id] || 'M', // Use selected size or default to 'M'
-    }));
+    const updatedOrderedItems = orderedItems.map((item) => {
+      const selectedSize = sizes[item.id] || 'M';
+      const priceBySize = item.sizes?.[selectedSize]?.price || item.price;
 
-    // Prepare order data
+      return {
+        ...item,
+        size: selectedSize,
+        price: priceBySize,
+      };
+    });
+
     const orderData = {
+      userId: userData.id || 'guest',
       orderedItems: updatedOrderedItems,
       totalPrice,
       shippingInfo,
       paymentMethod,
       orderDate,
       orderNumber: `ORD-${Math.floor(Math.random() * 1000000)}`,
-      status: 'pending', // Initial status
+      status: 'pending',
     };
 
-    // Save order to db.json
     const result = await saveOrder(orderData);
     if (!result.success) {
       setError(result.message);
       return;
     }
 
-    // Navigate to confirmation page with order data
     navigate('/order-confirmation', { state: orderData });
     clearCart();
   };
@@ -100,7 +105,6 @@ function OrderPage() {
       <Row className="justify-content-center">
         <Col lg={10}>
           <Row>
-            {/* Left Side: Order Summary */}
             <Col md={6} className="mb-4">
               <Card className="shadow-sm border-0">
                 <Card.Body>
@@ -111,37 +115,45 @@ function OrderPage() {
                     <p>Không có sản phẩm nào trong giỏ hàng.</p>
                   ) : (
                     <ListGroup variant="flush" className="mb-4">
-                      {orderedItems.map(item => (
-                        <ListGroup.Item key={item.id} className="d-flex align-items-center py-3">
-                          <Image
-                            src={item.image || 'https://via.placeholder.com/50'}
-                            rounded
-                            style={{ width: 60, height: 60, objectFit: 'cover', marginRight: '1rem' }}
-                            alt={item.name}
-                          />
-                          <div className="flex-grow-1">
-                            <strong>{item.name}</strong>
-                            <div>Giá: {item.price.toLocaleString('vi-VN')} VND</div>
-                            <div>Số lượng: {item.quantity}</div>
-                            <div>
-                              Tổng: {(item.price * item.quantity).toLocaleString('vi-VN')} VND
+                      {orderedItems.map((item) => {
+                        const selectedSize = sizes[item.id] || 'M';
+                        const sizeInfo = item.sizes?.[selectedSize];
+                        const price = sizeInfo?.price || item.price;
+
+                        return (
+                          <ListGroup.Item key={item.id} className="d-flex align-items-center py-3">
+                            <Image
+                              src={item.image || 'https://via.placeholder.com/50'}
+                              rounded
+                              style={{ width: 60, height: 60, objectFit: 'cover', marginRight: '1rem' }}
+                              alt={item.name}
+                            />
+                            <div className="flex-grow-1">
+                              <strong>{item.name}</strong>
+                              <div>Kích thước: {selectedSize}</div>
+                              <div>Giá: {price.toLocaleString('vi-VN')} VND</div>
+                              <div>Số lượng: {item.quantity}</div>
+                              <div>
+                                Tổng: {(price * item.quantity).toLocaleString('vi-VN')} VND
+                              </div>
+                              <Form.Group className="mt-2" controlId={`formSize-${item.id}`}>
+                                <Form.Label>Kích thước:</Form.Label>
+                                <Form.Select
+                                  value={selectedSize}
+                                  onChange={(e) => handleSizeChange(item.id, e.target.value)}
+                                  style={{ width: '100px' }}
+                                >
+                                  {Object.keys(item.sizes || { M: {} }).map((sizeOption) => (
+                                    <option key={sizeOption} value={sizeOption}>
+                                      {sizeOption}
+                                    </option>
+                                  ))}
+                                </Form.Select>
+                              </Form.Group>
                             </div>
-                            <Form.Group className="mt-2" controlId={`formSize-${item.id}`}>
-                              <Form.Label>Kích thước:</Form.Label>
-                              <Form.Select
-                                value={sizes[item.id] || 'M'}
-                                onChange={(e) => handleSizeChange(item.id, e.target.value)}
-                                style={{ width: '100px' }}
-                              >
-                                <option value="S">S</option>
-                                <option value="M">M</option>
-                                <option value="L">L</option>
-                                <option value="XL">XL</option>
-                              </Form.Select>
-                            </Form.Group>
-                          </div>
-                        </ListGroup.Item>
-                      ))}
+                          </ListGroup.Item>
+                        );
+                      })}
                     </ListGroup>
                   )}
                   <hr />
@@ -152,15 +164,12 @@ function OrderPage() {
               </Card>
             </Col>
 
-            {/* Right Side: Shipping Information and Payment Method */}
             <Col md={6} className="mb-4">
               <Card className="shadow-sm border-0">
                 <Card.Body>
                   <h4 className="mb-4" style={{ color: '#28a745' }}>
                     Thông Tin Đặt Hàng
                   </h4>
-
-                  {/* Shipping Information Form */}
                   <h5 className="mb-3">Thông Tin Giao Hàng</h5>
                   {error && <Alert variant="danger">{error}</Alert>}
                   <Form onSubmit={handleSubmit}>
@@ -175,7 +184,6 @@ function OrderPage() {
                         required
                       />
                     </Form.Group>
-
                     <Form.Group className="mb-3" controlId="formAddress">
                       <Form.Label>Địa Chỉ</Form.Label>
                       <Form.Control
@@ -187,7 +195,6 @@ function OrderPage() {
                         required
                       />
                     </Form.Group>
-
                     <Form.Group className="mb-3" controlId="formPhone">
                       <Form.Label>Số Điện Thoại</Form.Label>
                       <Form.Control
@@ -199,7 +206,6 @@ function OrderPage() {
                         required
                       />
                     </Form.Group>
-
                     <Form.Group className="mb-3" controlId="formCity">
                       <Form.Label>Thành Phố</Form.Label>
                       <Form.Control
@@ -211,8 +217,6 @@ function OrderPage() {
                         required
                       />
                     </Form.Group>
-
-                    {/* Payment Method */}
                     <h5 className="mb-3">Phương Thức Thanh Toán</h5>
                     <Form.Group className="mb-3">
                       <Form.Check
@@ -232,7 +236,6 @@ function OrderPage() {
                         onChange={handlePaymentChange}
                       />
                     </Form.Group>
-
                     <Button
                       variant="success"
                       type="submit"

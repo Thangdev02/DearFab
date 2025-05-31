@@ -6,18 +6,14 @@ function OrderConfirmationPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  // Extract order details from navigation state
   const orderedItems = state?.orderedItems || [];
   const totalPrice = state?.totalPrice || 0;
-
-  // Generate a simple order number (in a real app, this would come from the backend)
-  const orderNumber = `ORD-${Math.floor(Math.random() * 1000000)}`;
-
-  // Current date and time (based on provided timestamp: 01:31 AM +07, May 24, 2025)
-  const orderDate = new Date('2025-05-24T01:31:00+07:00').toLocaleString('vi-VN', {
+  const userId = state?.userId || 'guest';
+  const orderNumber = state?.orderNumber || `ORD-${Math.floor(Math.random() * 1000000)}`;
+  const orderDate = state?.orderDate || new Date().toLocaleString('vi-VN', {
     dateStyle: 'medium',
     timeStyle: 'short',
-  });
+  }); // Lấy từ state hoặc dùng ngày hiện tại
 
   const handleContinueShopping = () => {
     navigate('/products');
@@ -34,13 +30,12 @@ function OrderConfirmationPage() {
                 <p>Cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi.</p>
                 <hr />
               </div>
-
               <div className="mb-4">
                 <h5>Thông Tin Đơn Hàng</h5>
                 <p><strong>Mã đơn hàng:</strong> {orderNumber}</p>
                 <p><strong>Ngày đặt hàng:</strong> {orderDate}</p>
+                <p><strong>Mã người dùng:</strong> {userId}</p>
               </div>
-
               <h5>Chi Tiết Đơn Hàng</h5>
               {orderedItems.length === 0 ? (
                 <p>Không có sản phẩm nào trong đơn hàng.</p>
@@ -58,6 +53,7 @@ function OrderConfirmationPage() {
                         <strong>{item.name}</strong>
                         <div>Giá: {item.price.toLocaleString('vi-VN')} VND</div>
                         <div>Số lượng: {item.quantity}</div>
+                        <div>Kích thước: {item.size}</div>
                         <div>
                           Tổng: {(item.price * item.quantity).toLocaleString('vi-VN')} VND
                         </div>
@@ -66,12 +62,10 @@ function OrderConfirmationPage() {
                   ))}
                 </ListGroup>
               )}
-
               <hr />
               <h5 className="text-end">
                 Tổng Tiền: {totalPrice.toLocaleString('vi-VN')} VND
               </h5>
-
               <div className="text-center mt-4">
                 <Button
                   variant="success"

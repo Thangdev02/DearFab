@@ -56,7 +56,6 @@ function App() {
           </Routes>
 
           {/* Sidebar giỏ hàng */}
-          <CartSidebar show={showCart} handleClose={handleCloseCart} />
         </div>
       </Router>
     </CartProvider>

@@ -1,7 +1,7 @@
 {
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "email": "user@gmail.com",
       "password": "123123",
       "name": "Nguyen Van A",
@@ -10,9 +10,8 @@
       "phone": "0901234567",
       "city": "Hà Nội"
     },
-   
     {
-      "id": 3,
+      "id": "3",
       "email": "dearFab@gmail.com",
       "password": "dearfabadmin",
       "name": "DearFab",
@@ -20,8 +19,17 @@
       "address": "456 Nguyễn Huệ, Quận 1",
       "phone": "0912345678",
       "city": "TP. Hồ Chí Minh"
+    },
+    {
+      "id": "4",
+      "email": "user2@gmail.com",
+      "password": "123123",
+      "name": "Nguyen Van B",
+      "role": "user",
+      "address": "123 Đường Láng, Đống Đa",
+      "phone": "0901234567",
+      "city": "Hà Nội"
     }
-   
   ],
   "products": [
     {
@@ -426,6 +434,34 @@
       "orderDate": "02:00 24 thg 5, 2025",
       "orderNumber": "ORD-254380",
       "status": "pending"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewId": 1,
+      "userId": 1,
+      "productId": "1",
+      "content": "Sản phẩm rất đẹp, chất lượng tốt, phù hợp để trang trí phòng khách!",
+      "ratingPoint": 5,
+      "date": "2025-05-30T10:00:00",
+      "id": "36d0"
+    },
+    {
+      "reviewId": 2,
+      "userId": 3,
+      "productId": "2",
+      "content": "Thiết kế độc đáo, giao hàng nhanh chóng.",
+      "ratingPoint": 4,
+      "date": "2025-05-31T09:00:00",
+      "id": "7238"
+    },
+    {
+      "id": "7312",
+      "userId": "1",
+      "productId": "7",
+      "content": "qua tuyet voi dang cap cao vai ca cuc, toi deo hieu sao ma dang cp nhu vay",
+      "ratingPoint": 5,
+      "date": "2025-05-31T04:59:25.987Z"
     }
   ]
 }
