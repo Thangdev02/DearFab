@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstr
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/authApi';
 import Cookies from 'js-cookie';
+import Logo from '../../public/logo.png';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -92,9 +93,10 @@ function LoginPage() {
             }}
           >
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <span style={{ fontSize: '24px', fontWeight: 'bold' }}>© DearFab</span>
+              {/* <span style={{ fontSize: '24px', fontWeight: 'bold' }}>DearFab</span> */}
+              <img src={Logo} alt="Logo" style={{ width: '50%', height: '100px' }} />
             </div>
-            <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Đăng Nhập vào DearFabt</h2>
+            <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Đăng Nhập vào DearFab</h2>
             <p style={{ color: '#666', marginBottom: '30px' }}>Đăng nhập vào để bắt đầu mua sắm</p>
 
 
