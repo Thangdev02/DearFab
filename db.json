@@ -34,250 +34,751 @@
   "products": [
     {
       "id": "1",
-      "name": "Tranh Vải Tái Chế - Hoa Sen",
-      "price": 400000,
-      "description": "Tác phẩm nghệ thuật tinh tế từ vải tái chế, tái hiện hình ảnh hoa sen thanh tao, biểu tượng của sự tinh khiết và thanh cao. Hoàn hảo để trang trí phòng khách, mang đến không gian sống thêm phần trang nhã.",
-      "image": "https://i.pinimg.com/736x/c9/59/0e/c9590e571af77a1127f9a15945556bea.jpg",
+      "name": "Tịnh Tâm",
+      "price": 3000000,
+      "description": "Giữa những mảng xanh sẫm của lá và sắc vàng trầm của nền, bông sen trắng nở bừng như một khoảnh khắc tĩnh tại giữa dòng chảy bộn bề. Tác phẩm là sự giao thoa giữa sự thanh khiết và tự nhiên – nơi mà từng lớp vải vụn được hồi sinh thành biểu tượng của sự tỉnh thức, nhẹ nhõm và an yên. Tịnh Tâm không chỉ là một bức tranh, mà là một khoảng lặng để trở về với chính mình.",
+      "image": "B1",
       "category": "Tranh vải tái chế",
-      "quantity": 20,
+      "quantity": 7,
       "isNew": true,
       "isFeatured": true,
       "sizes": {
         "S": {
-          "price": 400000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "2",
-      "name": "Tranh Vải Tái Chế - Cánh Đồng",
-      "price": 400000,
-      "description": "Bức tranh vải tái chế tái hiện khung cảnh cánh đồng xanh mướt, yên bình dưới ánh nắng vàng dịu nhẹ. Tác phẩm mang lại cảm giác thư thái, lý tưởng để làm mới không gian sống của bạn.",
-      "image": "https://i.pinimg.com/736x/03/42/da/0342da7bd3e4f6d42b12bbc572b44648.jpg",
+      "name": "Miền Gọi Nắng",
+      "price": 4000000,
+      "description": "Tựa như một thước phim ký ức giữa miền quê yên bình, “Miền Gọi Nắng” đưa ta băng qua lối nhỏ ngập ánh sáng – nơi mặt đất thắp lên những vệt vàng dịu nhẹ xuyên qua tán cây xanh thẫm. Tác phẩm là sự chuyển động tinh tế giữa tĩnh lặng và ánh sáng, giữa chiều sâu và màu sắc. Dưới từng lớp vải tái sinh là một thiên nhiên đang thở, đang kể chuyện – không cần âm thanh, chỉ cần cảm nhận.",
+      "image": "B2",
       "category": "Tranh vải tái chế",
-      "quantity": 15,
+      "quantity": 7,
       "isNew": true,
       "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 400000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "3",
-      "name": "Tranh Vải Tái Chế - Cô Gái",
-      "price": 390000,
-      "description": "Chân dung cô gái đầy cảm xúc được tạo nên từ những mảnh vải tái chế, kết hợp màu sắc tinh tế và đường nét mềm mại. Tác phẩm là điểm nhấn hoàn hảo cho không gian sống hiện đại.",
-      "image": "https://i.pinimg.com/736x/f6/9c/e2/f69ce28f7067e2eed9645c148b8020d2.jpg",
+      "name": "Giấc Mơ Mùa Lá",
+      "price": 3000000,
+      "description": "Nằm nghiêng giữa nền trời loang màu và nhành lá đan xen, cô gái như đang lắng nghe lời thì thầm của thiên nhiên. Trong dáng nằm mơ màng, tà áo đỏ và vàng hòa cùng lá xanh tạo nên một dải màu thị giác cuốn hút – như giấc mơ đang chảy tràn ra không gian. “Giấc Mơ Mùa Lá” không chỉ khơi gợi cảm xúc nữ tính dịu dàng, mà còn là tiếng nói của sự kết nối giữa con người và thiên nhiên – nơi tâm trí được chở che bởi những điều nhẹ tênh và xanh mát.",
+      "image": "B3",
       "category": "Tranh vải tái chế",
-      "quantity": 10,
-      "isNew": false,
-      "isFeatured": true,
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 390000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "4",
-      "name": "Tranh Vải Tái Chế - Biển Cả",
-      "price": 450000,
-      "description": "Khám phá vẻ đẹp hùng vĩ của đại dương qua bức tranh vải tái chế, với sắc xanh lam sâu thẳm và những đợt sóng trắng tinh khôi. Tác phẩm mang đến cảm giác mát mẻ, thư giãn cho không gian của bạn.",
-      "image": "https://i.pinimg.com/736x/93/9a/68/939a68ef8d8612260571c9fe54d3b984.jpg",
+      "name": "Chợ Núi Xưa",
+      "price": 3000000,
+      "description": "Tựa như một trang truyện dân gian mở ra bằng gam màu thổ mộc và xanh lam trầm ấm, “Chợ Núi Xưa” tái hiện không gian chợ vùng cao mộc mạc nhưng đầy sinh khí. Mái nhà rêu phủ, người người áo chàm, đôi gùi tre, chiếc nón lá… tất cả cùng kể câu chuyện đời thường qua chất liệu vải vụn – vừa giản dị, vừa chan chứa ký ức. Đây không chỉ là một tác phẩm trang trí, mà còn là nơi giữ gìn hồn làng – nơi nhịp sống xưa cũ vẫn âm thầm đập trong lòng hiện đại.",
+      "image": "B4",
       "category": "Tranh vải tái chế",
-      "quantity": 12,
-      "isNew": false,
+      "quantity": 7,
+      "isNew": true,
       "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 450000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 460000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "5",
-      "name": "Tranh Vải Tái Chế - Lá Xanh",
-      "price": 310000,
-      "description": "Bức tranh vải tái chế với họa tiết lá xanh tươi mát trên nền trắng tinh khôi, mang đến sự đơn giản nhưng đầy tinh tế. Lý tưởng để trang trí phòng làm việc hoặc không gian nhỏ gọn.",
-      "image": "https://i.pinimg.com/736x/bf/78/8d/bf788d4cd2acfad846481e8e9e742f17.jpg",
+      "name": "Hoài Cổ Phố Xưa",
+      "price": 3000000,
+      "description": "Trong sắc đỏ nâu của tường gạch và mái ngói cổ kính, cánh cổng rêu phong hiện ra như một ký ức chưa bao giờ mờ nhạt. “Hoài Cổ Phố Xưa” là bản hòa tấu của thời gian, của những dấu vết thời đại còn in hằn trên từng lớp vải ghép. Kiến trúc truyền thống, đường nét uốn cong, và màu trời chạng vạng gợi nhắc ta về những buổi chiều ngẩn ngơ nơi phố cũ – nơi từng viên gạch cũng biết kể chuyện.",
+      "image": "B5",
       "category": "Tranh vải tái chế",
-      "quantity": 25,
+      "quantity": 7,
       "isNew": true,
-      "isFeatured": true,
+      "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 310000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "6",
-      "name": "Tranh Vải Tái Chế - Thành Phố",
-      "price": 470000,
-      "description": "Khung cảnh thành phố về đêm lung linh ánh đèn được tái hiện sống động qua từng mảnh vải tái chế. Tác phẩm nghệ thuật này là lựa chọn hoàn hảo cho những ai yêu thích vẻ đẹp đô thị hiện đại.",
-      "image": "https://i.pinimg.com/736x/cb/9f/65/cb9f6546a77d51e736f93f26db99d2c7.jpg",
+      "name": "Tự Do",
+      "price": 2000000,
+      "description": "Chú ngựa tung vó giữa nền trống như đang xé toạc mọi giới hạn, lao vào khoảng trời rộng lớn của tự do. Dù đơn giản về bố cục, “Tự Do” lại bộc lộ sức mạnh nội tại qua từng đường nét và chuyển động dứt khoát. Tác phẩm gợi mở tinh thần bứt phá, khát vọng vượt lên và bản năng sống mãnh liệt – tất cả được thể hiện bằng chất liệu tái chế đầy tinh tế và phóng khoáng.",
+      "image": "B6",
       "category": "Tranh vải tái chế",
-      "quantity": 8,
-      "isNew": false,
-      "isFeatured": true,
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 470000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 490000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "7",
-      "name": "Tranh Vải Tái Chế - Trừu Tượng",
-      "price": 360000,
-      "description": "Tác phẩm nghệ thuật trừu tượng đầy sáng tạo, sử dụng các mảnh vải tái chế với sự kết hợp màu sắc táo bạo. Bức tranh này sẽ thổi hồn vào không gian sống, phù hợp với những ai yêu thích sự phá cách.",
-      "image": "https://i.pinimg.com/736x/48/5d/a3/485da30f6de419986043cbd139f33dde.jpg",
+      "name": "Trăng Canh Gác",
+      "price": 2000000,
+      "description": "Trên cành cây rêu phủ, giữa trời đêm dịu sáng, chú cú mèo như đang lặng lẽ canh gác những bí mật của đêm trăng. “Trăng Canh Gác” là sự hòa quyện giữa vẻ đẹp hoang dã và nét tĩnh mịch – nơi ánh nhìn sắc sảo ẩn chứa sự khôn ngoan, và từng lớp vải mang theo hơi thở của thiên nhiên ban đêm. Một tác phẩm không ồn ào, nhưng có khả năng lắng đọng và gợi nên chiều sâu suy tưởng cho người thưởng ngoạn.",
+      "image": "B7",
       "category": "Tranh vải tái chế",
-      "quantity": 30,
+      "quantity": 7,
       "isNew": true,
       "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 360000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "8",
-      "name": "Tranh Vải Tái Chế - Núi Rừng",
-      "description": "Phong cảnh núi rừng hùng vĩ được tái hiện sống động qua chất liệu vải tái chế, với từng chi tiết sắc nét và màu sắc hài hòa. Tác phẩm mang đến cảm giác gần gũi với thiên nhiên, lý tưởng cho không gian thư giãn.",
-      "image": "https://i.pinimg.com/736x/95/ed/96/95ed96db2f9b883249e154b11f538ea5.jpg",
+      "name": "Hẹn Mùa Lựu Chín",
+      "price": 2000000,
+      "description": "Trên nhành lựu cong cong đậm chất truyền thống, chú chim nhỏ nghiêng mình chú ý đến chú ong bé xíu đang ghé thăm. Sự đối thoại thầm lặng giữa hai sinh thể tưởng chừng đơn giản, nhưng lại gợi mở về sự sống, chu kỳ mùa vụ và vẻ đẹp tự nhiên không cần phô diễn. “Hẹn Mùa Lựu Chín” là lời thủ thỉ bằng vải – nơi màu sắc tối giản mà cảm xúc thì đầy đặn, mang đến sự yên bình và tinh khôi cho mọi góc nhà.",
+      "image": "B8",
       "category": "Tranh vải tái chế",
+      "quantity": 7,
       "isNew": true,
-      "price": 400000,
       "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 400000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "9",
-      "name": "Tranh Vải Tái Chế - Mặt Trăng",
-      "price": 330000,
-      "description": "Bức tranh vải tái chế khắc họa hình ảnh mặt trăng huyền ảo, tỏa ánh sáng dịu dàng trong không gian đêm. Tác phẩm mang đến cảm giác bình yên, hoàn hảo cho phòng ngủ hoặc góc thư giãn của bạn.",
-      "image": "https://i.pinimg.com/736x/6a/27/da/6a27daaefeaed6765c37fa9cc20e38ea.jpg",
+      "name": "Linh Xà Sắc Màu",
+      "price": 3000000,
+      "description": "Ẩn mình giữa những khối lập phương rực rỡ, hình tượng rắn hiện ra như một dòng chảy của bản năng, trí tuệ và sự tái sinh. “Linh Xà Sắc Màu” là sự kết hợp táo bạo giữa nghệ thuật trừu tượng và biểu tượng huyền thoại, nơi đường cong mềm mại đối lập hài hòa với các khối hình vuông vức. Tác phẩm là cuộc đối thoại giữa bản năng và lý trí – giữa sự tự do chuyển động và những khuôn khổ không thể né tránh.",
+      "image": "B9",
       "category": "Tranh vải tái chế",
-      "quantity": 22,
-      "isNew": false,
-      "isFeatured": true,
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 330000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 450000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
-          "quantity": 5
+          "price": 4000000,
+          "quantity": 1
         }
       }
     },
     {
       "id": "10",
-      "name": "Tranh Vải Tái Chế - Chim Công",
-      "price": 490000,
-      "description": "Hình ảnh chim công kiêu sa với bộ lông rực rỡ được tái hiện tinh xảo từ những mảnh vải tái chế. Biểu tượng của sự sang trọng và quý phái, bức tranh này sẽ làm nổi bật không gian nội thất của bạn.",
-      "image": "https://i.pinimg.com/736x/c6/06/d9/c606d955aefe0e36dc0b1f733699e798.jpg",
+      "name": "Em Bé Ôm Gà Trống",
+      "price": 2000000,
+      "description": "Dựa trên tinh thần của tranh dân gian Đông Hồ, “Em Bé Bên Gà Trống” là biểu tượng của ước nguyện no ấm, sum vầy và sinh sôi. Hình ảnh em bé bụ bẫm ôm chú gà trống rực rỡ không chỉ đơn thuần là một biểu tượng Tết, mà còn là hình ảnh hạnh phúc giản dị, mộc mạc từ bao đời. Từng mảng màu đơn sắc, từng nét vẽ ngây thơ nhưng đầy chủ ý, cùng chất liệu vải tái sinh tạo nên một tác phẩm vừa thân quen, vừa đầy giá trị truyền thống và nhân văn.",
+      "image": "B10",
       "category": "Tranh vải tái chế",
-      "quantity": 18,
-      "isNew": false,
-      "isFeatured": true,
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
       "sizes": {
         "S": {
-          "price": 490000,
-          "quantity": 6
+          "price": 2000000,
+          "quantity": 1
         },
         "M": {
-          "price": 495000,
-          "quantity": 7
+          "price": 3000000,
+          "quantity": 5
         },
         "L": {
-          "price": 500000,
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "11",
+      "name": "Trăng Nhớ Sen",
+      "price": 2000000,
+      "description": "Trong không gian tím biếc của đêm trăng, thiếu nữ áo dài trắng lặng lẽ bên hồ sen, như đang gom từng cánh hoa và mảnh ký ức vào lòng. “Trăng Nhớ Sen” mang hơi thở của thi ca – tĩnh lặng mà sâu sắc, trầm mặc nhưng không buồn. Tác phẩm là sự giao thoa giữa nữ tính dịu dàng và chất Việt rất riêng – tái hiện bằng vải tái chế như một nhịp thở chậm rãi giữa nhịp đời hối hả.",
+      "image": "B11",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
           "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "12",
+      "name": "Xà Thần",
+      "price": 3000000,
+      "description": "Hình ảnh đôi rắn quấn nhau trên nền xanh – vàng gợi liên tưởng đến những biểu tượng nguyên thủy và thiêng liêng về sự sinh sôi, tái sinh và luân hồi. “Xà Thần” không chỉ là một tạo hình mỹ thuật mà còn là dấu ấn bản năng và quyền lực – được thể hiện bằng vải tái chế đầy ngẫu hứng nhưng giàu chiều sâu triết lý. Những đường cong chuyển động như nhịp thở của đất, vừa hoang dại, vừa bí ẩn – như một lời gọi từ nơi rất xa của tự nhiên.",
+      "image": "B12",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "13",
+      "name": "Bác Hồ Viết Trong Chiến Khu",
+      "price": 3000000,
+      "description": "Giữa khung cảnh núi rừng chiến khu, Chủ tịch Hồ Chí Minh ngồi viết trong sự yên tĩnh của thiên nhiên, nơi từng quyết sách lịch sử được thai nghén. Bức tranh tái hiện hình ảnh một vị lãnh tụ giản dị, gần gũi nhưng kiên định – đang chăm chú ghi chép giữa không gian xanh ngắt, đầy hy vọng và thử thách. Màu sắc ấm áp và chất liệu vải tái chế tạo nên chiều sâu cảm xúc, vừa mang tính nghệ thuật vừa là lời tri ân đến quá khứ kiên cường của dân tộc.",
+      "image": "B13",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "14",
+      "name": "Người Giữ Màu Vải",
+      "price": 3000000,
+      "description": "Trong tà áo dài trắng, người phụ nữ ôm lấy dải vải rực rỡ như đang giữ lấy một dòng chảy ký ức – của nghề, của sắc màu, của bản sắc. “Người Giữ Màu Vải” là bản tuyên ngôn nhẹ nhàng về lòng yêu nghề, sự kết nối giữa con người với chất liệu, với quá khứ và hiện tại. Mỗi mảng màu là một hơi thở sống, từ đỏ rực đam mê, vàng hy vọng đến xanh mát dịu êm – tất cả cùng hòa vào cái nhìn đầy tin yêu và tự hào.",
+      "image": "B14",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "15",
+      "name": "Chiều Cầu Thê Húc - Đền Ngọc Sơn",
+      "price": 2000000,
+      "description": "Ánh hoàng hôn rực vàng phủ xuống mặt hồ, làm nổi bật sắc đỏ đặc trưng của cầu Thê Húc – cây cầu dẫn vào đền Ngọc Sơn, biểu tượng văn hóa tâm linh và kiến trúc đặc sắc của Hà Nội. Bức tranh được thực hiện từ vải ghép thủ công, tái hiện lại khung cảnh thơ mộng và trầm mặc, nơi thời gian như ngưng đọng để lưu giữ vẻ đẹp nghìn năm văn hiến. Ánh sáng, mặt nước và sắc trời hòa quyện, tạo nên một khoảnh khắc đầy thi vị giữa lòng phố cổ.",
+      "image": "B15",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "16",
+      "name": "Rắn Giữa Sóng Màu",
+      "price": 3000000,
+      "description": "Giữa nền màu rực rỡ, hình ảnh rắn uốn lượn hiện lên như dòng năng lượng chảy xuyên qua các lớp không gian. “Rắn Giữa Sóng Màu” là sự kết hợp táo bạo giữa nghệ thuật trừu tượng và biểu tượng nguyên sơ – nơi chuyển động mềm mại của loài rắn giao thoa với hình khối cứng cáp và màu sắc hiện đại. Tác phẩm mang đến cảm giác bí ẩn, linh hoạt và mạnh mẽ – phù hợp cho những không gian sáng tạo, cá tính và ưa chuộng yếu tố biểu tượng.",
+      "image": "B16",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "17",
+      "name": "Ngũ Hổ Uy Linh",
+      "price": 4000000,
+      "description": "“Ngũ Hổ Uy Linh” tái hiện hình tượng năm vị hổ thần trong tín ngưỡng dân gian phương Đông – biểu trưng cho ngũ hành, quyền lực và sự bảo hộ linh thiêng. Mỗi con hổ mang một sắc thái riêng, trong thế đối xứng mạnh mẽ và sắc màu dữ dội như đang canh giữ linh khí càn khôn. Các lớp vải ghép tạo nên hiệu ứng thị giác huyền bí, khiến người xem không chỉ chiêm ngưỡng mà còn cảm nhận năng lượng tâm linh tỏa ra từ tác phẩm. Phù hợp trưng bày tại những không gian trang trọng, phòng khách, hoặc nơi làm việc để thu hút vượng khí và tạo điểm nhấn văn hóa mạnh mẽ.",
+      "image": "B17",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "18",
+      "name": "Phố Ven Sông – Dưới Cầu Long Biên",
+      "price": 4000000,
+      "description": "Giữa những mái nhà chênh vênh, con thuyền trôi lặng lẽ và cây cầu Long Biên bắc ngang trời như chứng nhân lịch sử, “Phố Ven Sông – Dưới Cầu Long Biên” là lát cắt sống động của Hà Nội mộc mạc mà đầy bản sắc. Mỗi mảng vải như một ô ký ức – của người buôn thúng bán mẹt, của những ngôi nhà gỗ cũ kỹ, của nhịp sống lao động giản dị bên bờ sông. Tác phẩm gợi hoài niệm mà không cũ kỹ, mang tính trang trí cao mà vẫn giữ hồn Việt rõ nét – rất phù hợp để làm điểm nhấn cho không gian phòng khách hay quán cà phê mang hơi hướng hoài cổ.",
+      "image": "B18",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "19",
+      "name": "Tân Tỵ – Khởi Đầu Mới",
+      "price": 4000000,
+      "description": "Hình ảnh rắn cách điệu trên nền hồng tím nổi bật, bao quanh là mảng màu hiện đại như biểu tượng của sức sống mới, tái sinh và chuyển mình. “Tân Tỵ – Khởi Đầu Mới” không đơn thuần là hình tượng con giáp, mà còn là sự phá cách giữa truyền thống và hiện đại. Những đường nét tay mô phỏng họa tiết dân gian Việt Nam được đưa vào bố cục màu đậm chất đồ họa, tạo nên một tác phẩm táo bạo nhưng vẫn mang tính thiêng. Phù hợp với không gian sáng tạo, nghệ thuật, hoặc trang trí năm mới như lời chúc cát tường.",
+      "image": "B19",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "20",
+      "name": "Lợn Vàng No Đủ",
+      "price": 3000000,
+      "description": "“Lợn Vàng No Đủ” là hình ảnh điển hình trong tranh dân gian Đông Hồ, tượng trưng cho sự sung túc, may mắn và sinh sôi. Màu vàng rực rỡ kết hợp cùng đường xoáy trên thân lợn gợi đến phúc khí và tài lộc, trong khi bụi chuối xanh tươi đằng sau như biểu trưng cho sự bình yên và bền vững trong gia đạo. Tác phẩm phù hợp để treo vào dịp Tết hoặc trong không gian sống mang tinh thần Á Đông, như một lời chúc an khang – thịnh vượng và viên mãn.",
+      "image": "B20",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "21",
+      "name": "Em Bé Ôm Ngỗng",
+      "price": 4000000,
+      "description": "Tựa như lời chúc về sự bình an và đủ đầy, “Em Bé Ôm Ngỗng” là hình ảnh quen thuộc trong tranh dân gian Đông Hồ – nơi hồn Việt được thể hiện qua nét vẽ hồn nhiên và màu sắc tươi tắn. Hình ảnh đứa bé bụ bẫm ôm chặt chú ngỗng trắng mang theo ngụ ý về hạnh phúc tròn đầy, con cái ngoan ngoãn, gia đình viên mãn. Màu đỏ và xanh lá tượng trưng cho năng lượng sống dồi dào, rất thích hợp để trưng bày trong không gian gia đình, đặc biệt là phòng trẻ em, góc Tết hay khu vực thờ cúng tổ tiên.",
+      "image": "B21",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "22",
+      "name": "Phố Cổ Trong Chiều Vàng",
+      "price": 3000000,
+      "description": "Phố Cổ Trong Chiều Vàng” tái hiện khoảnh khắc giao thoa giữa ngày và đêm – khi phố phường như ngưng lại trong sắc hoàng hôn rực rỡ. Những khối nhà cổ kính ẩn hiện dưới nền trời cam hồng, phản chiếu xuống mặt nước vàng loang khiến người xem liên tưởng đến ký ức mơ hồ, những chiều bình yên và dịu nhẹ. Tác phẩm là sự kết hợp giữa hiện thực và cảm xúc, rất phù hợp để treo trong không gian thư giãn như phòng khách, thư phòng hay góc cà phê tại nhà.",
+      "image": "B22",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "23",
+      "name": "Văn Miếu Mùa Hạ",
+      "price": 3000000,
+      "description": "“Văn Miếu Mùa Hạ” là bức tranh tái hiện Khuê Văn Các – biểu tượng ngàn năm của trí tuệ và hiền tài đất Việt – giữa khung cảnh mùa hạ xanh tươi. Những mảng màu đậm nhạt xen kẽ khéo léo làm nổi bật mái ngói đỏ cổ kính, nền cây xanh bao bọc, và lối đi dẫn vào trung tâm đầy tính dẫn dắt. Bức tranh không chỉ là một góc nhìn di sản, mà còn gợi lên sự tĩnh lặng, bình yên – rất lý tưởng để treo tại không gian làm việc, thư viện gia đình hoặc những nơi cần nguồn cảm hứng học thuật và truyền thống.",
+      "image": "B23",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "24",
+      "name": "Đậu Trên Cành Liễu",
+      "price": 2000000,
+      "description": "“Đậu Trên Cành Liễu” là một khúc trầm tĩnh giữa bộ sưu tập. Chú cò trắng đơn độc nép mình trên nhành liễu rủ, giữa không gian tối giản đến tuyệt đối. Sự tiết chế màu sắc, mảng khối gọn gàng cùng nét vẽ truyền thống tạo nên một cảm giác thiền định – vừa vững chãi, vừa mong manh. Đây là một tác phẩm phù hợp với những ai yêu sự giản đơn, và tìm kiếm sự bình yên trong từng góc nhỏ của không gian sống.",
+      "image": "B24",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "25",
+      "name": "Qua Mùa Sen",
+      "price": 4000000,
+      "description": "“Qua Mùa Sen” khắc họa khoảnh khắc cuối hạ – khi những chiếc lá sen dần úa tàn, tạo nên vẻ đẹp mong manh và đầy triết lý. Chú chim nhỏ nhẹ nhàng đậu lên một cuống sen, như đang lắng nghe tiếng thì thầm của thời gian. Màu sắc mang hơi hướng thu tàn – trầm, ấm và sâu lắng – khiến người xem như chạm đến một góc ký ức xa xôi về những tháng ngày yên bình, giản dị. Một tác phẩm gợi cảm xúc, tinh tế và đầy tính thiền định.",
+      "image": "B25",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "26",
+      "name": "Cá Chép Vượt Sóng",
+      "price": 3000000,
+      "description": "“Cá Chép Vượt Sóng” tái hiện hình ảnh quen thuộc trong mỹ thuật dân gian Việt Nam – một chú cá chép ngẩng đầu đầy sinh khí, tung mình trên làn sóng nước nhẹ nhàng dưới ánh dương rực rỡ. Từng đường vảy, vây, đuôi được thể hiện rõ nét, vừa hóm hỉnh vừa mạnh mẽ, truyền tải thông điệp về sự kiên trì, vượt khó và khát vọng vươn lên. Đây không chỉ là một tác phẩm nghệ thuật, mà còn là lời chúc may mắn và thành công dành cho người sở hữu.",
+      "image": "B26",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "27",
+      "name": "Cú Mèo Dưới Trăng",
+      "price": 2000000,
+      "description": "“Cú Mèo Dưới Trăng” là một bản phối màu đầy chất thơ, tái hiện hình ảnh chú cú nhắm mắt ngủ yên dưới vầng trăng tròn tĩnh lặng. Tông nền xanh lam sâu thẳm gợi sự tĩnh mịch của đêm, tương phản với những bông hoa nhỏ rực rỡ như gợi lên hơi ấm giữa màn đêm. Cú mèo – biểu tượng của trí tuệ và trực giác – hiện lên với thần thái an yên, mời gọi người xem bước vào không gian của sự lắng đọng và chiêm nghiệm.",
+      "image": "B27",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "28",
+      "name": "Hổ Gầm Diều Hâu",
+      "price": 2000000,
+      "description": "Lấy cảm hứng từ tranh dân gian Đông Hồ, “Hổ Gầm Diều Hâu” thể hiện sự giao hòa giữa sức mạnh và sự lanh lẹ. Hình ảnh hổ dữ nhưng ngộ nghĩnh, đối mặt với cánh chim săn dũng mãnh, như ẩn dụ cho sự dũng cảm, tinh anh và khả năng vượt qua mọi thử thách. Nét vẽ táo bạo, màu sắc tương phản mạnh làm nổi bật tinh thần anh hùng dân gian, phù hợp để truyền tải thông điệp quyết tâm và bảo vệ.",
+      "image": "B28",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "29",
+      "name": "Gà Trống Hoa Cúc",
+      "price": 2000000,
+      "description": "“Gà Trống Hoa Cúc” là một mẫu tranh dân gian Đông Hồ cổ điển, mang nhiều lớp nghĩa biểu tượng. Gà trống – đại diện cho ánh sáng, sự dũng cảm và tinh thần đúng giờ – kết hợp cùng hoa cúc, biểu trưng cho sự thanh cao, trường thọ. Màu sắc đỏ - vàng - xanh đậm phối kết nhịp nhàng tạo nên vẻ đẹp truyền thống sinh động và gần gũi. Treo tranh này trong nhà giúp tăng cường năng lượng tích cực và may mắn cho gia chủ.",
+      "image": "B29",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
+        }
+      }
+    },
+    {
+      "id": "30",
+      "name": "Khách Đến",
+      "price": 3000000,
+      "description": "Bức tranh “Khách Đến” thể hiện hình ảnh chim khách đậu trên cành cây – biểu tượng quen thuộc trong văn hóa Á Đông về điềm lành, tin vui, và sự khởi đầu thuận lợi. Nét vẽ mềm mại, đuôi chim dài duyên dáng hòa quyện cùng lá cành uyển chuyển gợi cảm giác vừa bình yên vừa trang nhã. Tranh phù hợp làm quà tặng tân gia, khai trương, hay đơn giản là để khơi dậy năng lượng tích cực trong không gian sống.",
+      "image": "B30",
+      "category": "Tranh vải tái chế",
+      "quantity": 7,
+      "isNew": true,
+      "isFeatured": false,
+      "sizes": {
+        "S": {
+          "price": 2000000,
+          "quantity": 1
+        },
+        "M": {
+          "price": 3000000,
+          "quantity": 5
+        },
+        "L": {
+          "price": 4000000,
+          "quantity": 1
         }
       }
     }
@@ -454,14 +955,6 @@
       "ratingPoint": 4,
       "date": "2025-05-31T09:00:00",
       "id": "7238"
-    },
-    {
-      "id": "7312",
-      "userId": "1",
-      "productId": "7",
-      "content": "qua tuyet voi dang cap cao vai ca cuc, toi deo hieu sao ma dang cp nhu vay",
-      "ratingPoint": 5,
-      "date": "2025-05-31T04:59:25.987Z"
     }
   ]
 }

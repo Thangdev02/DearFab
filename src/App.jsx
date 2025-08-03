@@ -6,6 +6,7 @@ import Footer from './components/common/Footer';
 import routes from './routes';
 import { CartProvider } from './context/CartContext';
 import CartSidebar from './pages/CartPage';
+import ChatBot from './components/common/Chatbox';
 
 ScrollReveal().reveal('.reveal', {
   delay: 200,
@@ -58,6 +59,7 @@ function App() {
           {/* Sidebar giỏ hàng */}
         </div>
       </Router>
+      <ChatBot/>
     </CartProvider>
   );
 }
