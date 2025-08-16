@@ -1,10 +1,10 @@
-// CartPage.jsx
 import React, { useContext, useState, useEffect } from 'react';
 import { Container, Row, Col, ListGroup, Image, Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { CartContext } from '../context/CartContext';
-import { FaTrash } from 'react-icons/fa'; // Import FaTrash
+import { FaTrash } from 'react-icons/fa';
+
 function CartPage() {
   const { cartItems, setCartItems, removeFromCart, updateQuantity, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
@@ -12,13 +12,15 @@ function CartPage() {
 
   useEffect(() => {
     Cookies.set('cartItems', JSON.stringify(cartItems), { expires: 7 }); // Lưu trong 7 ngày
+    console.log('Cart Items updated:', cartItems); // Log để debug
   }, [cartItems]);
 
-  // Khôi phục giỏ hàng từ cookies khi trang được tải
   useEffect(() => {
     const savedCart = Cookies.get('cartItems');
     if (savedCart) {
-      setCartItems(JSON.parse(savedCart));
+      const parsedCart = JSON.parse(savedCart);
+      console.log('Restored Cart from Cookies:', parsedCart); // Log để debug
+      setCartItems(parsedCart);
     }
   }, [setCartItems]);
 
@@ -32,9 +34,9 @@ function CartPage() {
 
   const handleCheckout = () => {
     navigate('/order', {
-      state: { orderedItems: cartItems, totalPrice }
+      state: { orderedItems: cartItems, totalPrice, shippingMode }
     });
-    clearCart();
+    // Không clearCart ngay, để xử lý trong OrderPage
   };
 
   const handleContinueShopping = () => {
@@ -85,7 +87,7 @@ function CartPage() {
             <ListGroup variant="flush">
               {cartItems.map(item => (
                 <ListGroup.Item
-                  key={`${item.id}-${item.selectedSize}`} // Đảm bảo key duy nhất dựa trên id và size
+                  key={`${item.id}-${item.selectedSize}`}
                   className="d-flex align-items-center"
                   style={{ border: 'none', padding: '15px 0', borderBottom: '1px solid #eee' }}
                 >
@@ -98,8 +100,8 @@ function CartPage() {
                     <div onClick={() => handleProductClick(item.id)} style={{ cursor: 'pointer' }}>
                       <strong>{item.name}</strong>
                       <p style={{ fontSize: '1rem', color: '#333', margin: 0 }}>
-                      Size: {item.selectedSize || 'N/A'}<br />
-                    </p>
+                        Size: {item.selectedSize || 'N/A'}<br />
+                      </p>
                     </div>
                   </Col>
                   <Col md={3}>
@@ -141,7 +143,7 @@ function CartPage() {
                       onClick={() => removeFromCart(item.id, item.selectedSize)}
                       style={{ color: '#ff0000', textDecoration: 'none', fontSize: '1.2rem' }}
                     >
-                      <FaTrash/>
+                      <FaTrash />
                     </Button>
                   </Col>
                 </ListGroup.Item>
@@ -170,13 +172,13 @@ function CartPage() {
                 onChange={() => setShippingMode('storePickup')}
                 style={{ marginBottom: '10px' }}
               />
-                <Form.Check
+              <Form.Check
                 type="radio"
-                label="Giao Hàng"
+                label="Giao Hàng (9,900 VND)"
                 name="shippingMode"
-                value="storePickup"
-                checked={shippingMode === 'storePickup'}
-                onChange={() => setShippingMode('storePickup')}
+                value="delivery"
+                checked={shippingMode === 'delivery'}
+                onChange={() => setShippingMode('delivery')}
                 style={{ marginBottom: '10px' }}
               />
               <hr />

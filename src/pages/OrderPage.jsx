@@ -1,17 +1,19 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, ListGroup, Image, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, ListGroup, Image, Form, Alert, Spinner } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import Cookies from 'js-cookie';
 import { saveOrder } from '../services/orderApi';
+import axios from 'axios';
 
 function OrderPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { cartItems = [], clearCart } = useContext(CartContext);
+  const { cartItems, clearCart } = useContext(CartContext);
 
   const orderedItems = state?.orderedItems?.length ? state.orderedItems : cartItems;
   const userData = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : {};
+  const shippingMode = state?.shippingMode || 'storePickup';
 
   const [shippingInfo, setShippingInfo] = useState({
     fullName: userData.name || '',
@@ -20,84 +22,124 @@ function OrderPage() {
     city: userData.city || '',
   });
 
-  const [sizes, setSizes] = useState(
-    orderedItems.reduce((acc, item) => {
-      acc[item.id] = 'M';
-      return acc;
-    }, {})
-  );
-
   const [paymentMethod, setPaymentMethod] = useState('cash-on-delivery');
   const [error, setError] = useState('');
-
-  const [orderDate] = useState(
-    new Date().toLocaleString('vi-VN', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    })
-  );
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setShippingInfo((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSizeChange = (itemId, value) => {
-    setSizes((prev) => ({ ...prev, [itemId]: value }));
-  };
-
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
   };
 
-  // 👉 Tổng tiền được tính theo size đã chọn
   const calculateTotalPrice = () => {
     return orderedItems.reduce((acc, item) => {
-      const selectedSize = sizes[item.id] || 'M';
+      const selectedSize = item.selectedSize || 'M';
       const priceBySize = item.sizes?.[selectedSize]?.price || item.price;
       return acc + priceBySize * item.quantity;
-    }, 0);
+    }, 0) + (shippingMode === 'delivery' ? 9900 : 0);
   };
 
   const totalPrice = calculateTotalPrice();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!shippingInfo.address) {
-      setError("Vui lòng nhập địa chỉ giao hàng.");
+      setError('Vui lòng nhập địa chỉ giao hàng.');
       return;
     }
-  
-    const cookieCart = Cookies.get("cartItems")
-      ? JSON.parse(decodeURIComponent(Cookies.get("cartItems")))
-      : [];
-  
-    const orderItems = cookieCart
-      .map((item) => {
-        const selectedSize = item.selectedSize || "M";
-        const sizeObj = item.productSizes?.find(
-          (s) => s.size === `Size ${selectedSize}`
-        );
-        return {
-          productSizeId: sizeObj?.id,
-          quantity: item.quantity,
-        };
-      })
-      .filter((i) => i.productSizeId);
-  
+
+    const orderItems = orderedItems.map((item) => {
+      const selectedSize = item.selectedSize || 'M';
+      const sizeObj = item.productSizes?.find((s) => s.size === `Size ${selectedSize}`);
+      return {
+        productSizeId: sizeObj?.id || item.productSizeId,
+        quantity: item.quantity,
+      };
+    }).filter((i) => i.productSizeId);
+
     const payload = {
       orderItems,
       address: shippingInfo.address,
     };
-  
-    const result = await saveOrder(payload);
-  
-    if (result.success) {
-      clearCart();
-      navigate("/order-confirmation", { state: result.order });
-    } else {
-      setError(result.message);
+
+    try {
+      setLoading(true);
+      console.log("Submitting order with payload:", payload);
+      const result = await saveOrder(payload);
+
+      if (result.success) {
+        // Lấy đúng UUID mà API trả về
+        const orderId = result.order?.id;  // <-- dùng id, không phải orderCode
+        console.log('Order ID created (UUID):', orderId);
+      
+        if (paymentMethod === 'online-payment') {
+          try {
+            const token = Cookies.get('accessToken');
+            if (!token) {
+              setError('Bạn chưa đăng nhập hoặc thiếu token để thanh toán.');
+              return;
+            }
+      
+            const paymentPayload = { orderId };
+            console.log('Payment Payload:', paymentPayload);
+      
+            const paymentResponse = await axios.post(
+              'https://api.dearfab.com/api/v1/payment',
+              paymentPayload,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+                },
+              }
+            );
+      
+            console.log('Payment Response:', paymentResponse.data);
+      
+            if (paymentResponse.data.status === 200) {
+              const { checkoutUrl } = paymentResponse.data.data;
+              window.location.href = checkoutUrl; // điều hướng tới trang thanh toán
+            } else {
+              setError('Tạo liên kết thanh toán thất bại: ' + paymentResponse.data.message);
+            }
+          } catch (error) {
+            console.error('Payment API error:', error.response ? error.response.data : error.message);
+            setError('Không thể tạo thanh toán online. Vui lòng thử lại.');
+          }
+        } else {
+          // Thanh toán COD
+          const orderState = {
+            orderId, // dùng UUID cho tracking nội bộ
+            orderedItems: orderedItems.map(item => ({
+              ...item,
+              price: item.sizes?.[item.selectedSize || 'M']?.price || item.price,
+              size: item.selectedSize || 'M',
+            })),
+            totalPrice: totalPrice,
+            userId: userData.id || 'guest',
+            orderDate: new Date().toLocaleString('vi-VN', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            }),
+          };
+      
+          clearCart();
+          navigate('/order-confirmation', { state: orderState });
+        }
+      } else {
+        setError(result.message || 'Tạo order thất bại.');
+      }
+      
+    } catch (error) {
+      console.error('Error saving order or payment:', error.response ? error.response.data : error.message);
+      setError('Lỗi khi tạo order hoặc thanh toán. Vui lòng thử lại. Chi tiết: ' + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,7 +159,7 @@ function OrderPage() {
                   ) : (
                     <ListGroup variant="flush" className="mb-4">
                       {orderedItems.map((item) => {
-                        const selectedSize = sizes[item.id] || 'M';
+                        const selectedSize = item.selectedSize || 'M';
                         const sizeInfo = item.sizes?.[selectedSize];
                         const price = sizeInfo?.price || item.price;
 
@@ -137,20 +179,6 @@ function OrderPage() {
                               <div>
                                 Tổng: {(price * item.quantity).toLocaleString('vi-VN')} VND
                               </div>
-                              <Form.Group className="mt-2" controlId={`formSize-${item.id}`}>
-                                <Form.Label>Kích thước:</Form.Label>
-                                <Form.Select
-                                  value={selectedSize}
-                                  onChange={(e) => handleSizeChange(item.id, e.target.value)}
-                                  style={{ width: '100px' }}
-                                >
-                                  {Object.keys(item.sizes || { M: {} }).map((sizeOption) => (
-                                    <option key={sizeOption} value={sizeOption}>
-                                      {sizeOption}
-                                    </option>
-                                  ))}
-                                </Form.Select>
-                              </Form.Group>
                             </div>
                           </ListGroup.Item>
                         );
@@ -158,6 +186,9 @@ function OrderPage() {
                     </ListGroup>
                   )}
                   <hr />
+                  <div className="d-flex justify-content-between">
+                    <span>Vận chuyển: {shippingMode === 'delivery' ? '9,900 VND' : 'Miễn phí'}</span>
+                  </div>
                   <h5 className="text-end">
                     Tổng Tiền: {totalPrice.toLocaleString('vi-VN')} VND
                   </h5>
@@ -242,8 +273,9 @@ function OrderPage() {
                       type="submit"
                       className="w-100 mt-3"
                       style={{ fontWeight: '600', fontSize: '1.1rem' }}
+                      disabled={loading}
                     >
-                      Xác Nhận Đặt Hàng
+                      {loading ? <Spinner as="span" animation="border" size="sm" /> : 'Xác Nhận Đặt Hàng'}
                     </Button>
                   </Form>
                 </Card.Body>

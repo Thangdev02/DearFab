@@ -1,5 +1,5 @@
-// CartContext.js
 import React, { createContext, useState } from 'react';
+import Cookies from 'js-cookie';
 
 export const CartContext = createContext();
 
@@ -8,6 +8,7 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     setCartItems(prevItems => {
+      console.log('Adding to cart:', product); // Log để debug
       const existingItem = prevItems.find(
         item => item.id === product.id && item.selectedSize === product.selectedSize
       );
@@ -15,11 +16,11 @@ export const CartProvider = ({ children }) => {
         // Nếu đã có sản phẩm với cùng id và size, tăng quantity
         return prevItems.map(item =>
           item.id === product.id && item.selectedSize === product.selectedSize
-            ? { ...item, quantity: item.quantity + product.quantity }
+            ? { ...item, quantity: item.quantity + (product.quantity || 1) }
             : item
         );
       } else {
-        // Nếu chưa có, thêm mới
+        // Nếu chưa có, thêm mới với quantity mặc định là 1 nếu không có
         return [...prevItems, { ...product, quantity: product.quantity || 1 }];
       }
     });
@@ -29,7 +30,7 @@ export const CartProvider = ({ children }) => {
     setCartItems(prev =>
       prev.map(item =>
         item.id === id && item.selectedSize === selectedSize
-          ? { ...item, quantity: Number(quantity) }
+          ? { ...item, quantity: Number(quantity) > 0 ? Number(quantity) : 1 } // Đảm bảo quantity không âm
           : item
       )
     );
@@ -41,6 +42,7 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    Cookies.remove('cartItems'); // Xóa cartItems khỏi Cookies
   };
 
   return (

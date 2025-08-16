@@ -6,14 +6,15 @@ function OrderConfirmationPage() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
+  // Lấy dữ liệu từ state, dùng giá trị mặc định nếu không có
   const orderedItems = state?.orderedItems || [];
   const totalPrice = state?.totalPrice || 0;
   const userId = state?.userId || 'guest';
-  const orderNumber = state?.orderNumber || `ORD-${Math.floor(Math.random() * 1000000)}`;
+  const orderNumber = state?.orderId || `ORD-${Math.floor(Math.random() * 1000000)}`; // Sử dụng orderId hoặc tạo ngẫu nhiên
   const orderDate = state?.orderDate || new Date().toLocaleString('vi-VN', {
     dateStyle: 'medium',
     timeStyle: 'short',
-  }); // Lấy từ state hoặc dùng ngày hiện tại
+  });
 
   const handleContinueShopping = () => {
     navigate('/products');
@@ -41,21 +42,21 @@ function OrderConfirmationPage() {
                 <p>Không có sản phẩm nào trong đơn hàng.</p>
               ) : (
                 <ListGroup variant="flush" className="mb-4">
-                  {orderedItems.map(item => (
+                  {orderedItems.map((item) => (
                     <ListGroup.Item key={item.id} className="d-flex align-items-center py-3">
                       <Image
                         src={item.image || 'https://via.placeholder.com/50'}
                         rounded
                         style={{ width: 60, height: 60, objectFit: 'cover', marginRight: '1rem' }}
-                        alt={item.name}
+                        alt={item.name || 'Sản phẩm'}
                       />
                       <div className="flex-grow-1">
-                        <strong>{item.name}</strong>
-                        <div>Giá: {item.price.toLocaleString('vi-VN')} VND</div>
-                        <div>Số lượng: {item.quantity}</div>
-                        <div>Kích thước: {item.size}</div>
+                        <strong>{item.name || 'Tên sản phẩm không có'}</strong>
+                        <div>Giá: {(item.price || 0).toLocaleString('vi-VN')} VND</div>
+                        <div>Số lượng: {item.quantity || 0}</div>
+                        <div>Kích thước: {item.size || 'N/A'}</div>
                         <div>
-                          Tổng: {(item.price * item.quantity).toLocaleString('vi-VN')} VND
+                          Tổng: {(item.price * (item.quantity || 0) || 0).toLocaleString('vi-VN')} VND
                         </div>
                       </div>
                     </ListGroup.Item>

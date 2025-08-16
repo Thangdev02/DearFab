@@ -65,6 +65,22 @@ const AboutUsPage = () => {
           ))}
         </Row>
         {/* About Us Section 1 */}
+       
+
+        {/* Stats */}
+
+        {/* About Us Section 2 */}
+        <Row className="mb-5">
+          <Col md={12}>
+            <div style={styles.sectionTag}>Đội Ngũ</div>
+            <h2 style={styles.sectionTitle}>Tham Gia Ngay với đội ngũ chúng tôi.</h2>
+            <p style={styles.description}>
+              Với đội ngũ GenZ luôn tràn đầy năng lượng và sáng tạo, năng lượng trẻ giúp chúng tôi tạo nên 1 DearFab
+            </p>
+
+          </Col>
+        </Row>
+
         <Row className="mb-5">
           <div style={styles.sectionTag}>Đột Phá</div>
           <Col md={6}>
@@ -83,22 +99,6 @@ const AboutUsPage = () => {
             <Image src="/robot.png" alt="Team Member" style={styles.teamImage} />
           </Col>
         </Row>
-
-        {/* Stats */}
-
-        {/* About Us Section 2 */}
-        <Row className="mb-5">
-          <Col md={12}>
-            <div style={styles.sectionTag}>Đội Ngũ</div>
-            <h2 style={styles.sectionTitle}>Tham Gia Ngay với đội ngũ chúng tôi.</h2>
-            <p style={styles.description}>
-              Với đội ngũ GenZ luôn tràn đầy năng lượng và sáng tạo, năng lượng trẻ giúp chúng tôi tạo nên 1 DearFab
-            </p>
-
-          </Col>
-        </Row>
-
-
 
 
         {/* Map Section */}

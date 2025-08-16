@@ -5,7 +5,7 @@ import { CartContext } from '../context/CartContext';
 import { getProducts } from '../services/api';
 import TopRatedProducts from '../components/products/TopRatedProduct';
 import ScrollReveal from 'scrollreveal';
-import ProductListBanner from '../components/products/Product\bListBanner'; // Sửa lỗi tên file
+import ProductListBanner from '../components/products/Product\bListBanner';
 
 const debounce = (func, delay) => {
   let timeoutId;
@@ -38,7 +38,7 @@ function ProductsPage() {
           setTimeout(() => reject(new Error('Yêu cầu quá thời gian.')), 10000)
         );
         const products = await getProducts();
-    console.log("Alo",products);
+        console.log("Fetched products:", products);
         setProducts(products || []);
         setFilteredProducts(products || []);
         setLoading(false);
@@ -48,7 +48,6 @@ function ProductsPage() {
       }
     };
     fetchProducts();
-    
   }, []);
 
   const applyFilters = useCallback(() => {
@@ -120,16 +119,19 @@ function ProductsPage() {
       console.error('Sản phẩm không hợp lệ:', product);
       return;
     }
-    // Tạo bản sao sản phẩm với quantity = 1 và selectedSize mặc định
-    const productWithQuantity = {
+    // Chuẩn bị sản phẩm với thông tin cần thiết
+    const productWithDetails = {
       ...product,
-      quantity: 1, // Đảm bảo chỉ thêm 1 đơn vị
-      selectedSize: 'M', // Giả định kích thước mặc định, có thể mở rộng logic sau
-      price: product.sizes?.['M']?.price || product.price, // Lấy giá của kích thước M hoặc giá mặc định
+      quantity: 1,
+      selectedSize: 'M',
+      price: product.sizes?.['M']?.price || product.price, // Lấy giá từ kích thước M hoặc giá mặc định
     };
-    addToCart(productWithQuantity); // Thêm sản phẩm vào giỏ hàng
-    const totalPrice = cartItems.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-    navigate('/order', { state: { orderedItems: cartItems, totalPrice } });
+    // Truyền trực tiếp sản phẩm vào state thay vì phụ thuộc vào cartItems
+    const orderState = {
+      orderedItems: [productWithDetails], // Truyền mảng chứa sản phẩm vừa chọn
+      totalPrice: productWithDetails.price || 0,
+    };
+    navigate('/order', { state: orderState });
   };
 
   useEffect(() => {
@@ -243,7 +245,7 @@ function ProductsPage() {
             <Row>
               {currentProducts.map((product) => (
                 <Col key={product.id} sm={12} md={6} lg={4} className="mb-4">
-                  <Card className="h-100 shadow-sm border-0">
+                  <Card className="h-100 shadow-sm border-0 product-card">
                     <Card.Img
                       variant="top"
                       src={product.image || 'https://via.placeholder.com/250x250?text=No+Image'}
