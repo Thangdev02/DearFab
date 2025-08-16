@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Image, Tabs, Tab, Form, ListGroup, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { getOrders, updateUser } from '../services/orderApi';
+import { getOrders, getOrderDetails, updateUser } from '../services/orderApi';
 import axios from 'axios';
 
 function ProfileModal({ show, handleClose, user }) {
@@ -12,18 +12,17 @@ function ProfileModal({ show, handleClose, user }) {
   // Get user data from cookie as fallback
   const userDataFromCookie = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : {};
 
-  // Split full name into first name and last name
   const [firstName, ...lastNameParts] = (user?.name || userDataFromCookie.name || '').split(' ') || ['', ''];
   const lastName = lastNameParts.join(' ');
 
-  // State for active tab
   const [activeTab, setActiveTab] = useState('thong-tin-tai-khoan');
-
-  // State for orders
   const [orders, setOrders] = useState([]);
+  const [orderError, setOrderError] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [orderDetailsError, setOrderDetailsError] = useState('');
   const userId = userDataFromCookie.id || 'guest';
 
-  // State for edit mode and form data
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name || userDataFromCookie.name || '',
@@ -34,11 +33,9 @@ function ProfileModal({ show, handleClose, user }) {
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-
-  // State for cities
   const [cities, setCities] = useState([]);
 
-  // Fetch Vietnamese provinces from the API
+  // Fetch Vietnamese provinces
   useEffect(() => {
     const fetchCities = async () => {
       try {
@@ -56,32 +53,69 @@ function ProfileModal({ show, handleClose, user }) {
     fetchCities();
   }, []);
 
-  // Fetch and sort orders
+  // Fetch orders
   useEffect(() => {
     const fetchOrders = async () => {
-      const response = await getOrders();
-      if (response.success) {
-        const userOrders = response.orders.filter(order => order.userId === userId);
-        userOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
-        setOrders(userOrders);
+      try {
+        const response = await getOrders();
+        console.log('getOrders Response:', response);
+        if (response.success) {
+          const userOrders = response.orders || [];
+          console.log('User Orders before sorting:', userOrders);
+          userOrders.sort((a, b) => b.id.localeCompare(a.id));
+          console.log('User Orders after sorting:', userOrders);
+          setOrders(userOrders);
+          setOrderError('');
+        } else {
+          console.log('Failed to fetch orders:', response.message);
+          setOrderError(response.message || 'Không thể tải lịch sử đơn hàng.');
+          setOrders([]);
+        }
+      } catch (error) {
+        console.error('Error in fetchOrders:', error);
+        setOrderError('Lỗi khi tải lịch sử đơn hàng: ' + error.message);
+        setOrders([]);
       }
     };
     fetchOrders();
   }, [userId]);
 
+  // Handle click to view order details
+  const handleViewDetails = async (orderId) => {
+    try {
+      const response = await getOrderDetails(orderId);
+      console.log('Order Details for', orderId, ':', response);
+      if (response.success) {
+        setSelectedOrder(response.order);
+        setOrderDetailsError('');
+        setShowDetailsModal(true);
+      } else {
+        setOrderDetailsError(response.message || 'Không thể tải chi tiết đơn hàng.');
+      }
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+      setOrderDetailsError('Lỗi khi tải chi tiết đơn hàng: ' + error.message);
+    }
+  };
+
+  const handleCloseDetailsModal = () => {
+    setShowDetailsModal(false);
+    setSelectedOrder(null);
+    setOrderDetailsError('');
+  };
+
   const handleLogout = () => {
     Cookies.remove('user');
+    Cookies.remove('accessToken');
     handleClose();
     navigate('/login');
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle save changes
   const handleSave = async () => {
     try {
       const updatedUser = {
@@ -96,7 +130,6 @@ function ProfileModal({ show, handleClose, user }) {
       if (response.success) {
         setSuccess('Cập nhật thông tin thành công!');
         setError('');
-        // Update cookie with new user data
         Cookies.set('user', JSON.stringify(updatedUser), { expires: 7 });
         setIsEditing(false);
       } else {
@@ -109,7 +142,6 @@ function ProfileModal({ show, handleClose, user }) {
     }
   };
 
-  // Handle cancel edit
   const handleCancel = () => {
     setFormData({
       name: user?.name || userDataFromCookie.name || '',
@@ -124,278 +156,270 @@ function ProfileModal({ show, handleClose, user }) {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered size="xl" style={{ borderRadius: '8px' }}>
-      <Modal.Header closeButton style={{ borderBottom: '1px solid #e9ecef', padding: '15px 20px' }}>
-        <Modal.Title style={{ color: '#000', fontWeight: 'bold', fontSize: '20px' }}>
-          Tài Khoản
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body style={{ padding: '0', display: 'flex', height: '500px', backgroundColor: '#f8f9fa', '@media (max-width: 768px)': { flexDirection: 'column' } }}>
-        {/* Left Sidebar */}
-        <div
-          style={{
-            width: '220px',
-            backgroundColor: '#f0f2f5',
-            borderRight: '1px solid #e9ecef',
-            padding: '20px 0',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            '@media (max-width: 768px)': {
-              width: '100%',
-              borderRight: 'none',
-              borderBottom: '1px solid #e9ecef',
-              padding: '10px 0',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              gap: '10px',
-              flexWrap: 'wrap',
-            },
-          }}
-        >
-          <div style={{ '@media (max-width: 768px)': { display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' } }}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '10px 20px',
-                color: activeTab === 'thong-tin-tai-khoan' ? '#008200' : '#495057',
-                fontWeight: activeTab === 'thong-tin-tai-khoan' ? '600' : 'normal',
-                cursor: 'pointer',
-                '@media (max-width: 768px)': {
-                  padding: '8px 15px',
-                  fontSize: '14px',
-                  backgroundColor: activeTab === 'thong-tin-tai-khoan' ? '#e0f0e5' : 'transparent',
-                  borderRadius: '20px',
-                },
-              }}
-              onClick={() => setActiveTab('thong-tin-tai-khoan')}
-            >
-              Thông Tin Tài Khoản
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                padding: '10px 20px',
-                color: activeTab === 'lich-su-don-hang' ? '#008200' : '#495057',
-                fontWeight: activeTab === 'lich-su-don-hang' ? '600' : 'normal',
-                cursor: 'pointer',
-                '@media (max-width: 768px)': {
-                  padding: '8px 15px',
-                  fontSize: '14px',
-                  backgroundColor: activeTab === 'lich-su-don-hang' ? '#e0f0e5' : 'transparent',
-                  borderRadius: '20px',
-                },
-              }}
-              onClick={() => setActiveTab('lich-su-don-hang')}
-            >
-              Lịch Sử Đơn Hàng
-            </div>
-          </div>
-          <div style={{ padding: '10px 20px', '@media (max-width: 768px)': { padding: '10px', display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' } }}>
-            {!isEditing ? (
-              <Button
-                variant="success"
-                onClick={() => setIsEditing(true)}
-                style={{ width: '100%', borderRadius: '4px', padding: '6px 12px', '@media (max-width: 768px)': { width: 'auto', padding: '6px 20px', borderRadius: '20px' } }}
+    <>
+      <Modal show={show} onHide={handleClose} centered size="xl" style={{ borderRadius: '8px' }}>
+        <Modal.Header closeButton style={{ borderBottom: '1px solid #e9ecef', padding: '15px 20px' }}>
+          <Modal.Title style={{ color: '#000', fontWeight: 'bold', fontSize: '20px' }}>
+            Tài Khoản
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ padding: '0', display: 'flex', height: '500px', backgroundColor: '#f8f9fa' }}>
+          <div style={{ width: '220px', backgroundColor: '#f0f2f5', borderRight: '1px solid #e9ecef', padding: '20px 0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '10px 20px',
+                  color: activeTab === 'thong-tin-tai-khoan' ? '#008200' : '#495057',
+                  fontWeight: activeTab === 'thong-tin-tai-khoan' ? '600' : 'normal',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setActiveTab('thong-tin-tai-khoan')}
               >
-                Chỉnh sửa
-              </Button>
-            ) : (
-              <>
+                Thông Tin Tài Khoản
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '10px 20px',
+                  color: activeTab === 'lich-su-don-hang' ? '#008200' : '#495057',
+                  fontWeight: activeTab === 'lich-su-don-hang' ? '600' : 'normal',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setActiveTab('lich-su-don-hang')}
+              >
+                Lịch Sử Đơn Hàng
+              </div>
+            </div>
+            <div style={{ padding: '10px 20px' }}>
+              {!isEditing ? (
                 <Button
                   variant="success"
-                  onClick={handleSave}
-                  style={{ width: '100%', borderRadius: '4px', padding: '6px 12px', marginBottom: '10px', '@media (max-width: 768px)': { width: 'auto', padding: '6px 20px', marginBottom: '0', borderRadius: '20px' } }}
+                  onClick={() => setIsEditing(true)}
+                  style={{ width: '100%', borderRadius: '4px', padding: '6px 12px' }}
                 >
-                  Lưu
+                  Chỉnh sửa
                 </Button>
-                <Button
-                  variant="secondary"
-                  onClick={handleCancel}
-                  style={{ width: '100%', borderRadius: '4px', padding: '6px 12px', '@media (max-width: 768px)': { width: 'auto', padding: '6px 20px', borderRadius: '20px' } }}
-                >
-                  Hủy
-                </Button>
-              </>
-            )}
+              ) : (
+                <>
+                  <Button
+                    variant="success"
+                    onClick={handleSave}
+                    style={{ width: '100%', borderRadius: '4px', padding: '6px 12px', marginBottom: '10px' }}
+                  >
+                    Lưu
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={handleCancel}
+                    style={{ width: '100%', borderRadius: '4px', padding: '6px 12px' }}
+                  >
+                    Hủy
+                  </Button>
+                </>
+              )}
+            </div>
           </div>
-        </div>
-
-        {/* Main Content */}
-        <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', overflowY: 'auto', '@media (max-width: 768px)': { padding: '10px' } }}>
-          <Tabs
-            activeKey={activeTab}
-            onSelect={(k) => setActiveTab(k)}
-            style={{ borderBottom: '1px solid #e9ecef', marginBottom: '20px', '@media (max-width: 768px)': { marginBottom: '10px', display: 'none' } }}
-            className="nav-tabs-custom"
-          >
-            <Tab eventKey="thong-tin-tai-khoan" title="Thông Tin Tài Khoản">
-              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', '@media (max-width: 768px)': { flexDirection: 'column', gap: '10px' } }}>
-                {/* Avatar */}
-                <div style={{ '@media (max-width: 768px)': { marginBottom: '10px' } }}>
-                  <Image
-                    src={defaultAvatar}
-                    rounded
-                    style={{
-                      width: '120px',
-                      height: '120px',
-                      objectFit: 'cover',
-                      border: '2px solid #dee2e6',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      '@media (max-width: 768px)': { width: '100px', height: '100px' },
-                    }}
-                    alt="Ảnh đại diện"
-                  />
-                </div>
-
-                {/* Form Fields */}
-                <div style={{ flex: 1, minWidth: 0, maxHeight: '350px', overflowY: 'auto', paddingRight: '10px', '@media (max-width: 768px)': { paddingRight: '0' } }}>
-                  {error && <Alert variant="danger" style={{ '@media (max-width: 768px)': { fontSize: '14px' } }}>{error}</Alert>}
-                  {success && <Alert variant="success" style={{ '@media (max-width: 768px)': { fontSize: '14px' } }}>{success}</Alert>}
-                  <Form>
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', '@media (max-width: 768px)': { flexDirection: 'column', gap: '10px' } }}>
-                      <Form.Group style={{ flex: 1 }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057', '@media (max-width: 768px)': { fontSize: '14px' } }}>Họ *</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="name"
-                          value={formData.name.split(' ')[0] || 'N/A'}
-                          onChange={handleInputChange}
-                          readOnly={!isEditing}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa', '@media (max-width: 768px)': { fontSize: '14px' } }}
-                        />
-                      </Form.Group>
-                      <Form.Group style={{ flex: 1 }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057', '@media (max-width: 768px)': { fontSize: '14px' } }}>Tên *</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="name"
-                          value={formData.name.split(' ').slice(1).join(' ') || 'N/A'}
-                          onChange={(e) => {
-                            const [first, ...rest] = formData.name.split(' ');
-                            setFormData(prev => ({ ...prev, name: [first, e.target.value].filter(Boolean).join(' ') }));
-                          }}
-                          readOnly={!isEditing}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa', '@media (max-width: 768px)': { fontSize: '14px' } }}
-                        />
-                      </Form.Group>
-                    </div>
-                    <Form.Group style={{ marginBottom: '15px' }}>
-                      <Form.Label style={{ fontWeight: '500', color: '#495057', '@media (max-width: 768px)': { fontSize: '14px' } }}>Email *</Form.Label>
-                      <Form.Control
-                        type="email"
-                        name="email"
-                        value={formData.email || 'N/A'}
-                        onChange={handleInputChange}
-                        readOnly={!isEditing || true} // Email thường không cho chỉnh sửa
-                        style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa', '@media (max-width: 768px)': { fontSize: '14px' } }}
-                      />
-                    </Form.Group>
-                    <Form.Group style={{ marginBottom: '15px' }}>
-                      <Form.Label style={{ fontWeight: '500', color: '#495057', '@media (max-width: 768px)': { fontSize: '14px' } }}>Số Điện Thoại</Form.Label>
-                      <Form.Control
-                        type="tel"
-                        name="phone"
-                        value={formData.phone || 'N/A'}
-                        onChange={handleInputChange}
-                        readOnly={!isEditing}
-                        style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa', '@media (max-width: 768px)': { fontSize: '14px' } }}
-                      />
-                    </Form.Group>
-                    <div style={{ display: 'flex', gap: '10px', marginBottom: '15px', '@media (max-width: 768px)': { flexDirection: 'column', gap: '10px' } }}>
-                      <Form.Group style={{ flex: 1, marginBottom: '15px' }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057', '@media (max-width: 768px)': { fontSize: '14px' } }}>Địa Chỉ</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="address"
-                          value={formData.address || 'N/A'}
-                          onChange={handleInputChange}
-                          readOnly={!isEditing}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa', '@media (max-width: 768px)': { fontSize: '14px' } }}
-                        />
-                      </Form.Group>
-                      <Form.Group style={{ flex: 1, marginBottom: '15px' }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057', '@media (max-width: 768px)': { fontSize: '14px' } }}>Tỉnh</Form.Label>
-                        {isEditing ? (
-                          <Form.Select
-                            name="city"
-                            value={formData.city || ''}
-                            onChange={handleInputChange}
-                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#fff', '@media (max-width: 768px)': { fontSize: '14px' } }}
-                          >
-                            <option value="">Chọn tỉnh</option>
-                            {cities.map((cityName, index) => (
-                              <option key={index} value={cityName}>{cityName}</option>
-                            ))}
-                          </Form.Select>
-                        ) : (
+          <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', overflowY: 'auto' }}>
+            <Tabs
+              activeKey={activeTab}
+              onSelect={(k) => setActiveTab(k)}
+              style={{ borderBottom: '1px solid #e9ecef', marginBottom: '20px' }}
+              className="nav-tabs-custom"
+            >
+              <Tab eventKey="thong-tin-tai-khoan" title="Thông Tin Tài Khoản">
+                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                  <div>
+                    <Image
+                      src={defaultAvatar}
+                      rounded
+                      style={{
+                        width: '120px',
+                        height: '120px',
+                        objectFit: 'cover',
+                        border: '2px solid #dee2e6',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                      }}
+                      alt="Ảnh đại diện"
+                    />
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0, maxHeight: '350px', overflowY: 'auto', paddingRight: '10px' }}>
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
+                    <Form>
+                      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                        <Form.Group style={{ flex: 1 }}>
+                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Họ *</Form.Label>
                           <Form.Control
                             type="text"
-                            name="city"
-                            value={formData.city || 'N/A'}
-                            readOnly
-                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#f8f9fa', '@media (max-width: 768px)': { fontSize: '14px' } }}
+                            name="name"
+                            value={formData.name.split(' ')[0] || 'N/A'}
+                            onChange={handleInputChange}
+                            readOnly={!isEditing}
+                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
                           />
-                        )}
+                        </Form.Group>
+                        <Form.Group style={{ flex: 1 }}>
+                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Tên *</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="name"
+                            value={formData.name.split(' ').slice(1).join(' ') || 'N/A'}
+                            onChange={(e) => {
+                              const [first, ...rest] = formData.name.split(' ');
+                              setFormData(prev => ({ ...prev, name: [first, e.target.value].filter(Boolean).join(' ') }));
+                            }}
+                            readOnly={!isEditing}
+                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                          />
+                        </Form.Group>
+                      </div>
+                      <Form.Group style={{ marginBottom: '15px' }}>
+                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Email *</Form.Label>
+                        <Form.Control
+                          type="email"
+                          name="email"
+                          value={formData.email || 'N/A'}
+                          onChange={handleInputChange}
+                          readOnly={!isEditing || true}
+                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                        />
                       </Form.Group>
-                    </div>
-                  </Form>
+                      <Form.Group style={{ marginBottom: '15px' }}>
+                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Số Điện Thoại</Form.Label>
+                        <Form.Control
+                          type="tel"
+                          name="phone"
+                          value={formData.phone || 'N/A'}
+                          onChange={handleInputChange}
+                          readOnly={!isEditing}
+                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                        />
+                      </Form.Group>
+                      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
+                        <Form.Group style={{ flex: 1, marginBottom: '15px' }}>
+                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Địa Chỉ</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="address"
+                            value={formData.address || 'N/A'}
+                            onChange={handleInputChange}
+                            readOnly={!isEditing}
+                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                          />
+                        </Form.Group>
+                        <Form.Group style={{ flex: 1, marginBottom: '15px' }}>
+                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Tỉnh</Form.Label>
+                          {isEditing ? (
+                            <Form.Select
+                              name="city"
+                              value={formData.city || ''}
+                              onChange={handleInputChange}
+                              style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#fff' }}
+                            >
+                              <option value="">Chọn tỉnh</option>
+                              {cities.map((cityName, index) => (
+                                <option key={index} value={cityName}>{cityName}</option>
+                              ))}
+                            </Form.Select>
+                          ) : (
+                            <Form.Control
+                              type="text"
+                              name="city"
+                              value={formData.city || 'N/A'}
+                              readOnly
+                              style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#f8f9fa' }}
+                            />
+                          )}
+                        </Form.Group>
+                      </div>
+                    </Form>
+                  </div>
                 </div>
-              </div>
-            </Tab>
-            <Tab eventKey="lich-su-don-hang" title="Lịch Sử Đơn Hàng">
-              <div style={{ padding: '20px', '@media (max-width: 768px)': { padding: '10px' } }}>
-                {orders.length === 0 ? (
-                  <p style={{ textAlign: 'center', color: '#6c757d', '@media (max-width: 768px)': { fontSize: '14px' } }}>Chưa có đơn nào</p>
-                ) : (
-                  <ListGroup>
-                    {orders.map(order => (
-                      <ListGroup.Item key={order.id} className="mb-2">
-                        <div style={{ '@media (max-width: 768px)': { fontSize: '14px' } }}>
-                          <strong>Đơn Hàng #{order.orderNumber}</strong>
-                          <p><strong>Ngày đặt hàng:</strong> {order.orderDate}</p>
-                          <p><strong>Trạng thái:</strong> {order.status}</p>
-                          <p><strong>Tổng Tiền:</strong> {order.totalPrice.toLocaleString('vi-VN')} VND</p>
-                        </div>
-                        <ListGroup variant="flush">
-                          {order.orderedItems.map(item => (
-                            <ListGroup.Item key={item.id} className="d-flex align-items-center py-2" style={{ '@media (max-width: 768px)': { flexDirection: 'column', alignItems: 'flex-start', gap: '5px' } }}>
-                              <Image
-                                src={item.image || 'https://via.placeholder.com/50'}
-                                rounded
-                                style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '10px', '@media (max-width: 768px)': { width: '40px', height: '40px', marginRight: '0', marginBottom: '5px' } }}
-                                alt={item.name}
-                              />
-                              <div style={{ '@media (max-width: 768px)': { fontSize: '14px' } }}>
-                                <strong>{item.name}</strong>
-                                <div>Giá: {item.price.toLocaleString('vi-VN')} VND</div>
-                                <div>Số lượng: {item.quantity}</div>
-                                <div>Kích thước: {item.size}</div>
-                              </div>
-                            </ListGroup.Item>
-                          ))}
-                        </ListGroup>
-                      </ListGroup.Item>
-                    ))}
-                  </ListGroup>
-                )}
-              </div>
-            </Tab>
-          </Tabs>
-        </div>
-      </Modal.Body>
-      <Modal.Footer style={{ borderTop: '1px solid #e9ecef', padding: '10px 20px', justifyContent: 'flex-end', '@media (max-width: 768px)': { padding: '10px' } }}>
-        <Button
-          variant="outline-success"
-          onClick={handleLogout}
-          style={{ marginRight: '10px', borderRadius: '4px', padding: '6px 12px', '@media (max-width: 768px)': { width: '100%', marginRight: '0' } }}
-        >
-          Đăng Xuất
-        </Button>
-      </Modal.Footer>
-    </Modal>
+              </Tab>
+              <Tab eventKey="lich-su-don-hang" title="Lịch Sử Đơn Hàng">
+                <div style={{ padding: '20px' }}>
+                  {orderError && <Alert variant="danger">{orderError}</Alert>}
+                  {orders.length === 0 && !orderError ? (
+                    <p style={{ textAlign: 'center', color: '#6c757d' }}>Chưa có đơn nào</p>
+                  ) : (
+                    <ListGroup>
+                      {orders.map(order => (
+                        <ListGroup.Item
+                          key={order.id}
+                          className="mb-2"
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => handleViewDetails(order.id)}
+                        >
+                          <div>
+                            <strong className='text-success'> #{order.id}</strong>
+                            <p><strong>Địa chỉ:</strong> {order.address}</p>
+                            <p><strong>Trạng thái:</strong> {order.status}</p>
+                            <p><strong>Tổng Tiền:</strong> {order.totalPrice.toLocaleString('vi-VN')} VND</p>
+                          </div>
+                        </ListGroup.Item>
+                      ))}
+                    </ListGroup>
+                  )}
+                </div>
+              </Tab>
+            </Tabs>
+          </div>
+        </Modal.Body>
+        <Modal.Footer style={{ borderTop: '1px solid #e9ecef', padding: '10px 20px', justifyContent: 'flex-end' }}>
+          <Button
+            variant="outline-success"
+            onClick={handleLogout}
+            style={{ marginRight: '10px', borderRadius: '4px', padding: '6px 12px' }}
+          >
+            Đăng Xuất
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Modal hiển thị chi tiết đơn hàng */}
+      <Modal show={showDetailsModal} onHide={handleCloseDetailsModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title className='text-success'>#{selectedOrder?.id || ''}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {orderDetailsError && <Alert variant="danger">{orderDetailsError}</Alert>}
+          {selectedOrder && (
+            <div>
+              <p><strong>Địa chỉ:</strong> {selectedOrder.address}</p>
+              <p><strong>Trạng thái:</strong> {selectedOrder.status}</p>
+              <p><strong>Tổng Tiền:</strong> {selectedOrder.totalPrice.toLocaleString('vi-VN')} VND</p>
+              <h5>Sản Phẩm</h5>
+              <ListGroup variant="flush">
+                {(selectedOrder.items || []).map(item => (
+                  <ListGroup.Item key={item.id} className="d-flex align-items-center py-2">
+                    <Image
+                      src={item.image || 'https://via.placeholder.com/50'}
+                      rounded
+                      style={{ width: '50px', height: '50px', objectFit: 'cover', marginRight: '10px' }}
+                      alt={item.name}
+                    />
+                    <div>
+                      <strong>{item.name}</strong>
+                      <div><strong>Mô tả:</strong> {item.description}</div>
+                      <div><strong>Giá:</strong> {item.price.toLocaleString('vi-VN')} VND</div>
+                      <div><strong>Số lượng:</strong> {item.quantity}</div>
+                    </div>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDetailsModal}>
+            Đóng
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 

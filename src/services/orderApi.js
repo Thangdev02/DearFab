@@ -8,10 +8,55 @@ const API_URL_ORDERS = 'https://dearfab.onrender.com/orders'; // Endpoint cho ng
 // Lấy danh sách tất cả đơn hàng
 export const getOrders = async () => {
   try {
-    const response = await axios.get(API_URL_ORDERS);
-    return { success: true, orders: response.data };
+    // Lấy access token từ cookie
+    const token = Cookies.get('accessToken'); // Đảm bảo key đúng với key lưu token
+    console.log('Access Token:', token); // Log token
+
+    if (!token) {
+      console.log('No access token found');
+      return {
+        success: false,
+        message: 'Không tìm thấy access token. Vui lòng đăng nhập lại.',
+      };
+    }
+
+    // Gọi API với header chứa access token
+    const response = await axios.get(`${API_URL}/order`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log('API Response:', response.data); // Log dữ liệu trả về từ API
+
+    // Kiểm tra phản hồi từ API
+    if (response.status === 200) {
+      return {
+        success: true,
+        orders: response.data.data.items || [], // Lấy danh sách đơn hàng
+      };
+    } else {
+      console.log('API returned non-200 status:', response.status);
+      return {
+        success: false,
+        message: 'Không thể lấy danh sách đơn hàng.',
+      };
+    }
   } catch (error) {
-    return { success: false, message: 'Lỗi khi lấy danh sách đơn hàng: ' + error.message };
+    console.error('Error fetching orders:', error);
+    console.log('Error Response:', error.response?.data); // Log lỗi chi tiết
+    if (error.response?.status === 401) {
+      Cookies.remove('accessToken'); // Sửa key cho nhất quán
+      Cookies.remove('user');
+      return {
+        success: false,
+        message: 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.',
+      };
+    }
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Lỗi khi lấy danh sách đơn hàng.',
+    };
   }
 };
 
@@ -93,6 +138,47 @@ export const getOrderById = async (orderId) => {
     return {
       success: false,
       message: error.response?.data?.message || 'Lỗi server. Vui lòng thử lại sau.',
+    };
+  }
+};
+
+export const getOrderDetails = async (orderId) => {
+  try {
+    const token = Cookies.get('accessToken');
+    console.log('Access Token for Order Details:', token);
+
+    if (!token) {
+      console.log('No access token found for order details');
+      return {
+        success: false,
+        message: 'Không tìm thấy access token. Vui lòng đăng nhập lại.',
+      };
+    }
+
+    const response = await axios.get(`${API_URL}/order/${orderId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log(`Order Details Response (${orderId}):`, response.data);
+
+    if (response.status === 200) {
+      return {
+        success: true,
+        order: response.data.data,
+      };
+    }
+    return {
+      success: false,
+      message: 'Không thể lấy chi tiết đơn hàng.',
+    };
+  } catch (error) {
+    console.error('Error fetching order details:', error);
+    console.log('Error Response:', error.response?.data);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Lỗi khi lấy chi tiết đơn hàng.',
     };
   }
 };

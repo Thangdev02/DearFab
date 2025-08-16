@@ -266,12 +266,6 @@ function ProductsPage() {
                         >
                           Xem chi tiết
                         </Button>
-                        <Button
-                          variant="success"
-                          onClick={() => handleBuyNow(product)}
-                        >
-                          Mua
-                        </Button>
                       </div>
                     </Card.Body>
                   </Card>

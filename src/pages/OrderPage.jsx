@@ -251,14 +251,14 @@ function OrderPage() {
                     </Form.Group>
                     <h5 className="mb-3">Phương Thức Thanh Toán</h5>
                     <Form.Group className="mb-3">
-                      <Form.Check
+                      {/* <Form.Check
                         type="radio"
                         label="Thanh toán khi nhận hàng (COD)"
                         name="paymentMethod"
                         value="cash-on-delivery"
                         checked={paymentMethod === 'cash-on-delivery'}
                         onChange={handlePaymentChange}
-                      />
+                      /> */}
                       <Form.Check
                         type="radio"
                         label="Thanh toán online"
