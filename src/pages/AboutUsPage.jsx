@@ -51,7 +51,7 @@ const AboutUsPage = () => {
             </Button>
           </Col>
           <Col md={6}>
-            <Image src="/about1.jpg" alt="Team Member" style={styles.teamImage} />
+            <Image src="/about2.jpg" alt="Team Member" style={styles.teamImage} />
           </Col>
         </Row>
 
@@ -75,7 +75,7 @@ const AboutUsPage = () => {
         {/* About Us Section 2 */}
         <Row className="mb-5 align-items-center">
           <Col md={6}>
-            <Image src="/about2.jpg" alt="Team Member" style={styles.teamImage} />
+            <Image src="/about1.jpg" alt="Team Member" style={styles.teamImage} />
           </Col>
           <Col md={6}>
             <div style={styles.sectionTag}>Sứ Mệnh</div>
@@ -165,7 +165,7 @@ const AboutUsPage = () => {
             <p style={styles.description}>
               Chúng tôi sử dụng công nghệ AI chatbox thân thiện hỗ trợ bạn 24/7. Giải đáp mọi thắc mắc của bạn về chúng tôi. Tư vấn cho bạn về sản phẩm mà chúng tôi có.
             </p>
-            <Button variant="primary" style={styles.getStartedBtn}>
+            <Button variant="success" style={styles.getStartedBtn}>
               <a style={styles.started} href="/login">Sử dụng ngay</a>
             </Button>
           </Col>
