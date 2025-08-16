@@ -30,11 +30,11 @@ function AdminHeader({ toggleSidebar }) {
         <Navbar.Toggle aria-controls="admin-nav" />
         <Navbar.Collapse id="admin-nav">
           <Nav className="ms-auto">
-            <Nav.Link href="/admin/products">Products</Nav.Link>
-            <Nav.Link href="/admin/orders">Orders</Nav.Link>
-            <Nav.Link href="/admin/users">Users</Nav.Link>
+            <Nav.Link href="/admin/products">Sản Phẩm</Nav.Link>
+            <Nav.Link href="/admin/orders"> Đơn Hàng</Nav.Link>
+            <Nav.Link href="/admin/users"> Người Dùng</Nav.Link>
             <Button variant="outline-light" onClick={handleLogout}>
-              Logout
+              Đăng Xuất
             </Button>
           </Nav>
         </Navbar.Collapse>

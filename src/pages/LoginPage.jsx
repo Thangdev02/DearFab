@@ -23,21 +23,21 @@ function LoginPage() {
     if (result.success) {
       // Store user data in a cookie
       const userData = {
-        id: result.user.id || result.user._id,
+        id: result.user.id,
         name: result.user.name,
         email: result.user.email,
-        role: result.role,
-        address: result.user.address,
         phone: result.user.phone,
-        city: result.user.city,
+        role: result.user.role,
       };
       Cookies.set('user', JSON.stringify(userData), { expires: 7 });
+      // Store access token in a cookie for API authentication
+      Cookies.set('accessToken', result.accessToken, { expires: 7 });
 
       // Store role in localStorage (optional, for compatibility with existing code)
-      localStorage.setItem('userRole', result.role);
+      localStorage.setItem('userRole', result.user.role);
       localStorage.setItem('userName', result.user.name);
 
-      if (result.role === 'admin') {
+      if (result.user.role === 'Admin') {
         navigate('/admin');
       } else {
         navigate('/');
@@ -56,8 +56,7 @@ function LoginPage() {
         position: 'relative',
         overflow: 'hidden',
         fontFamily: 'Arial, sans-serif',
-        marginTop:'3%'
-
+        marginTop: '3%',
       }}
     >
       <Container
@@ -96,7 +95,7 @@ function LoginPage() {
               <img src={Logo} alt="Logo" style={{ width: '50%', height: '100px' }} />
             </div>
             <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Đăng Nhập vào DearFab</h2>
-            <p style={{ color: '#666', marginBottom: '30px' }}>Đăng nhập vào để bắt đầu mua sắm</p>
+            <p style={{ color: '#666', marginBottom: '30px' }}>Đăng nhập để bắt đầu mua sắm</p>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
               <Form.Group style={{ marginBottom: '20px' }}>
@@ -137,7 +136,7 @@ function LoginPage() {
                   style={{ fontSize: '14px' }}
                 />
                 <a href="/forgot-password" style={{ color: '#28a745', fontSize: '14px' }}>
-                   Quên mật khẩu?
+                  Quên mật khẩu?
                 </a>
               </div>
 
@@ -210,7 +209,8 @@ function LoginPage() {
                 Tham Gia Cùng Chúng Tôi
               </h3>
               <p style={{ fontSize: '16px', marginBottom: '30px' }}>
-                Vải Ơi! Tranh ghép vải làm từ vải tái chế</p>
+                Vải Ơi! Tranh ghép vải làm từ vải tái chế
+              </p>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
                 <Button
                   variant="outline-light"
@@ -238,7 +238,10 @@ function LoginPage() {
                 </Button>
               </div>
               <div style={{ textAlign: 'center', marginTop: '20px' }}>
-                 Chưa có tài khoản? <a href="/register" style={{ color: '#28a745', fontWeight: '500' }}>Đăng Ký</a>
+                Chưa có tài khoản?{' '}
+                <a href="/register" style={{ color: '#28a745', fontWeight: '500' }}>
+                  Đăng Ký
+                </a>
               </div>
             </div>
           </Col>

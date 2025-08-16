@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router-dom';
-import Logo from '../../../public/logo.png';
 
 function AdminSidebar({ show, onClose }) {
   const location = useLocation();
@@ -18,12 +17,13 @@ function AdminSidebar({ show, onClose }) {
     transition: 'left 0.3s ease',
     zIndex: 1040,
     color: 'white',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
   };
 
   const closeBtnStyle = {
     background: 'none',
     border: 'none',
-    color: 'white',
+    color: '02542e',
     fontSize: '20px',
     marginBottom: '10px',
     cursor: 'pointer',
@@ -50,13 +50,18 @@ function AdminSidebar({ show, onClose }) {
   return (
     <div style={sidebarBaseStyle}>
       <button style={closeBtnStyle} onClick={onClose}>✕</button>
-      <img style={{ width: '100%', height: 'auto', padding: '4%', marginBottom:'4%' }} src={Logo} alt="Logo" />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '20px' }}>
+
+      <img style={{ width: '80%', height: 'auto', padding: '4%', marginBottom:'4%' }} src='/dearFabLogo.png' alt="Logo" />
+      <h2 style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>DearFab</h2>
+      </div>
+
       <Nav className="flex-column">
         {[
           { to: '/admin', label: 'Dashboard' },
-          { to: '/admin/products', label: 'Product Management' },
-          { to: '/admin/orders', label: 'Order Management' },
-          { to: '/admin/users', label: 'User Management' },
+          { to: '/admin/products', label: 'Quản lý sản phẩm ' },
+          { to: '/admin/orders', label: ' Quản lý đơn hàng' },
+          { to: '/admin/users', label: ' Quản lý người dùng' },
         ].map((item) => (
           <Nav.Link
             key={item.to}

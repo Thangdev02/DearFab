@@ -63,41 +63,42 @@ function OrderPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!shippingInfo.fullName || !shippingInfo.address || !shippingInfo.phone || !shippingInfo.city) {
-      setError('Vui lòng điền đầy đủ thông tin giao hàng.');
+  
+    if (!shippingInfo.address) {
+      setError("Vui lòng nhập địa chỉ giao hàng.");
       return;
     }
-
-    const updatedOrderedItems = orderedItems.map((item) => {
-      const selectedSize = sizes[item.id] || 'M';
-      const priceBySize = item.sizes?.[selectedSize]?.price || item.price;
-
-      return {
-        ...item,
-        size: selectedSize,
-        price: priceBySize,
-      };
-    });
-
-    const orderData = {
-      userId: userData.id || 'guest',
-      orderedItems: updatedOrderedItems,
-      totalPrice,
-      shippingInfo,
-      paymentMethod,
-      orderDate,
-      orderNumber: `ORD-${Math.floor(Math.random() * 1000000)}`,
-      status: 'pending',
+  
+    const cookieCart = Cookies.get("cartItems")
+      ? JSON.parse(decodeURIComponent(Cookies.get("cartItems")))
+      : [];
+  
+    const orderItems = cookieCart
+      .map((item) => {
+        const selectedSize = item.selectedSize || "M";
+        const sizeObj = item.productSizes?.find(
+          (s) => s.size === `Size ${selectedSize}`
+        );
+        return {
+          productSizeId: sizeObj?.id,
+          quantity: item.quantity,
+        };
+      })
+      .filter((i) => i.productSizeId);
+  
+    const payload = {
+      orderItems,
+      address: shippingInfo.address,
     };
-
-    const result = await saveOrder(orderData);
-    if (!result.success) {
+  
+    const result = await saveOrder(payload);
+  
+    if (result.success) {
+      clearCart();
+      navigate("/order-confirmation", { state: result.order });
+    } else {
       setError(result.message);
-      return;
     }
-
-    navigate('/order-confirmation', { state: orderData });
-    clearCart();
   };
 
   return (

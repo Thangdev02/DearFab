@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, Row, Col, Button, Toast, ToastContainer, Form, Carousel, Badge, Tabs, Tab, ListGroup } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
 import RelatedProducts from '../components/products/RelatedProduct';
-import { getProductById, getProducts, getReviewsByProductId, saveReview, updateReview, deleteReview, getUserById } from '../services/api';
+import { getProductById, getProducts } from '../services/api';
 import { FaFacebookSquare, FaFacebookMessenger, FaStar } from 'react-icons/fa';
 import ProductDetailBanner from '../components/products/ProductDetaiBanner';
 import Cookies from 'js-cookie';
@@ -19,51 +19,56 @@ function ProductDetailPage() {
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showToast, setShowToast] = useState(false);
-  const [selectedSize, setSelectedSize] = useState('M');
+  const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
 
-  // Review state
-  const [reviews, setReviews] = useState([]);
-  const [newReview, setNewReview] = useState({ content: '', ratingPoint: 5 });
-  const [editReviewId, setEditReviewId] = useState(null);
-  const [editReviewData, setEditReviewData] = useState({ content: '', ratingPoint: 5 });
-  const [reviewError, setReviewError] = useState('');
-  const [users, setUsers] = useState({}); // Lưu thông tin người dùng theo userId
-  const [hasReviewed, setHasReviewed] = useState(false); // Kiểm tra user đã review chưa
+  // Mock review state (since review functionality is not implemented)
+  const [reviews] = useState([
+    {
+      id: 'mock1',
+      userId: 'user1',
+      content: 'Sản phẩm rất đẹp, chất lượng tốt!',
+      ratingPoint: 5,
+      date: new Date().toISOString(),
+    },
+    {
+      id: 'mock2',
+      userId: 'user2',
+      content: 'Áo mặc thoải mái, giá cả hợp lý.',
+      ratingPoint: 4,
+      date: new Date().toISOString(),
+    },
+  ]);
+  const [users] = useState({
+    user1: { id: 'user1', name: 'Nguyễn Văn A' },
+    user2: { id: 'user2', name: 'Trần Thị B' },
+  });
 
   // Lấy thông tin người dùng từ Cookies
   const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null;
 
-  // Fetch dữ liệu sản phẩm, reviews và thông tin người dùng
+  // Fetch dữ liệu sản phẩm và danh sách sản phẩm liên quan
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productData = await getProductById(id);
-        setProduct(productData);
+        setProduct({
+          ...productData,
+          // Chuyển đổi productSizes thành định dạng sizes để phù hợp với component
+          sizes: productData.productSizes.reduce((acc, sizeObj) => {
+            // Loại bỏ "Size " khỏi chuỗi size để lấy giá trị như 'M', 'S'
+            const sizeKey = sizeObj.size.replace('Size ', '');
+            acc[sizeKey] = {
+              price: sizeObj.price,
+              quantity: sizeObj.quantity,
+            };
+            return acc;
+          }, {}),
+        });
 
+        // Lấy danh sách sản phẩm cho RelatedProducts
         const productsData = await getProducts();
         setAllProducts(productsData);
-
-        const reviewsData = await getReviewsByProductId(id);
-        // Sắp xếp reviews theo thời gian giảm dần (mới nhất lên trên)
-        const sortedReviews = reviewsData.sort((a, b) => new Date(b.date) - new Date(a.date));
-        setReviews(sortedReviews);
-
-        // Kiểm tra xem user đã review sản phẩm này chưa
-        if (user) {
-          const userReview = sortedReviews.find(review => review.userId === user.id);
-          setHasReviewed(!!userReview);
-        }
-
-        // Lấy thông tin người dùng cho từng review
-        const userIds = [...new Set(reviewsData.map(review => review.userId))];
-        const userPromises = userIds.map(userId => getUserById(userId));
-        const usersData = await Promise.all(userPromises);
-        const usersMap = usersData.reduce((acc, user) => {
-          acc[user.id] = user;
-          return acc;
-        }, {});
-        setUsers(usersMap);
       } catch (error) {
         console.error('Error loading data:', error);
       } finally {
@@ -71,7 +76,7 @@ function ProductDetailPage() {
       }
     };
     fetchData();
-  }, [id, user]);
+  }, [id]);
 
   // Update selectedSize dựa trên kích thước khả dụng
   useEffect(() => {
@@ -99,102 +104,9 @@ function ProductDetailPage() {
     }, 2000);
   };
 
-  // Xử lý gửi review mới
-  const handleReviewSubmit = async (e) => {
-    e.preventDefault();
-    if (!user) {
-      setReviewError('Vui lòng đăng nhập để gửi đánh giá.');
-      return;
-    }
-    if (hasReviewed) {
-      setReviewError('Bạn đã gửi đánh giá cho sản phẩm này rồi. Bạn chỉ có thể gửi một đánh giá duy nhất.');
-      return;
-    }
-    if (!newReview.content.trim()) {
-      setReviewError('Vui lòng nhập nội dung đánh giá.');
-      return;
-    }
-
-    const review = {
-      userId: user.id,
-      productId: id,
-      content: newReview.content,
-      ratingPoint: newReview.ratingPoint,
-      date: new Date().toISOString(),
-    };
-
-    try {
-      const savedReview = await saveReview(review);
-      // Thêm review mới vào đầu danh sách (mới nhất lên trên)
-      setReviews([savedReview, ...reviews]);
-      setNewReview({ content: '', ratingPoint: 5 });
-      setReviewError('');
-      setHasReviewed(true); // Đánh dấu user đã review
-
-      // Cập nhật thông tin người dùng cho review mới
-      if (!users[user.id]) {
-        const userData = await getUserById(user.id);
-        setUsers((prev) => ({ ...prev, [user.id]: userData }));
-      }
-    } catch (error) {
-      setReviewError('Không thể gửi đánh giá. Vui lòng thử lại sau.');
-    }
-  };
-
-  // Xử lý chỉnh sửa review
-  const handleEditReview = (review) => {
-    if (!user || user.id !== review.userId) {
-      setReviewError('Bạn không có quyền chỉnh sửa đánh giá này.');
-      return;
-    }
-    setEditReviewId(review.id); // Sử dụng review.id thay vì review.reviewId
-    setEditReviewData({ content: review.content, ratingPoint: review.ratingPoint });
-  };
-
-  const handleUpdateReview = async (e) => {
-    e.preventDefault();
-    if (!editReviewData.content.trim()) {
-      setReviewError('Vui lòng nhập nội dung đánh giá.');
-      return;
-    }
-
-    try {
-      const updatedReview = await updateReview(editReviewId, {
-        ...reviews.find((r) => r.id === editReviewId),
-        content: editReviewData.content,
-        ratingPoint: editReviewData.ratingPoint,
-        date: new Date().toISOString(),
-      });
-      // Chỉ cập nhật review được chỉnh sửa, giữ nguyên các review khác
-      setReviews(reviews.map((r) => (r.id === editReviewId ? updatedReview : r)));
-      setEditReviewId(null);
-      setEditReviewData({ content: '', ratingPoint: 5 });
-      setReviewError('');
-    } catch (error) {
-      setReviewError('Không thể cập nhật đánh giá. Vui lòng thử lại sau.');
-    }
-  };
-
-  // Xử lý xóa review
-  const handleDeleteReview = async (reviewId) => {
-    const review = reviews.find((r) => r.id === reviewId);
-    if (!user || user.id !== review.userId) {
-      setReviewError('Bạn không có quyền xóa đánh giá này.');
-      return;
-    }
-
-    try {
-      await deleteReview(reviewId);
-      setReviews(reviews.filter((r) => r.id !== reviewId));
-      setHasReviewed(false); // Cho phép user gửi review mới sau khi xóa
-    } catch (error) {
-      setReviewError('Không thể xóa đánh giá. Vui lòng thử lại sau.');
-    }
-  };
-
-  // Hàm chọn sao
-  const handleStarSelect = (rating, setRatingData, ratingData) => {
-    setRatingData({ ...ratingData, ratingPoint: rating });
+  // Hàm chọn sao (dùng cho mock, có thể xóa khi tích hợp review thật)
+  const handleStarSelect = () => {
+    // Mock function, không làm gì cả
   };
 
   if (loading) {
@@ -205,7 +117,7 @@ function ProductDetailPage() {
     return <Container><h2>Sản phẩm không tồn tại</h2></Container>;
   }
 
-  const currentPrice = product.sizes[selectedSize]?.price || product.price;
+  const currentPrice = product.sizes[selectedSize]?.price || product.price || 0;
   const availableQuantity = product.sizes[selectedSize]?.quantity || 0;
   const availableSizes = Object.keys(product.sizes).filter(
     (size) => product.sizes[size].quantity > 0
@@ -349,7 +261,7 @@ function ProductDetailPage() {
               <strong>Kho:</strong> {availableQuantity} sản phẩm (kích thước {selectedSize})
             </p>
             <p style={{ color: '#6c757d', marginBottom: '5px' }}>
-              <strong>Loại:</strong> {product.category}
+              <strong>Loại:</strong> {product.category || 'Không xác định'}
             </p>
             <p style={{ color: '#6c757d', marginBottom: '5px' }}>
               <strong>Nhãn:</strong> {product.tags?.join(', ') || 'tranh vải'}
@@ -388,7 +300,7 @@ function ProductDetailPage() {
                   <div className="review-container">
                     {reviews.map((review) => (
                       <ListGroup.Item
-                        key={review.id} // Sử dụng review.id thay vì review.reviewId
+                        key={review.id}
                         className="mb-3 review-card"
                         style={{
                           border: '1px solid #e9ecef',
@@ -400,165 +312,54 @@ function ProductDetailPage() {
                           margin: '0 0.5%',
                         }}
                       >
-                        {editReviewId === review.id ? ( // Sử dụng review.id
-                          <Form onSubmit={handleUpdateReview}>
-                            <Form.Group className="mb-3" controlId={`editReviewContent-${review.id}`}>
-                              <Form.Label>Nội dung đánh giá:</Form.Label>
-                              <Form.Control
-                                as="textarea"
-                                rows={3}
-                                value={editReviewData.content}
-                                onChange={(e) => setEditReviewData({ ...editReviewData, content: e.target.value })}
-                                placeholder="Nhập nội dung đánh giá của bạn..."
-                                required
-                                style={{ borderRadius: '5px', borderColor: '#ced4da' }}
-                              />
-                            </Form.Group>
-                            <Form.Group className="mb-3" controlId={`editReviewRating-${review.id}`}>
-                              <Form.Label>Chọn số sao:</Form.Label>
+                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                          <img
+                            src={defaultAvatar}
+                            alt="Avatar"
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              marginRight: '10px',
+                              border: '1px solid #ddd',
+                            }}
+                          />
+                          <div style={{ flex: '1' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <div>
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                  <FaStar
-                                    key={star}
-                                    style={{
-                                      cursor: 'pointer',
-                                      color: star <= editReviewData.ratingPoint ? '#ffd700' : '#e4e4e4',
-                                      fontSize: '20px',
-                                      marginRight: '5px',
-                                    }}
-                                    onClick={() => handleStarSelect(star, setEditReviewData, editReviewData)}
-                                  />
-                                ))}
-                              </div>
-                            </Form.Group>
-                            <Button variant="success" type="submit" className="me-2">
-                              Lưu
-                            </Button>
-                            <Button variant="secondary" onClick={() => setEditReviewId(null)}>
-                              Hủy
-                            </Button>
-                          </Form>
-                        ) : (
-                          <>
-                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                              <img
-                                src={defaultAvatar}
-                                alt="Avatar"
-                                style={{
-                                  width: '40px',
-                                  height: '40px',
-                                  borderRadius: '50%',
-                                  marginRight: '10px',
-                                  border: '1px solid #ddd',
-                                }}
-                              />
-                              <div style={{ flex: '1' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                  <div>
-                                    <strong style={{ fontSize: '16px', color: '#343a40' }}>
-                                      {users[review.userId]?.name || `User ${review.userId}`}
-                                    </strong>
-                                    <div>
-                                      {[...Array(5)].map((_, index) => (
-                                        <FaStar
-                                          key={index}
-                                          style={{
-                                            color: index < review.ratingPoint ? '#ffd700' : '#e4e4e4',
-                                            fontSize: '16px',
-                                            marginRight: '2px',
-                                          }}
-                                        />
-                                      ))}
-                                    </div>
-                                  </div>
-                                  <div style={{ color: '#6c757d', fontSize: '14px' }}>
-                                    {new Date(review.date).toLocaleString('vi-VN', {
-                                      dateStyle: 'medium',
-                                      timeStyle: 'short',
-                                    })}
-                                  </div>
+                                <strong style={{ fontSize: '16px', color: '#343a40' }}>
+                                  {users[review.userId]?.name || `User ${review.userId}`}
+                                </strong>
+                                <div>
+                                  {[...Array(5)].map((_, index) => (
+                                    <FaStar
+                                      key={index}
+                                      style={{
+                                        color: index < review.ratingPoint ? '#ffd700' : '#e4e4e4',
+                                        fontSize: '16px',
+                                        marginRight: '2px',
+                                      }}
+                                    />
+                                  ))}
                                 </div>
                               </div>
-                            </div>
-                            <p style={{ color: '#495057', lineHeight: '1.6', marginBottom: '10px' }}>
-                              {review.content}
-                            </p>
-                            {user && user.id === review.userId && (
-                              <div>
-                                <Button
-                                  variant="warning"
-                                  size="sm"
-                                  onClick={() => handleEditReview(review)}
-                                  className="me-2"
-                                  style={{ borderRadius: '5px' }}
-                                >
-                                  Sửa
-                                </Button>
-                                <Button
-                                  variant="danger"
-                                  size="sm"
-                                  onClick={() => handleDeleteReview(review.id)} // Sử dụng review.id
-                                  style={{ borderRadius: '5px' }}
-                                >
-                                  Xóa
-                                </Button>
+                              <div style={{ color: '#6c757d', fontSize: '14px' }}>
+                                {new Date(review.date).toLocaleString('vi-VN', {
+                                  dateStyle: 'medium',
+                                  timeStyle: 'short',
+                                })}
                               </div>
-                            )}
-                          </>
-                        )}
+                            </div>
+                          </div>
+                        </div>
+                        <p style={{ color: '#495057', lineHeight: '1.6', marginBottom: '10px' }}>
+                          {review.content}
+                        </p>
                       </ListGroup.Item>
                     ))}
                   </div>
                 </ListGroup>
               )}
-
-              {/* Form gửi review */}
-              <div className="mt-4">
-                <h5 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '15px' }}>
-                  Gửi Đánh Giá Của Bạn
-                </h5>
-                {reviewError && <p style={{ color: 'red', marginBottom: '10px' }}>{reviewError}</p>}
-                <Form onSubmit={handleReviewSubmit}>
-                  <Form.Group className="mb-3" controlId="reviewContent">
-                    <Form.Label>Nội dung đánh giá:</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={3}
-                      value={newReview.content}
-                      onChange={(e) => setNewReview({ ...newReview, content: e.target.value })}
-                      placeholder="Nhập nội dung đánh giá của bạn..."
-                      required
-                      style={{ borderRadius: '5px', borderColor: '#ced4da' }}
-                      disabled={hasReviewed} // Vô hiệu hóa nếu user đã review
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="reviewRating">
-                    <Form.Label>Chọn số sao:</Form.Label>
-                    <div>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <FaStar
-                          key={star}
-                          style={{
-                            cursor: hasReviewed ? 'not-allowed' : 'pointer',
-                            color: star <= newReview.ratingPoint ? '#ffd700' : '#e4e4e4',
-                            fontSize: '20px',
-                            marginRight: '5px',
-                          }}
-                          onClick={() => !hasReviewed && handleStarSelect(star, setNewReview, newReview)}
-                        />
-                      ))}
-                    </div>
-                  </Form.Group>
-                  <Button
-                    variant="success"
-                    type="submit"
-                    style={{ borderRadius: '5px', padding: '8px 20px' }}
-                    disabled={hasReviewed} // Vô hiệu hóa nút nếu user đã review
-                  >
-                    Gửi Đánh Giá
-                  </Button>
-                </Form>
-              </div>
             </Tab>
           </Tabs>
         </div>

@@ -74,7 +74,7 @@ function NavBar() {
           to="/"
           style={{ color: 'green', fontWeight: 'bolder', fontSize: '2rem' }}
         >
-          <img src={Logo} alt="Logo" style={{ width: '100%', height: '50px' }} />
+          <img src="dearFabLogo.png" alt="Logo" style={{ width: '100%', height: '60px' }} />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">

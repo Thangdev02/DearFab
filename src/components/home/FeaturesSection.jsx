@@ -12,8 +12,8 @@ const FeaturesSection = () => {
         },
         {
             icon: <ArrowRepeat size={40} className="mb-3 text-dark" />,
-            title: 'Trả hàng, Bảo hành',
-            description: 'Đổi trả linh hoạt trong vòng 7 ngày!',
+            title: 'Cam Kết - Bảo Hành',
+            description: 'Luôn cam kết và bảo hành chất lượng',
         },
         {
             icon: <Leaf size={40} className="mb-3 text-dark" />,
@@ -22,8 +22,8 @@ const FeaturesSection = () => {
         },
         {
             icon: <CreditCard size={40} className="mb-3 text-dark" />,
-            title: 'Vật liệu độc quyền',
-            description: 'Sản phẩm của DearFab tự hào làm từ vật liệu tái chế độc quyền',
+            title: 'Hỗ trợ 24/7',
+            description: 'Chúng tôi luôn hỗ trợ bạn mọi lúc',
         },
     ];
 

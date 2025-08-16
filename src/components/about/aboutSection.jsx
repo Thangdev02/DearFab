@@ -39,7 +39,8 @@ function AboutUsSection() {
               <Card style={styles.contentCard}>
                 <Card.Body>
                   <Card.Text style={styles.contentText}>
-                    Sứ mệnh của chúng tôi là truyền cảm hứng và thúc đẩy các thực hành nghệ thuật bền vững, đồng thời thể hiện vẻ đẹp của những vật liệu được tái sử dụng. Tại DearFab, chúng tôi tin rằng mỗi mảnh vải vụn đều có tiềm năng trở thành điều gì đó phi thường. Qua công việc của mình, chúng tôi mong muốn khơi dậy niềm vui, khuyến khích sự tỉnh thức và góp phần vào một hành tinh xanh hơn.
+                  Sứ mệnh
+                  Dear Fabric mang đến sức sống mới cho những gì còn sót lại. Chúng tôi tái sử dụng vải tái chế và vải thừa để tạo nên những tác phẩm nghệ thuật cắt dán, giảm thiểu rác thải dệt may và truyền cảm hứng về một tư duy xanh hơn trong xã hội. Sứ mệnh của chúng tôi cũng là tạo cơ hội cho những người yêu nghệ thuật tham gia vào hành trình chữa lành này — cho vải vóc, hành tinh và tâm hồn con người.
                   </Card.Text>
                 </Card.Body>
               </Card>

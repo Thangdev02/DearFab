@@ -1,77 +1,69 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, Alert, Spinner, Toast } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { registerUser } from '../services/authApi';
 
 function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [address, setAddress] = useState('');
   const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [cities, setCities] = useState([]);
   const [showToast, setShowToast] = useState(false);
   const navigate = useNavigate();
-
-  // Fetch Vietnamese provinces from the API
-  useEffect(() => {
-    const fetchCities = async () => {
-      try {
-        const response = await axios.get('https://provinces.open-api.vn/api/?depth=1');
-        setCities(response.data.map(province => province.name));
-      } catch (err) {
-        setError('Lỗi khi tải danh sách thành phố.');
-        const vietnamCities = [
-          'Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
-          'Nha Trang', 'Huế', 'Vũng Tàu', 'Đồng Nai', 'Bình Dương',
-        ];
-        setCities(vietnamCities);
-      }
-    };
-    fetchCities();
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    if (!email || !password || !name || !address || !phone || !city) {
+    // Basic client-side validation
+    if (!email || !password || !fullName || !address || !phone) {
       setError('Vui lòng điền đầy đủ thông tin.');
       setLoading(false);
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Email không hợp lệ.');
+      setLoading(false);
+      return;
+    }
+
+    // Validate phone format (basic check for digits, 10 characters)
+    const phoneRegex = /^\d{10}$/;
+    if (!phoneRegex.test(phone)) {
+      setError('Số điện thoại phải là 10 chữ số.');
+      setLoading(false);
+      return;
+    }
+
     const newUser = {
-      id: Date.now(),
       email,
       password,
-      name,
+      fullName,
       address,
       phone,
-      city,
-      role: 'user',
     };
 
-    try {
-      const response = await axios.post('https://dearfab.onrender.com/users', newUser);
-      if (response.status === 201) {
-        setShowToast(true);
-        setEmail('');
-        setPassword('');
-        setName('');
-        setAddress('');
-        setPhone('');
-        setCity('');
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
-      }
-    } catch (err) {
-      setError('Đăng ký thất bại. Email đã tồn tại hoặc có lỗi khác.');
+    const result = await registerUser(newUser);
+
+    if (result.success) {
+      setShowToast(true);
+      setEmail('');
+      setPassword('');
+      setFullName('');
+      setAddress('');
+      setPhone('');
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } else {
+      setError(result.message);
       setLoading(false);
     }
   };
@@ -85,7 +77,7 @@ function RegisterPage() {
         position: 'relative',
         overflow: 'hidden',
         fontFamily: 'Arial, sans-serif',
-        marginTop:'3%'
+        marginTop: '3%',
       }}
     >
       <Container
@@ -128,9 +120,9 @@ function RegisterPage() {
                 <Form.Label style={{ fontWeight: '500' }}>Họ và tên*</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter your name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Nhập họ và tên của bạn"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   required
                   style={{ borderRadius: '8px', padding: '10px', border: '1px solid #ccc' }}
                 />
@@ -140,7 +132,7 @@ function RegisterPage() {
                 <Form.Label style={{ fontWeight: '500' }}>Email*</Form.Label>
                 <Form.Control
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Nhập email của bạn"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -152,7 +144,7 @@ function RegisterPage() {
                 <Form.Label style={{ fontWeight: '500' }}>Mật khẩu*</Form.Label>
                 <Form.Control
                   type="password"
-                  placeholder="Enter your password"
+                  placeholder="Nhập mật khẩu của bạn"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -161,48 +153,28 @@ function RegisterPage() {
               </Form.Group>
 
               <Form.Group style={{ marginBottom: '20px' }}>
-                  <Form.Label style={{ fontWeight: '500' }}>Số điện thoại*</Form.Label>
-                  <Form.Control
-                    type="tel"
-                    placeholder="Enter your phone"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    required
-                    style={{ borderRadius: '8px', padding: '10px', border: '1px solid #ccc' }}
-                  />
-                </Form.Group>
-              <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-
-                <Form.Group style={{ marginBottom: '20px' }}>
-                  <Form.Label style={{ fontWeight: '500' }}>Địa chỉ*</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter your address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    required
-                    style={{ borderRadius: '8px', padding: '10px', border: '1px solid #ccc', width: '300px' }}
-                  />
-                </Form.Group>
-
-                
-                <Form.Group style={{ marginBottom: '20px' }}>
-                <Form.Label style={{ fontWeight: '500' }}>Tỉnh*</Form.Label>
-                <Form.Select
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                <Form.Label style={{ fontWeight: '500' }}>Số điện thoại*</Form.Label>
+                <Form.Control
+                  type="tel"
+                  placeholder="Nhập số điện thoại của bạn"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   required
                   style={{ borderRadius: '8px', padding: '10px', border: '1px solid #ccc' }}
-                >
-                  <option value="">Chọn</option>
-                  {cities.map((cityName, index) => (
-                    <option key={index} value={cityName}>{cityName}</option>
-                  ))}
-                </Form.Select>
+                />
               </Form.Group>
 
-              </div>
-              
+              <Form.Group style={{ marginBottom: '20px' }}>
+                <Form.Label style={{ fontWeight: '500' }}>Địa chỉ*</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Nhập địa chỉ của bạn"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  required
+                  style={{ borderRadius: '8px', padding: '10px', border: '1px solid #ccc' }}
+                />
+              </Form.Group>
 
               <Form.Group style={{ marginBottom: '20px' }}>
                 <Form.Check
@@ -212,6 +184,8 @@ function RegisterPage() {
                   style={{ fontSize: '14px' }}
                 />
               </Form.Group>
+
+              {error && <Alert variant="danger">{error}</Alert>}
 
               <Button
                 variant="dark"
@@ -243,7 +217,6 @@ function RegisterPage() {
                   'Đăng Ký'
                 )}
               </Button>
-
             </Form>
           </Col>
 
@@ -280,10 +253,11 @@ function RegisterPage() {
             />
             <div style={{ position: 'relative', zIndex: 2, color: '#333' }}>
               <h3 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '20px' }}>
-                 Tham Gia Cùng Chúng Tôi
+                Tham Gia Cùng Chúng Tôi
               </h3>
               <p style={{ fontSize: '16px', marginBottom: '30px' }}>
-              Vải Ơi! Tranh ghép vải làm từ vải tái chế</p>
+                Vải Ơi! Tranh ghép vải làm từ vải tái chế
+              </p>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
                 <Button
                   variant="outline-light"
@@ -307,11 +281,14 @@ function RegisterPage() {
                     color: '#333',
                   }}
                 >
-                   Chất liệu vải
+                  Chất liệu vải
                 </Button>
               </div>
-              <div style={{ textAlign: 'center', marginTop: '20px'}}>
-                Đã có tài khoản? <a href="/login" style={{ color: '#28a745', fontWeight: '500' }}>Đăng Nhập</a>
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                Đã có tài khoản?{' '}
+                <a href="/login" style={{ color: '#28a745', fontWeight: '500' }}>
+                  Đăng Nhập
+                </a>
               </div>
             </div>
           </Col>
@@ -333,7 +310,9 @@ function RegisterPage() {
         autohide
       >
         <Toast.Header>
-          <strong className="me-auto" style={{ color: '#28a745' }}>Thông Báo</strong>
+          <strong className="me-auto" style={{ color: '#28a745' }}>
+            Thông Báo
+          </strong>
         </Toast.Header>
         <Toast.Body>Đăng ký thành công!</Toast.Body>
       </Toast>

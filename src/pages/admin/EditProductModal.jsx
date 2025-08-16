@@ -1,209 +1,193 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
-import { getProductById, updateProduct } from '../../services/api';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form, Tabs, Tab, Table } from "react-bootstrap";
+import { getProductById, updateProduct, updateProductSize } from "../../services/api";
 
-function EditProductModal({ show, onHide, productId, onSave }) {
-  const [editedProduct, setEditedProduct] = useState({
-    name: '',
-    price: '',
-    description: '',
-    image: '',
-    category: '',
-    quantity: '',
-    isNew: false,
-    isFeatured: false,
-    sizes: {
-      S: { price: '', quantity: '' },
-      M: { price: '', quantity: '' },
-      L: { price: '', quantity: '' },
-    },
+function EditProductModal({ show, onHide, productId }) {
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("info");
+  const [productInfo, setProductInfo] = useState({
+    name: "",
+    description: "",
+    image: "", // string link ảnh từ API
   });
+  const [imageFile, setImageFile] = useState(null); // file upload
+  const [sizes, setSizes] = useState([]);
 
-  // Fetch product details when modal opens
   useEffect(() => {
-    const fetchProduct = async () => {
-      if (show && productId) {
-        try {
-          const product = await getProductById(productId);
-          setEditedProduct({
-            ...product,
-            price: product.price || '',
-            quantity: product.quantity || '',
-            sizes: product.sizes || {
-              S: { price: '', quantity: '' },
-              M: { price: '', quantity: '' },
-              L: { price: '', quantity: '' },
-            },
-          });
-        } catch (error) {
-          console.error('Error fetching product:', error);
-          alert('Failed to load product details.');
-        }
-      }
-    };
-    fetchProduct();
+    if (show && productId) {
+      fetchProduct();
+    }
   }, [show, productId]);
 
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    if (name === 'isNew' || name === 'isFeatured') {
-      setEditedProduct({ ...editedProduct, [name]: checked });
-    } else if (name.startsWith('sizes.')) {
-      const [size, field] = name.split('.').slice(1);
-      setEditedProduct({
-        ...editedProduct,
-        sizes: {
-          ...editedProduct.sizes,
-          [size]: {
-            ...editedProduct.sizes[size],
-            [field]: field === 'quantity' ? parseInt(value) || 0 : value,
-          },
-        },
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      const data = await getProductById(productId);
+      setProductInfo({
+        name: data.name || "",
+        description: data.description || "",
+        image: data.image || "",
       });
-    } else {
-      setEditedProduct({ ...editedProduct, [name]: value });
+      setSizes(data.productSizes || []);
+      setImageFile(null);
+    } catch (err) {
+      console.error(err);
+      alert("Không thể tải sản phẩm");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSave = async () => {
-    try {
-      const payload = {
-        ...editedProduct,
-        price: parseInt(editedProduct.price) || 0,
-        quantity: parseInt(editedProduct.quantity) || 0,
-        sizes: {
-          S: { price: parseInt(editedProduct.sizes.S.price) || 0, quantity: parseInt(editedProduct.sizes.S.quantity) || 0 },
-          M: { price: parseInt(editedProduct.sizes.M.price) || 0, quantity: parseInt(editedProduct.sizes.M.quantity) || 0 },
-          L: { price: parseInt(editedProduct.sizes.L.price) || 0, quantity: parseInt(editedProduct.sizes.L.quantity) || 0 },
-        },
-      };
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      // Hiển thị preview bằng URL tạm
+      setProductInfo((prev) => ({
+        ...prev,
+        image: URL.createObjectURL(file),
+      }));
+    }
+  };
 
-      const updatedProduct = await updateProduct(productId, payload);
-      onSave(updatedProduct); // Pass the updated product back
-      onHide();
-    } catch (error) {
-      console.error('Error updating product:', error);
-      alert('Failed to update product. Please try again.');
+  const handleSaveInfo = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("name", productInfo.name);
+      formData.append("description", productInfo.description);
+      if (imageFile) {
+        formData.append("imageFile", imageFile); // API cần field gì thì đổi tên ở đây
+      }
+
+      await updateProduct(productId, formData);
+      alert("Cập nhật thông tin sản phẩm thành công");
+      fetchProduct();
+    } catch (err) {
+      console.error(err);
+      alert("Cập nhật thất bại");
+    }
+  };
+
+  const handleSaveSize = async (sizeId, price, quantity) => {
+    try {
+      await updateProductSize(sizeId, price, quantity);
+      alert("Cập nhật size thành công");
+      fetchProduct();
+    } catch (err) {
+      console.error(err);
+      alert("Cập nhật size thất bại");
     }
   };
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} size="lg">
       <Modal.Header closeButton>
-        <Modal.Title>Chỉnh Sửa Tranh</Modal.Title>
+        <Modal.Title>Chỉnh Sửa Sản Phẩm</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
-          <Form.Group className="mb-3">
-            <Form.Label>Tên</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={editedProduct.name}
-              onChange={handleInputChange}
-              placeholder="Enter product name"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Giá (Base)</Form.Label>
-            <Form.Control
-              type="number"
-              name="price"
-              value={editedProduct.price}
-              onChange={handleInputChange}
-              placeholder="Enter base price"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Mô Tả</Form.Label>
-            <Form.Control
-              as="textarea"
-              name="description"
-              value={editedProduct.description}
-              onChange={handleInputChange}
-              placeholder="Enter description"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Địa Chỉ Hình Ảnh</Form.Label>
-            <Form.Control
-              type="text"
-              name="image"
-              value={editedProduct.image}
-              onChange={handleInputChange}
-              placeholder="Enter image URL"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Loại</Form.Label>
-            <Form.Control
-              type="text"
-              name="category"
-              value={editedProduct.category}
-              onChange={handleInputChange}
-              placeholder="Enter category"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label> Số Lượng (Base)</Form.Label>
-            <Form.Control
-              type="number"
-              name="quantity"
-              value={editedProduct.quantity}
-              onChange={handleInputChange}
-              placeholder="Enter base quantity"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Check
-              type="checkbox"
-              name="isNew"
-              label="Sản Phẩm Mới"
-              checked={editedProduct.isNew}
-              onChange={handleInputChange}
-            />
-            <Form.Check
-              type="checkbox"
-              name="isFeatured"
-              label="Sản Phẩm Nổi Bật"
-              checked={editedProduct.isFeatured}
-              onChange={handleInputChange}
-            />
-          </Form.Group>
-          {/* Size Options */}
-          {['S', 'M', 'L'].map((size) => (
-            <div key={size} className="mb-3">
-              <h6>{size}Kích Thước</h6>
-              <Form.Group className="mb-2">
-                <Form.Label>Giá</Form.Label>
+        <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
+          {/* Tab 1: Thông tin */}
+          <Tab eventKey="info" title="Thông tin">
+            <Form className="mt-3">
+              <Form.Group className="mb-3">
+                <Form.Label>Tên sản phẩm</Form.Label>
                 <Form.Control
-                  type="number"
-                  name={`sizes.${size}.price`}
-                  value={editedProduct.sizes[size].price}
-                  onChange={handleInputChange}
-                  placeholder={`Enter ${size} price`}
+                  type="text"
+                  value={productInfo.name}
+                  onChange={(e) =>
+                    setProductInfo({ ...productInfo, name: e.target.value })
+                  }
                 />
               </Form.Group>
-              <Form.Group>
-                <Form.Label>Số Lượng</Form.Label>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Mô tả</Form.Label>
                 <Form.Control
-                  type="number"
-                  name={`sizes.${size}.quantity`}
-                  value={editedProduct.sizes[size].quantity}
-                  onChange={handleInputChange}
-                  placeholder={`Enter ${size} quantity`}
+                  as="textarea"
+                  rows={4}
+                  value={productInfo.description}
+                  onChange={(e) =>
+                    setProductInfo({
+                      ...productInfo,
+                      description: e.target.value,
+                    })
+                  }
                 />
               </Form.Group>
-            </div>
-          ))}
-        </Form>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Hình ảnh</Form.Label>
+                <Form.Control type="file" onChange={handleImageChange} />
+                {productInfo.image && (
+                  <img
+                    src={productInfo.image}
+                    alt="preview"
+                    style={{
+                      marginTop: 10,
+                      width: 150,
+                      height: 150,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                    }}
+                  />
+                )}
+              </Form.Group>
+
+              <Button variant="primary" onClick={handleSaveInfo}>
+                Lưu thông tin
+              </Button>
+            </Form>
+          </Tab>
+
+          {/* Tab 2: Size */}
+          <Tab eventKey="sizes" title="Quản lý size">
+            <Table striped bordered hover size="sm" className="mt-3">
+              <thead>
+                <tr>
+                  <th>Size</th>
+                  <th>Giá</th>
+                  <th>Số lượng</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sizes.map((s) => (
+                  <tr key={s.id}>
+                    <td>{s.size}</td>
+                    <td>
+                      <Form.Control
+                        type="number"
+                        defaultValue={s.price}
+                        onChange={(e) => (s.price = e.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <Form.Control
+                        type="number"
+                        defaultValue={s.quantity}
+                        onChange={(e) => (s.quantity = e.target.value)}
+                      />
+                    </td>
+                    <td>
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleSaveSize(s.id, s.price, s.quantity)
+                        }
+                      >
+                        Lưu
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Tab>
+        </Tabs>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
           Đóng
-        </Button>
-        <Button variant="primary" onClick={handleSave}>
-          Lưu
         </Button>
       </Modal.Footer>
     </Modal>

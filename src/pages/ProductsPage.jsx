@@ -37,11 +37,10 @@ function ProductsPage() {
         const timeoutPromise = new Promise((resolve, reject) =>
           setTimeout(() => reject(new Error('Yêu cầu quá thời gian.')), 10000)
         );
-        const dataPromise = getProducts();
-        const data = await Promise.race([dataPromise, timeoutPromise]);
-        console.log('Dữ liệu sản phẩm từ API:', data);
-        setProducts(data || []);
-        setFilteredProducts(data || []);
+        const products = await getProducts();
+    console.log("Alo",products);
+        setProducts(products || []);
+        setFilteredProducts(products || []);
         setLoading(false);
       } catch (err) {
         setError('Không thể tải sản phẩm. Vui lòng thử lại sau: ' + err.message);
@@ -49,6 +48,7 @@ function ProductsPage() {
       }
     };
     fetchProducts();
+    
   }, []);
 
   const applyFilters = useCallback(() => {
@@ -70,11 +70,11 @@ function ProductsPage() {
 
     if (priceFilter) {
       if (priceFilter === 'low') {
-        result = result.filter(product => (product.price || 0) < 100000);
+        result = result.filter(product => (product.price || 0) < 1000000);
       } else if (priceFilter === 'medium') {
-        result = result.filter(product => (product.price || 0) >= 100000 && (product.price || 0) <= 200000);
+        result = result.filter(product => (product.price || 0) >= 1000000 && (product.price || 0) <= 3000000);
       } else if (priceFilter === 'high') {
-        result = result.filter(product => (product.price || 0) > 200000);
+        result = result.filter(product => (product.price || 0) > 3000000);
       }
     }
 
@@ -230,9 +230,9 @@ function ProductsPage() {
                 onChange={(e) => setPriceFilter(e.target.value)}
               >
                 <option value="">Tất cả giá</option>
-                <option value="low">Dưới 100,000 VND</option>
-                <option value="medium">100,000 - 200,000 VND</option>
-                <option value="high">Trên 200,000 VND</option>
+                <option value="low">Dưới 1,000,000 VND</option>
+                <option value="medium">1,000,000 - 3,000,000 VND</option>
+                <option value="high">Trên 3,000,000 VND</option>
               </Form.Control>
             </Form.Group>
           </Col>
