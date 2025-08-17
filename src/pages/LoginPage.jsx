@@ -92,7 +92,7 @@ function LoginPage() {
             }}
           >
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <img src={Logo} alt="Logo" style={{ width: '50%', height: '100px' }} />
+              <img src="/dearFabLogo.png" alt="Logo" style={{ width: '50%', height: '200px' }} />
             </div>
             <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Đăng Nhập vào DearFab</h2>
             <p style={{ color: '#666', marginBottom: '30px' }}>Đăng nhập để bắt đầu mua sắm</p>

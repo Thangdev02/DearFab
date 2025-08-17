@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Card, Table, Spinner, Alert } from 'react-bootstrap';
-import { getUsers } from '../../services/orderApi'; // Đảm bảo đường dẫn đúng với file API của bạn
+import { getUsers } from '../../services/userApi';
 
 function UserManagementPage() {
   const [users, setUsers] = useState([]);
@@ -56,24 +56,20 @@ function UserManagementPage() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Tên</th>
+                <th>Họ và tên</th>
                 <th>Email</th>
-                <th>Vai trò</th>
                 <th>Địa chỉ</th>
                 <th>Số điện thoại</th>
-                <th>Thành phố</th>
               </tr>
             </thead>
             <tbody>
               {users.map(user => (
                 <tr key={user.id}>
                   <td>{user.id}</td>
-                  <td>{user.name}</td>
+                  <td>{user.fullName}</td>
                   <td>{user.email}</td>
-                  <td>{user.role}</td>
                   <td>{user.address}</td>
                   <td>{user.phone}</td>
-                  <td>{user.city}</td>
                 </tr>
               ))}
             </tbody>

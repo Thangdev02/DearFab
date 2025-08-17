@@ -14,6 +14,7 @@ import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import UserManagementPage from './pages/admin/UserManagementPage';
 import AboutUsPage from './pages/AboutUsPage';
 import OrderHistoryPage from './pages/OrderHistoryPage';
+import OrderCancle from './pages/OrderCancel';
 
 // Placeholder for other admin pages
 
@@ -28,6 +29,7 @@ const routes = [
   { path: '/login', element: <LoginPage /> },
   { path: '/order', element: <OrderPage /> },
   { path: '/order-confirmation', element: <OrderConfirmationPage /> },
+  { path: '/order-cancle', element: <OrderCancle /> },
   { path: '/order-history', element: <OrderHistoryPage /> },
   
   {

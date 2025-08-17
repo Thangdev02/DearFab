@@ -32,7 +32,7 @@ const ChatBot = () => {
         setLoading(true);
 
         try {
-            const res = await axios.post('http://localhost:8000/chat', {
+            const res = await axios.post('https://chatbot.dearfab.com:13443/chat', {
                 prompt: trimmedPrompt,
             });
 

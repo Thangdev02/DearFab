@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import Chart from 'chart.js/auto'; // Import Chart.js
 import { FaUsers, FaChalkboardTeacher, FaUserFriends, FaMoneyBillWave } from 'react-icons/fa'; // Icons
 import { getProducts } from '../../services/api';
-import { getOrders, getUsers } from '../../services/orderApi';
+import { getOrders } from '../../services/orderApi';
+import { getUsers } from '../../services/userApi';
 
 function AdminDashboardPage() {
     const [stats, setStats] = useState({
@@ -297,7 +298,6 @@ function AdminDashboardPage() {
                                     <tr>
                                         <th>Mã Đơn Hàng #</th>
                                         <th>Tổng Giá (VND)</th>
-                                        <th>Ngày</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -305,9 +305,8 @@ function AdminDashboardPage() {
                                         const parsedDate = parseVietnameseDate(order.orderDate);
                                         return (
                                             <tr key={order.id}>
-                                                <td>{order.orderNumber || 'N/A'}</td>
+                                                <td>{order.id || 'N/A'}</td>
                                                 <td>{order.totalPrice ? order.totalPrice.toLocaleString('vi-VN') : 'N/A'}</td>
-                                                <td>{parsedDate ? parsedDate.toLocaleDateString('en-US') : 'N/A'}</td>
                                             </tr>
                                         );
                                     })}

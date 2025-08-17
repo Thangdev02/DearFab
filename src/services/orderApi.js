@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 
 const   API_URL = import.meta.env.VITE_API_URL;
 const API_URL_USERS = 'https://dearfab.onrender.com/users'; // Endpoint cho người dùng
-const API_URL_ORDERS = 'https://dearfab.onrender.com/orders'; // Endpoint cho người dùng
 
 // Lấy danh sách tất cả đơn hàng
 export const getOrders = async () => {
@@ -203,20 +202,3 @@ export const deleteOrder = async (id) => {
 };
 
 // Lấy danh sách tất cả người dùng
-export const getUsers = async () => {
-  try {
-    const response = await axios.get(API_URL_USERS);
-    return { success: true, users: response.data };
-  } catch (error) {
-    return { success: false, message: 'Lỗi khi lấy danh sách người dùng: ' + error.message };
-  }
-};
-// Trong orderApi.js
-export const updateUser = async (id, userData) => {
-  try {
-    const response = await axios.put(`${API_URL_USERS}/${id}`, userData);
-    return { success: true, user: response.data };
-  } catch (error) {
-    return { success: false, message: 'Lỗi khi cập nhật người dùng: ' + error.message };
-  }
-};

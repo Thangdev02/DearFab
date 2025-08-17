@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Row, Col, Card, Button, ListGroup, Image } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function OrderConfirmationPage() {
+function OrderCancle() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -27,13 +27,13 @@ function OrderConfirmationPage() {
           <Card className="shadow-sm border-0">
             <Card.Body>
               <div className="text-center mb-4">
-                <h2 style={{ color: '#28a745' }}>Đơn Hàng Đã Được Xác Nhận!</h2>
-                <p>DearFab cảm ơn bạn đã mua sắm tại cửa hàng của chúng tôi.</p>
+                <h2 style={{ color: 'red' }}>Đơn Hàng Chưa Được Xác Nhận!</h2>
+                <p>DearFab chân thành xin lỗi vì đã có sự cố xảy ra, vui lòng thử lại.</p>
                 <hr />
               </div>
               <div style={{ display: 'flex', justifyContent: 'center' }}>
 
-             <img src='https://png.pngtree.com/png-vector/20220611/ourmid/pngtree-green-tick-checkbox-vector-illustration-isolated-on-white-background-png-image_5000203.png'/>
+             <img style={{width: '30%'}} src='https://www.pngkey.com/png/full/67-676797_mb-image-png-red-x-in-a-box.png'/>
              </div>
 
             </Card.Body>
@@ -44,4 +44,4 @@ function OrderConfirmationPage() {
   );
 }
 
-export default OrderConfirmationPage;
+export default OrderCancle;

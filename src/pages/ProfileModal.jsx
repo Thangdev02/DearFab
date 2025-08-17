@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Image, Tabs, Tab, Form, ListGroup, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { getOrders, getOrderDetails, updateUser } from '../services/orderApi';
+import { getOrders, getOrderDetails } from '../services/orderApi';
+import { getUsers, updateUser } from '../services/userApi';
 import axios from 'axios';
 
 function ProfileModal({ show, handleClose, user }) {
@@ -11,9 +12,7 @@ function ProfileModal({ show, handleClose, user }) {
 
   // Get user data from cookie as fallback
   const userDataFromCookie = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : {};
-
-  const [firstName, ...lastNameParts] = (user?.name || userDataFromCookie.name || '').split(' ') || ['', ''];
-  const lastName = lastNameParts.join(' ');
+  const userId = userDataFromCookie.id || 'guest';
 
   const [activeTab, setActiveTab] = useState('thong-tin-tai-khoan');
   const [orders, setOrders] = useState([]);
@@ -21,70 +20,71 @@ function ProfileModal({ show, handleClose, user }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [orderDetailsError, setOrderDetailsError] = useState('');
-  const userId = userDataFromCookie.id || 'guest';
-
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    name: user?.name || userDataFromCookie.name || '',
+    fullName: user?.fullName || userDataFromCookie.fullName || '',
     email: user?.email || userDataFromCookie.email || '',
     address: user?.address || userDataFromCookie.address || '',
     phone: user?.phone || userDataFromCookie.phone || '',
-    city: user?.city || userDataFromCookie.city || '',
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [cities, setCities] = useState([]);
 
-  // Fetch Vietnamese provinces
+  // Fetch user data
   useEffect(() => {
-    const fetchCities = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get('https://provinces.open-api.vn/api/?depth=1');
-        setCities(response.data.map(province => province.name));
-      } catch (err) {
-        setError('Lỗi khi tải danh sách tỉnh thành.');
-        const vietnamCities = [
-          'Hà Nội', 'TP. Hồ Chí Minh', 'Đà Nẵng', 'Hải Phòng', 'Cần Thơ',
-          'Nha Trang', 'Huế', 'Vũng Tàu', 'Đồng Nai', 'Bình Dương',
-        ];
-        setCities(vietnamCities);
+        const response = await getUsers();
+        if (response.success) {
+          const currentUser = response.users.find(u => u.id === userId) || {};
+          const updatedFormData = {
+            fullName: currentUser.fullName || userDataFromCookie.fullName || '',
+            email: currentUser.email || userDataFromCookie.email || '',
+            address: currentUser.address || userDataFromCookie.address || '',
+            phone: currentUser.phone || userDataFromCookie.phone || '',
+          };
+          setFormData(updatedFormData);
+          Cookies.set('user', JSON.stringify({ ...updatedFormData, id: userId }), { expires: 7 });
+        } else {
+          setError(response.message || 'Không thể tải thông tin người dùng.');
+        }
+      } catch (error) {
+        setError('Lỗi khi tải thông tin người dùng: ' + error.message);
       }
     };
-    fetchCities();
-  }, []);
+    if (show) {
+      fetchUserData();
+    }
+  }, [userId, show]);
 
   // Fetch orders
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const response = await getOrders();
-        console.log('getOrders Response:', response);
         if (response.success) {
           const userOrders = response.orders || [];
-          console.log('User Orders before sorting:', userOrders);
           userOrders.sort((a, b) => b.id.localeCompare(a.id));
-          console.log('User Orders after sorting:', userOrders);
           setOrders(userOrders);
           setOrderError('');
         } else {
-          console.log('Failed to fetch orders:', response.message);
           setOrderError(response.message || 'Không thể tải lịch sử đơn hàng.');
           setOrders([]);
         }
       } catch (error) {
-        console.error('Error in fetchOrders:', error);
         setOrderError('Lỗi khi tải lịch sử đơn hàng: ' + error.message);
         setOrders([]);
       }
     };
-    fetchOrders();
-  }, [userId]);
+    if (show) {
+      fetchOrders();
+    }
+  }, [userId, show]);
 
   // Handle click to view order details
   const handleViewDetails = async (orderId) => {
     try {
       const response = await getOrderDetails(orderId);
-      console.log('Order Details for', orderId, ':', response);
       if (response.success) {
         setSelectedOrder(response.order);
         setOrderDetailsError('');
@@ -93,7 +93,6 @@ function ProfileModal({ show, handleClose, user }) {
         setOrderDetailsError(response.message || 'Không thể tải chi tiết đơn hàng.');
       }
     } catch (error) {
-      console.error('Error fetching order details:', error);
       setOrderDetailsError('Lỗi khi tải chi tiết đơn hàng: ' + error.message);
     }
   };
@@ -119,21 +118,18 @@ function ProfileModal({ show, handleClose, user }) {
   const handleSave = async () => {
     try {
       const updatedUser = {
-        id: userId,
-        name: formData.name,
-        email: formData.email,
+        fullName: formData.fullName,
         address: formData.address,
         phone: formData.phone,
-        city: formData.city,
       };
       const response = await updateUser(userId, updatedUser);
       if (response.success) {
         setSuccess('Cập nhật thông tin thành công!');
         setError('');
-        Cookies.set('user', JSON.stringify(updatedUser), { expires: 7 });
+        Cookies.set('user', JSON.stringify({ ...formData, id: userId }), { expires: 7 });
         setIsEditing(false);
       } else {
-        setError(response.message || 'Cập nhật thất bại');
+        setError(response.message || 'Cập nhật thất bại.');
         setSuccess('');
       }
     } catch (error) {
@@ -144,11 +140,10 @@ function ProfileModal({ show, handleClose, user }) {
 
   const handleCancel = () => {
     setFormData({
-      name: user?.name || userDataFromCookie.name || '',
+      fullName: user?.fullName || userDataFromCookie.fullName || '',
       email: user?.email || userDataFromCookie.email || '',
       address: user?.address || userDataFromCookie.address || '',
       phone: user?.phone || userDataFromCookie.phone || '',
-      city: user?.city || userDataFromCookie.city || '',
     });
     setIsEditing(false);
     setError('');
@@ -249,42 +244,25 @@ function ProfileModal({ show, handleClose, user }) {
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
                     <Form>
-                      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-                        <Form.Group style={{ flex: 1 }}>
-                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Họ *</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="name"
-                            value={formData.name.split(' ')[0] || 'N/A'}
-                            onChange={handleInputChange}
-                            readOnly={!isEditing}
-                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
-                          />
-                        </Form.Group>
-                        <Form.Group style={{ flex: 1 }}>
-                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Tên *</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="name"
-                            value={formData.name.split(' ').slice(1).join(' ') || 'N/A'}
-                            onChange={(e) => {
-                              const [first, ...rest] = formData.name.split(' ');
-                              setFormData(prev => ({ ...prev, name: [first, e.target.value].filter(Boolean).join(' ') }));
-                            }}
-                            readOnly={!isEditing}
-                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
-                          />
-                        </Form.Group>
-                      </div>
+                      <Form.Group style={{ marginBottom: '15px' }}>
+                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Họ và Tên *</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="fullName"
+                          value={formData.fullName || 'N/A'}
+                          onChange={handleInputChange}
+                          readOnly={!isEditing}
+                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                        />
+                      </Form.Group>
                       <Form.Group style={{ marginBottom: '15px' }}>
                         <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Email *</Form.Label>
                         <Form.Control
                           type="email"
                           name="email"
                           value={formData.email || 'N/A'}
-                          onChange={handleInputChange}
-                          readOnly={!isEditing || true}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                          readOnly
+                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#f8f9fa' }}
                         />
                       </Form.Group>
                       <Form.Group style={{ marginBottom: '15px' }}>
@@ -298,43 +276,17 @@ function ProfileModal({ show, handleClose, user }) {
                           style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
                         />
                       </Form.Group>
-                      <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-                        <Form.Group style={{ flex: 1, marginBottom: '15px' }}>
-                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Địa Chỉ</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="address"
-                            value={formData.address || 'N/A'}
-                            onChange={handleInputChange}
-                            readOnly={!isEditing}
-                            style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
-                          />
-                        </Form.Group>
-                        <Form.Group style={{ flex: 1, marginBottom: '15px' }}>
-                          <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Tỉnh</Form.Label>
-                          {isEditing ? (
-                            <Form.Select
-                              name="city"
-                              value={formData.city || ''}
-                              onChange={handleInputChange}
-                              style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#fff' }}
-                            >
-                              <option value="">Chọn tỉnh</option>
-                              {cities.map((cityName, index) => (
-                                <option key={index} value={cityName}>{cityName}</option>
-                              ))}
-                            </Form.Select>
-                          ) : (
-                            <Form.Control
-                              type="text"
-                              name="city"
-                              value={formData.city || 'N/A'}
-                              readOnly
-                              style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#f8f9fa' }}
-                            />
-                          )}
-                        </Form.Group>
-                      </div>
+                      <Form.Group style={{ marginBottom: '15px' }}>
+                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Địa Chỉ</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="address"
+                          value={formData.address || 'N/A'}
+                          onChange={handleInputChange}
+                          readOnly={!isEditing}
+                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
+                        />
+                      </Form.Group>
                     </Form>
                   </div>
                 </div>
@@ -379,7 +331,6 @@ function ProfileModal({ show, handleClose, user }) {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal hiển thị chi tiết đơn hàng */}
       <Modal show={showDetailsModal} onHide={handleCloseDetailsModal} centered>
         <Modal.Header closeButton>
           <Modal.Title className='text-success'>#{selectedOrder?.id || ''}</Modal.Title>
