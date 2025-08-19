@@ -19,14 +19,12 @@ function RegisterPage() {
     setError('');
     setLoading(true);
 
-    // Basic client-side validation
     if (!email || !password || !fullName || !address || !phone) {
       setError('Vui lòng điền đầy đủ thông tin.');
       setLoading(false);
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Email không hợp lệ.');
@@ -34,7 +32,6 @@ function RegisterPage() {
       return;
     }
 
-    // Validate phone format (basic check for digits, 10 characters)
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(phone)) {
       setError('Số điện thoại phải là 10 chữ số.');
@@ -42,14 +39,7 @@ function RegisterPage() {
       return;
     }
 
-    const newUser = {
-      email,
-      password,
-      fullName,
-      address,
-      phone,
-    };
-
+    const newUser = { email, password, fullName, address, phone };
     const result = await registerUser(newUser);
 
     if (result.success) {
@@ -71,20 +61,20 @@ function RegisterPage() {
   return (
     <div
       style={{
-        height: '100vh',
+        minHeight: '100vh',
         width: '100vw',
         backgroundColor: '#f5f5f5',
         position: 'relative',
         overflow: 'hidden',
         fontFamily: 'Arial, sans-serif',
-        marginTop: '3%',
+        paddingTop: '8%',
       }}
     >
       <Container
         fluid
         style={{
-          height: '100%',
-          padding: '0',
+          minHeight: '100%',
+          padding: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -94,7 +84,7 @@ function RegisterPage() {
           style={{
             width: '100%',
             maxWidth: '1200px',
-            height: '80vh',
+            minHeight: '80vh',
             margin: '0 auto',
             borderRadius: '20px',
             overflow: 'hidden',
@@ -103,6 +93,7 @@ function RegisterPage() {
         >
           {/* Left Column - Form */}
           <Col
+            xs={12}
             md={6}
             style={{
               backgroundColor: '#fff',
@@ -222,19 +213,22 @@ function RegisterPage() {
 
           {/* Right Column - Image and Info */}
           <Col
+            xs={12}
             md={6}
             style={{
               backgroundColor: '#e0f0e5',
               padding: '40px',
               position: 'relative',
-              borderTopRightRadius: '20px',
-              borderBottomRightRadius: '20px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               textAlign: 'center',
-              clipPath: 'polygon(20px 0, 100% 0, 100% 100%, 20px 100%, 0 50%)',
+              minHeight: '300px',
+              clipPath:
+                window.innerWidth >= 768
+                  ? 'polygon(20px 0, 100% 0, 100% 100%, 20px 100%, 0 50%)'
+                  : 'none',
             }}
           >
             <img
@@ -242,7 +236,7 @@ function RegisterPage() {
               alt="Furniture"
               style={{
                 width: '100%',
-                height: 'auto',
+                height: '100%',
                 objectFit: 'cover',
                 position: 'absolute',
                 top: 0,
@@ -258,7 +252,7 @@ function RegisterPage() {
               <p style={{ fontSize: '16px', marginBottom: '30px' }}>
                 Vải Ơi! Tranh ghép vải làm từ vải tái chế
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <Button
                   variant="outline-light"
                   style={{

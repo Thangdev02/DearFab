@@ -9,7 +9,7 @@ function Footer() {
         {/* Email Signup Section */}
         <Row className="justify-content-center mb-4">
           <Col md={6} className="text-center">
-            <div style={styles.logo}><img style={{width: '30%'}} src="dearFabLogo.png"/></div>
+            <div style={styles.logo}><img style={{width: '10%'}} src="dearFabLogo.png"/></div>
             <h2 style={styles.signupTitle}>
               Tranh ghép vải làm từ vải tái chế
             </h2>

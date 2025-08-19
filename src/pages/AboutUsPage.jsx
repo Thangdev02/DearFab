@@ -185,23 +185,23 @@ const AboutUsPage = () => {
                 <p style={styles.contactText}>
                   <TelephoneFill size={20} color="#fff" style={styles.icon} /> <span className='fw-bold'>(+84) 788 685</span>
                   <br />
-                  Cõ sãn 24/7 cho tu van khan cap va ho tro thac mac
+                  Có sẵn 24/7 chờ tư vấn khẩn cấp và hỗ trợ thắc mắc
                 </p>
               </div>
               <div style={styles.contactCard1}>
                 <p style={styles.contactText}>
                   <EnvelopeFill size={20} color="#165dfc" style={styles.icon} />
-                  <span className='fw-bold'> dearfab.gp@gmail.com </span>
+                  <span style={{overflow: 'hidden'}} className='fw-bold'> dearfab.gp@gmail.com </span>
                   <br />
-                  Gui cho chung toi yeu cau kinh doanh va chung toi se phan hoi trong vong 24 gio
+                  Gửi cho chúng tôi yêu cầu kinh doanh và chúng tôi sẽ phản hồi trong 24 giờ
                 </p>
               </div>
               <div style={styles.contactCard2}>
                 <p style={styles.contactText}>
                   <GeoAltFill size={20} style={styles.icon} />
-                  <span className='fw-bold'>Thanh Pho Ha Noi</span>
+                  <span className='fw-bold'>Thành Phố Hà Nội</span>
                   <br />
-                  Ghe tham van phong cua chung toi de tu van va hop mat truc tiep
+                   Ghé thăm văn phòng của chúng tôi để tư vấn và gặp mặt trực tiếp
                 </p>
               </div>
             </div>
@@ -358,7 +358,7 @@ const styles = {
   },
   memberImage: {
     width: '110%',
-    height: '400px', // Adjusted to match image proportions
+    height: '500px', // Adjusted to match image proportions
     borderRadius: '10px',
     objectFit: 'cover',
     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
@@ -417,12 +417,15 @@ const styles = {
     margin: 0,
     fontSize: '16px',
     lineHeight: '1.4',
+    width: '100%',
+    textAlign: 'start',
   },
   mapImage: {
     borderRadius: '10px',
     width: '100%',
     height: '400px',
     objectFit: 'cover',
+    marginTop: '8%',
   },
 };
 

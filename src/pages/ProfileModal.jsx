@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { getOrders, getOrderDetails } from '../services/orderApi';
 import { getUsers, updateUser } from '../services/userApi';
-import axios from 'axios';
 
 function ProfileModal({ show, handleClose, user }) {
-  const defaultAvatar = 'https://t4.ftcdn.net/jpg/06/43/68/65/360_F_643686558_Efl6HB1ITw98bx1PdAd1wy56QpUTMh47.jpg';
+  const defaultAvatar =
+    'https://t4.ftcdn.net/jpg/06/43/68/65/360_F_643686558_Efl6HB1ITw98bx1PdAd1wy56QpUTMh47.jpg';
   const navigate = useNavigate();
 
-  // Get user data from cookie as fallback
   const userDataFromCookie = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : {};
   const userId = userDataFromCookie.id || 'guest';
 
@@ -30,13 +29,12 @@ function ProfileModal({ show, handleClose, user }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await getUsers();
         if (response.success) {
-          const currentUser = response.users.find(u => u.id === userId) || {};
+          const currentUser = response.users.find((u) => u.id === userId) || {};
           const updatedFormData = {
             fullName: currentUser.fullName || userDataFromCookie.fullName || '',
             email: currentUser.email || userDataFromCookie.email || '',
@@ -52,12 +50,9 @@ function ProfileModal({ show, handleClose, user }) {
         setError('Lỗi khi tải thông tin người dùng: ' + error.message);
       }
     };
-    if (show) {
-      fetchUserData();
-    }
+    if (show) fetchUserData();
   }, [userId, show]);
 
-  // Fetch orders
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -76,12 +71,9 @@ function ProfileModal({ show, handleClose, user }) {
         setOrders([]);
       }
     };
-    if (show) {
-      fetchOrders();
-    }
+    if (show) fetchOrders();
   }, [userId, show]);
 
-  // Handle click to view order details
   const handleViewDetails = async (orderId) => {
     try {
       const response = await getOrderDetails(orderId);
@@ -112,7 +104,7 @@ function ProfileModal({ show, handleClose, user }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSave = async () => {
@@ -152,153 +144,112 @@ function ProfileModal({ show, handleClose, user }) {
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} centered size="xl" style={{ borderRadius: '8px' }}>
-        <Modal.Header closeButton style={{ borderBottom: '1px solid #e9ecef', padding: '15px 20px' }}>
-          <Modal.Title style={{ color: '#000', fontWeight: 'bold', fontSize: '20px' }}>
-            Tài Khoản
-          </Modal.Title>
+      <Modal show={show} onHide={handleClose} centered size="xl" className="profile-modal">
+        <Modal.Header closeButton>
+          <Modal.Title style={{ fontWeight: 'bold' }}>Tài Khoản</Modal.Title>
         </Modal.Header>
-        <Modal.Body style={{ padding: '0', display: 'flex', height: '500px', backgroundColor: '#f8f9fa' }}>
-          <div style={{ width: '220px', backgroundColor: '#f0f2f5', borderRight: '1px solid #e9ecef', padding: '20px 0', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+        <Modal.Body className="d-flex flex-column flex-md-row p-0" style={{ height: '500px' }}>
+          {/* Sidebar */}
+          <div className="d-flex flex-md-column justify-content-between bg-light border-end p-3" style={{ width: '100%', maxWidth: '220px' }}>
             <div>
               <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '10px 20px',
-                  color: activeTab === 'thong-tin-tai-khoan' ? '#008200' : '#495057',
-                  fontWeight: activeTab === 'thong-tin-tai-khoan' ? '600' : 'normal',
-                  cursor: 'pointer',
-                }}
+                className={`py-2 px-3 ${activeTab === 'thong-tin-tai-khoan' ? 'text-success fw-bold' : 'text-dark'}`}
+                style={{ cursor: 'pointer' }}
                 onClick={() => setActiveTab('thong-tin-tai-khoan')}
               >
                 Thông Tin Tài Khoản
               </div>
               <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '10px 20px',
-                  color: activeTab === 'lich-su-don-hang' ? '#008200' : '#495057',
-                  fontWeight: activeTab === 'lich-su-don-hang' ? '600' : 'normal',
-                  cursor: 'pointer',
-                }}
+                className={`py-2 px-3 ${activeTab === 'lich-su-don-hang' ? 'text-success fw-bold' : 'text-dark'}`}
+                style={{ cursor: 'pointer' }}
                 onClick={() => setActiveTab('lich-su-don-hang')}
               >
                 Lịch Sử Đơn Hàng
               </div>
             </div>
-            <div style={{ padding: '10px 20px' }}>
+
+            <div className="mt-3">
               {!isEditing ? (
-                <Button
-                  variant="success"
-                  onClick={() => setIsEditing(true)}
-                  style={{ width: '100%', borderRadius: '4px', padding: '6px 12px' }}
-                >
+                <Button variant="success" className="w-100" onClick={() => setIsEditing(true)}>
                   Chỉnh sửa
                 </Button>
               ) : (
                 <>
-                  <Button
-                    variant="success"
-                    onClick={handleSave}
-                    style={{ width: '100%', borderRadius: '4px', padding: '6px 12px', marginBottom: '10px' }}
-                  >
+                  <Button variant="success" className="w-100 mb-2" onClick={handleSave}>
                     Lưu
                   </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={handleCancel}
-                    style={{ width: '100%', borderRadius: '4px', padding: '6px 12px' }}
-                  >
+                  <Button variant="secondary" className="w-100" onClick={handleCancel}>
                     Hủy
                   </Button>
                 </>
               )}
             </div>
           </div>
-          <div style={{ flex: 1, padding: '20px', backgroundColor: '#fff', overflowY: 'auto' }}>
-            <Tabs
-              activeKey={activeTab}
-              onSelect={(k) => setActiveTab(k)}
-              style={{ borderBottom: '1px solid #e9ecef', marginBottom: '20px' }}
-              className="nav-tabs-custom"
-            >
+
+          {/* Content */}
+          <div className="flex-grow-1 p-3 overflow-auto bg-white">
+            <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)} className="mb-3">
               <Tab eventKey="thong-tin-tai-khoan" title="Thông Tin Tài Khoản">
-                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-                  <div>
-                    <Image
-                      src={defaultAvatar}
-                      rounded
-                      style={{
-                        width: '120px',
-                        height: '120px',
-                        objectFit: 'cover',
-                        border: '2px solid #dee2e6',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      }}
-                      alt="Ảnh đại diện"
-                    />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0, maxHeight: '350px', overflowY: 'auto', paddingRight: '10px' }}>
+                <div className="d-flex flex-column flex-lg-row gap-3">
+                  <Image
+                    src={defaultAvatar}
+                    rounded
+                    className="border shadow-sm"
+                    style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+                  />
+
+                  <div className="flex-grow-1">
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
+
                     <Form>
-                      <Form.Group style={{ marginBottom: '15px' }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Họ và Tên *</Form.Label>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Họ và Tên *</Form.Label>
                         <Form.Control
                           type="text"
                           name="fullName"
                           value={formData.fullName || 'N/A'}
                           onChange={handleInputChange}
                           readOnly={!isEditing}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
                         />
                       </Form.Group>
-                      <Form.Group style={{ marginBottom: '15px' }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Email *</Form.Label>
-                        <Form.Control
-                          type="email"
-                          name="email"
-                          value={formData.email || 'N/A'}
-                          readOnly
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: '#f8f9fa' }}
-                        />
+                      <Form.Group className="mb-3">
+                        <Form.Label>Email *</Form.Label>
+                        <Form.Control type="email" name="email" value={formData.email || 'N/A'} readOnly />
                       </Form.Group>
-                      <Form.Group style={{ marginBottom: '15px' }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Số Điện Thoại</Form.Label>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Số Điện Thoại</Form.Label>
                         <Form.Control
                           type="tel"
                           name="phone"
                           value={formData.phone || 'N/A'}
                           onChange={handleInputChange}
                           readOnly={!isEditing}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
                         />
                       </Form.Group>
-                      <Form.Group style={{ marginBottom: '15px' }}>
-                        <Form.Label style={{ fontWeight: '500', color: '#495057' }}>Địa Chỉ</Form.Label>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Địa Chỉ</Form.Label>
                         <Form.Control
                           type="text"
                           name="address"
                           value={formData.address || 'N/A'}
                           onChange={handleInputChange}
                           readOnly={!isEditing}
-                          style={{ borderRadius: '4px', borderColor: '#ced4da', backgroundColor: isEditing ? '#fff' : '#f8f9fa' }}
                         />
                       </Form.Group>
                     </Form>
                   </div>
                 </div>
               </Tab>
+
               <Tab eventKey="lich-su-don-hang" title="Lịch Sử Đơn Hàng">
-                <div style={{ padding: '20px' }}>
+                <div>
                   {orderError && <Alert variant="danger">{orderError}</Alert>}
                   {orders.length === 0 && !orderError ? (
-                    <p style={{ textAlign: 'center', color: '#6c757d' }}>Chưa có đơn nào</p>
+                    <p className="text-center text-muted">Chưa có đơn nào</p>
                   ) : (
                     <ListGroup>
-                      {orders.map(order => (
+                      {orders.map((order) => (
                         <ListGroup.Item
                           key={order.id}
                           className="mb-2"
@@ -306,7 +257,7 @@ function ProfileModal({ show, handleClose, user }) {
                           onClick={() => handleViewDetails(order.id)}
                         >
                           <div>
-                            <strong className='text-success'> #{order.id}</strong>
+                            <strong className="text-success">#{order.id}</strong>
                             <p><strong>Địa chỉ:</strong> {order.address}</p>
                             <p><strong>Trạng thái:</strong> {order.status}</p>
                             <p><strong>Tổng Tiền:</strong> {order.totalPrice.toLocaleString('vi-VN')} VND</p>
@@ -320,20 +271,18 @@ function ProfileModal({ show, handleClose, user }) {
             </Tabs>
           </div>
         </Modal.Body>
-        <Modal.Footer style={{ borderTop: '1px solid #e9ecef', padding: '10px 20px', justifyContent: 'flex-end' }}>
-          <Button
-            variant="outline-success"
-            onClick={handleLogout}
-            style={{ marginRight: '10px', borderRadius: '4px', padding: '6px 12px' }}
-          >
+
+        <Modal.Footer>
+          <Button variant="outline-success" onClick={handleLogout}>
             Đăng Xuất
           </Button>
         </Modal.Footer>
       </Modal>
 
+      {/* Order details modal */}
       <Modal show={showDetailsModal} onHide={handleCloseDetailsModal} centered>
         <Modal.Header closeButton>
-          <Modal.Title className='text-success'>#{selectedOrder?.id || ''}</Modal.Title>
+          <Modal.Title className="text-success">#{selectedOrder?.id || ''}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {orderDetailsError && <Alert variant="danger">{orderDetailsError}</Alert>}
@@ -344,7 +293,7 @@ function ProfileModal({ show, handleClose, user }) {
               <p><strong>Tổng Tiền:</strong> {selectedOrder.totalPrice.toLocaleString('vi-VN')} VND</p>
               <h5>Sản Phẩm</h5>
               <ListGroup variant="flush">
-                {(selectedOrder.items || []).map(item => (
+                {(selectedOrder.items || []).map((item) => (
                   <ListGroup.Item key={item.id} className="d-flex align-items-center py-2">
                     <Image
                       src={item.image || 'https://via.placeholder.com/50'}

@@ -67,7 +67,6 @@ function TopRatedProducts() {
                   >
                     Xem chi tiết
                   </Button>
-                  <Button variant="success">Mua</Button>
                 </div>
               </Card.Body>
             </Card>

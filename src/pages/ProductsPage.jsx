@@ -210,19 +210,7 @@ function ProductsPage() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Danh mục</Form.Label>
-              <Form.Control
-                as="select"
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-              >
-                <option value="">Tất cả danh mục</option>
-                {categories.map((cat, index) => (
-                  <option key={index} value={cat}>{cat}</option>
-                ))}
-              </Form.Control>
-            </Form.Group>
+           
 
             <Form.Group>
               <Form.Label>Khoảng giá</Form.Label>

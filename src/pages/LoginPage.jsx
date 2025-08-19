@@ -3,7 +3,6 @@ import { Container, Row, Col, Form, Button, Alert, Spinner } from 'react-bootstr
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/authApi';
 import Cookies from 'js-cookie';
-import Logo from '../../public/logo.png';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -30,10 +29,8 @@ function LoginPage() {
         role: result.user.role,
       };
       Cookies.set('user', JSON.stringify(userData), { expires: 7 });
-      // Store access token in a cookie for API authentication
       Cookies.set('accessToken', result.accessToken, { expires: 7 });
 
-      // Store role in localStorage (optional, for compatibility with existing code)
       localStorage.setItem('userRole', result.user.role);
       localStorage.setItem('userName', result.user.name);
 
@@ -50,13 +47,14 @@ function LoginPage() {
   return (
     <div
       style={{
-        height: '100vh',
+        minHeight: '100vh',
         width: '100vw',
         backgroundColor: '#f5f5f5',
         position: 'relative',
         overflow: 'hidden',
         fontFamily: 'Arial, sans-serif',
-        marginTop: '3%',
+        paddingTop: '8%',
+        paddingBottom: '3%',
       }}
     >
       <Container
@@ -73,7 +71,7 @@ function LoginPage() {
           style={{
             width: '100%',
             maxWidth: '1200px',
-            height: '80vh',
+            minHeight: '80vh',
             margin: '0 auto',
             borderRadius: '20px',
             overflow: 'hidden',
@@ -82,6 +80,7 @@ function LoginPage() {
         >
           {/* Left Column - Form */}
           <Col
+            xs={12}
             md={6}
             style={{
               backgroundColor: '#fff',
@@ -92,9 +91,11 @@ function LoginPage() {
             }}
           >
             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-              <img src="/dearFabLogo.png" alt="Logo" style={{ width: '50%', height: '200px' }} />
+              <img src="/dearFabLogo.png" alt="Logo" style={{ width: '50%', maxHeight: '200px' }} />
             </div>
-            <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>Đăng Nhập vào DearFab</h2>
+            <h2 style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '10px' }}>
+              Đăng Nhập vào DearFab
+            </h2>
             <p style={{ color: '#666', marginBottom: '30px' }}>Đăng nhập để bắt đầu mua sắm</p>
             {error && <Alert variant="danger">{error}</Alert>}
             <Form onSubmit={handleSubmit}>
@@ -130,11 +131,7 @@ function LoginPage() {
                   marginBottom: '20px',
                 }}
               >
-                <Form.Check
-                  type="checkbox"
-                  label="Lưu mật khẩu"
-                  style={{ fontSize: '14px' }}
-                />
+                <Form.Check type="checkbox" label="Lưu mật khẩu" style={{ fontSize: '14px' }} />
                 <a href="/forgot-password" style={{ color: '#28a745', fontSize: '14px' }}>
                   Quên mật khẩu?
                 </a>
@@ -175,19 +172,22 @@ function LoginPage() {
 
           {/* Right Column - Image and Info */}
           <Col
+            xs={12}
             md={6}
             style={{
               backgroundColor: '#e0f0e5',
               padding: '40px',
               position: 'relative',
-              borderTopRightRadius: '20px',
-              borderBottomRightRadius: '20px',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               textAlign: 'center',
-              clipPath: 'polygon(20px 0, 100% 0, 100% 100%, 20px 100%, 0 50%)',
+              minHeight: '300px',
+              clipPath:
+                typeof window !== 'undefined' && window.innerWidth >= 768
+                  ? 'polygon(20px 0, 100% 0, 100% 100%, 20px 100%, 0 50%)'
+                  : 'none',
             }}
           >
             <img
@@ -195,7 +195,7 @@ function LoginPage() {
               alt="Furniture"
               style={{
                 width: '100%',
-                height: 'auto',
+                height: '100%',
                 objectFit: 'cover',
                 position: 'absolute',
                 top: 0,
@@ -211,7 +211,7 @@ function LoginPage() {
               <p style={{ fontSize: '16px', marginBottom: '30px' }}>
                 Vải Ơi! Tranh ghép vải làm từ vải tái chế
               </p>
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <Button
                   variant="outline-light"
                   style={{
@@ -252,3 +252,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+  
