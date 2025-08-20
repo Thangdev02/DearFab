@@ -136,24 +136,31 @@ const AboutUsPage = () => {
         <Row className='text-center'>
           {/* Team Section */}
           <h2 style={styles.sectionTitle}>Gặp gỡ đội ngũ chuyên gia</h2>
-          <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center',paddingBottom: '20px'}}>
-          <p style={styles.descriptionMember}>
-            Các chuyên gia tận tâm của chúng tôi mang đến hàng thập kỷ kinh nghiệm kết hợp để mang lại kết quả xuất sắc cho những thách thức kinh doanh của bạn.
-          </p>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', paddingBottom: '20px' }}>
+            <p style={styles.descriptionMember}>
+              Các chuyên gia tận tâm của chúng tôi mang đến hàng thập kỷ kinh nghiệm kết hợp để mang lại kết quả xuất sắc cho những thách thức kinh doanh của bạn.
+            </p>
           </div>
-          <Row className="mb-5" style={{ justifyContent: 'center' }}>
-            {members.map((member, idx) => (
-              <Col md={3} sm={6} xs={12} key={idx}>
-                <Card style={styles.memberCard}>
-                  <Image
-                    src={member.imageMember}
-                    alt={member.nameMember}
-                    style={styles.memberImage}
-                  />
-                </Card>
-              </Col>
-            ))}
-          </Row>
+          <Row
+  className="mb-5"
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gap: '20px'
+  }}
+>
+  {members.map((member, idx) => (
+    <Card key={idx} style={styles.memberCard}>
+      <Image
+        src={member.imageMember}
+        alt={member.nameMember}
+        style={styles.memberImage}
+      />
+    </Card>
+  ))}
+</Row>
+
+
         </Row>
 
 
@@ -191,7 +198,7 @@ const AboutUsPage = () => {
               <div style={styles.contactCard1}>
                 <p style={styles.contactText}>
                   <EnvelopeFill size={20} color="#165dfc" style={styles.icon} />
-                  <span style={{overflow: 'hidden'}} className='fw-bold'> dearfab.gp@gmail.com </span>
+                  <span style={{ overflow: 'hidden' }} className='fw-bold'> dearfab.gp@gmail.com </span>
                   <br />
                   Gửi cho chúng tôi yêu cầu kinh doanh và chúng tôi sẽ phản hồi trong 24 giờ
                 </p>
@@ -201,7 +208,7 @@ const AboutUsPage = () => {
                   <GeoAltFill size={20} style={styles.icon} />
                   <span className='fw-bold'>Thành Phố Hà Nội</span>
                   <br />
-                   Ghé thăm văn phòng của chúng tôi để tư vấn và gặp mặt trực tiếp
+                  Ghé thăm văn phòng của chúng tôi để tư vấn và gặp mặt trực tiếp
                 </p>
               </div>
             </div>
@@ -348,17 +355,16 @@ const styles = {
     color: '#555',
   },
   memberCard: {
-    width: '80%',
+    width: '90%',
     backgroundColor: '#fff',
-    border: '1px solid #e0e0e0',
     borderRadius: '10px',
     boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
     marginBottom: '20px',
+    padding: '0',
 
   },
   memberImage: {
     width: '100%',
-    height: '500px', // Adjusted to match image proportions
     borderRadius: '10px',
     objectFit: 'cover',
     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
