@@ -172,7 +172,7 @@ function CartPage() {
                 onChange={() => setShippingMode('storePickup')}
                 style={{ marginBottom: '10px' }}
               />
-              <Form.Check
+              {/* <Form.Check
                 type="radio"
                 label="Giao Hàng (9,900 VND)"
                 name="shippingMode"
@@ -180,7 +180,7 @@ function CartPage() {
                 checked={shippingMode === 'delivery'}
                 onChange={() => setShippingMode('delivery')}
                 style={{ marginBottom: '10px' }}
-              />
+              /> */}
               <hr />
               <div className="d-flex justify-content-between">
                 <span>Tổng phụ TTC:</span>

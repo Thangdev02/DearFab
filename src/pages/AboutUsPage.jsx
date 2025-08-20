@@ -143,7 +143,7 @@ const AboutUsPage = () => {
           </div>
           <Row className="mb-5" style={{ justifyContent: 'center' }}>
             {members.map((member, idx) => (
-              <Col md={2} sm={6} xs={12} key={idx}>
+              <Col md={3} sm={6} xs={12} key={idx}>
                 <Card style={styles.memberCard}>
                   <Image
                     src={member.imageMember}
@@ -183,7 +183,7 @@ const AboutUsPage = () => {
             <div style={styles.contactInfo}>
               <div style={styles.contactCard}>
                 <p style={styles.contactText}>
-                  <TelephoneFill size={20} color="#fff" style={styles.icon} /> <span className='fw-bold'>(+84) 788 685</span>
+                  <TelephoneFill size={20} color="#fff" style={styles.icon} /> <span className='fw-bold'>0877888036</span>
                   <br />
                   Có sẵn 24/7 chờ tư vấn khẩn cấp và hỗ trợ thắc mắc
                 </p>
@@ -348,16 +348,16 @@ const styles = {
     color: '#555',
   },
   memberCard: {
+    width: '80%',
     backgroundColor: '#fff',
     border: '1px solid #e0e0e0',
     borderRadius: '10px',
     boxShadow: '0 2px 10px rgba(0,0,0,0.05)',
-    textAlign: 'center',
     marginBottom: '20px',
 
   },
   memberImage: {
-    width: '110%',
+    width: '100%',
     height: '500px', // Adjusted to match image proportions
     borderRadius: '10px',
     objectFit: 'cover',
