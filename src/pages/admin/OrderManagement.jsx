@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Table, Button, Modal } from "react-bootstrap";
 import { getOrders, getOrderById } from "../../services/orderApi";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 function OrderManagement() {
   const [orders, setOrders] = useState([]);
@@ -73,40 +74,67 @@ function OrderManagement() {
       </Table>
 
       {/* Modal chi tiết đơn hàng */}
-      <Modal 
-        show={showDetailModal} 
-        onHide={() => setShowDetailModal(false)} 
-        size="lg"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Chi tiết đơn hàng</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedOrder ? (
-            <div>
-              <p><strong>ID:</strong> {selectedOrder.id}</p>
-              <p><strong>Số đơn hàng:</strong> {selectedOrder.orderNumber}</p>
-              <p><strong>Tên khách hàng:</strong> {selectedOrder.shippingInfo?.fullName}</p>
-              <p><strong>Email:</strong> {selectedOrder.shippingInfo?.email}</p>
-              <p><strong>Số điện thoại:</strong> {selectedOrder.shippingInfo?.phone}</p>
-              <p><strong>Địa chỉ:</strong> {selectedOrder.shippingInfo?.address}</p>
-              <p><strong>Tổng giá:</strong> {selectedOrder.totalPrice?.toLocaleString("vi-VN")} VND</p>
-              <p><strong>Trạng thái:</strong> {selectedOrder.status}</p>
-              <hr />
-              <h5>Sản phẩm trong đơn:</h5>
-              <ul>
-                {selectedOrder.items?.map((item) => (
-                  <li key={item.id}>
-                    {item.productName} - SL: {item.quantity} - Giá: {item.price?.toLocaleString("vi-VN")} VND
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ) : (
-            <p>Không có dữ liệu đơn hàng.</p>
-          )}
-        </Modal.Body>
-      </Modal>
+      {/* Modal chi tiết đơn hàng */}
+<Modal 
+  show={showDetailModal} 
+  onHide={() => setShowDetailModal(false)} 
+  size="lg"
+>
+  <Modal.Header closeButton>
+    <Modal.Title>Chi tiết đơn hàng</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    {selectedOrder ? (
+      <div>
+        <p><strong>Số đơn hàng:</strong> {selectedOrder.id}</p>
+        <p><strong>Tên khách hàng:</strong> {selectedOrder.fullName || "Chưa lấy được"}</p>
+        <p><strong>Số điện thoại:</strong> {selectedOrder.phone || "Chưa có"}</p>
+        <p><strong>Địa chỉ:</strong> {selectedOrder.address}</p>
+        <p><strong>Tổng giá:</strong> {selectedOrder.totalPrice?.toLocaleString("vi-VN")} VND</p>
+        <p><strong>Trạng thái:</strong> {selectedOrder.status}</p>
+        <hr />
+        <h5>Sản phẩm trong đơn:</h5>
+        <ul>
+  {selectedOrder.items?.map((item) => (
+    <li key={item.id} style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
+      <img 
+        src={item.image} 
+        alt={item.name} 
+        style={{ width: "80px", height: "80px", objectFit: "cover", marginRight: "10px" }} 
+      />
+      <div style={{ flex: 1 }}>
+        <strong>{item.name}</strong> - SL: {item.quantity} - Giá: {item.price?.toLocaleString("vi-VN")} VND
+        <br />
+        <OverlayTrigger
+          placement="top"
+          overlay={<Tooltip>{item.description}</Tooltip>}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              maxWidth: "400px", // chiều rộng tối đa
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              cursor: "pointer",
+              fontStyle: "italic",
+              fontSize: "0.9rem"
+            }}
+          >
+            {item.description}
+          </span>
+        </OverlayTrigger>
+      </div>
+    </li>
+  ))}
+</ul>
+      </div>
+    ) : (
+      <p>Không có dữ liệu đơn hàng.</p>
+    )}
+  </Modal.Body>
+</Modal>
+
     </Container>
   );
 }

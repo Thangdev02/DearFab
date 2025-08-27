@@ -137,82 +137,8 @@ export const deleteProduct = async (id) => {
   }
 };
 
-// CRUD operations for Reviews
-export const saveReview = async (reviewData) => {
-  try {
-    const response = await fetch(`${API_URL}/reviews`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reviewData),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to save review');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error saving review:', error);
-    throw error;
-  }
-};
 
-export const getReviewsByProductId = async (productId) => {
-  try {
-    const response = await fetch(`${API_URL}/reviews?productId=${productId}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch reviews');
-    }
-    const reviews = await response.json();
-    return Array.isArray(reviews) ? reviews : [];
-  } catch (error) {
-    console.error('Error fetching reviews:', error);
-    throw error;
-  }
-};
 
-export const getReviewById = async (reviewId) => {
-  try {
-    const response = await fetch(`${API_URL}/reviews/${reviewId}`);
-    if (!response.ok) {
-      throw new Error('Failed to fetch review');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching review:', error);
-    throw error;
-  }
-};
-
-export const updateReview = async (reviewId, reviewData) => {
-  try {
-    const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(reviewData),
-    });
-    if (!response.ok) {
-      throw new Error('Failed to update review');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Error updating review:', error);
-    throw error;
-  }
-};
-
-export const deleteReview = async (reviewId) => {
-  try {
-    const response = await fetch(`${API_URL}/reviews/${reviewId}`, {
-      method: 'DELETE',
-    });
-    if (!response.ok) {
-      throw new Error('Failed to delete review');
-    }
-    return true;
-  } catch (error) {
-    console.error('Error deleting review:', error);
-    throw error;
-  }
-};
 export const getUserById = async (userId) => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}`);

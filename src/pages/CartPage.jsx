@@ -165,7 +165,7 @@ function CartPage() {
               </h5>
               <Form.Check
                 type="radio"
-                label="Nhận tại cửa hàng (miễn phí trong 20 phút)"
+                label="Miễn phí giao hàng"
                 name="shippingMode"
                 value="storePickup"
                 checked={shippingMode === 'storePickup'}

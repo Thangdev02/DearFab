@@ -238,17 +238,7 @@ function OrderPage() {
                         required
                       />
                     </Form.Group>
-                    <Form.Group className="mb-3" controlId="formCity">
-                      <Form.Label>Thành Phố</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="city"
-                        value={shippingInfo.city}
-                        onChange={handleInputChange}
-                        placeholder="Nhập thành phố"
-                        required
-                      />
-                    </Form.Group>
+                    
                     <h5 className="mb-3">Phương Thức Thanh Toán</h5>
                     <Form.Group className="mb-3">
                       {/* <Form.Check
@@ -266,6 +256,7 @@ function OrderPage() {
                         value="online-payment"
                         checked={paymentMethod === 'online-payment'}
                         onChange={handlePaymentChange}
+                        required
                       />
                     </Form.Group>
                     <Button

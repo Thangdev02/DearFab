@@ -1,127 +1,148 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Container, Row, Col, Button, Toast, ToastContainer, Form, Carousel, Badge, Tabs, Tab, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, Button, Toast, ToastContainer, Form, Carousel, Badge, Tabs, Tab, ListGroup, Modal } from 'react-bootstrap';
 import { CartContext } from '../context/CartContext';
 import RelatedProducts from '../components/products/RelatedProduct';
-import { getProductById, getProducts } from '../services/api';
+import {  getProductById, getProducts } from '../services/api';
 import { FaFacebookSquare, FaFacebookMessenger, FaStar } from 'react-icons/fa';
 import ProductDetailBanner from '../components/products/ProductDetaiBanner';
 import Cookies from 'js-cookie';
+import { addReview, deleteReview, getReviews } from '../services/reviewApi';
 
 // Avatar mặc định
-const defaultAvatar = 'https://static.vecteezy.com/system/resources/previews/014/194/215/non_2x/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg';
+const defaultAvatar =
+'https://static.vecteezy.com/system/resources/previews/014/194/215/non_2x/avatar-icon-human-a-person-s-badge-social-media-profile-symbol-the-symbol-of-a-person-vector.jpg';
 
 function ProductDetailPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const { addToCart } = useContext(CartContext);
-  const [product, setProduct] = useState(null);
-  const [allProducts, setAllProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showToast, setShowToast] = useState(false);
-  const [selectedSize, setSelectedSize] = useState('');
-  const [quantity, setQuantity] = useState(1);
+const { id } = useParams();
+const navigate = useNavigate();
+const { addToCart } = useContext(CartContext);
 
-  // Mock review state (since review functionality is not implemented)
-  const [reviews] = useState([
-    {
-      id: 'mock1',
-      userId: 'user1',
-      content: 'Sản phẩm rất đẹp, chất lượng tốt!',
-      ratingPoint: 5,
-      date: new Date().toISOString(),
-    },
-    {
-      id: 'mock2',
-      userId: 'user2',
-      content: 'Áo mặc thoải mái, giá cả hợp lý.',
-      ratingPoint: 4,
-      date: new Date().toISOString(),
-    },
-  ]);
-  const [users] = useState({
-    user1: { id: 'user1', name: 'Nguyễn Văn A' },
-    user2: { id: 'user2', name: 'Trần Thị B' },
-  });
+const [product, setProduct] = useState(null);
+const [allProducts, setAllProducts] = useState([]);
+const [loading, setLoading] = useState(true);
+const [showToast, setShowToast] = useState(false);
+const [selectedSize, setSelectedSize] = useState('');
+const [quantity, setQuantity] = useState(1);
 
-  // Lấy thông tin người dùng từ Cookies
-  const user = Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null;
+const [reviews, setReviews] = useState([]);
+const [showModal, setShowModal] = useState(false);
+const [newReview, setNewReview] = useState("");
+const [rating, setRating] = useState(5);
+const [reviewSize, setReviewSize] = useState(4);
 
-  // Fetch dữ liệu sản phẩm và danh sách sản phẩm liên quan
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const productData = await getProductById(id);
-        setProduct({
-          ...productData,
-          // Chuyển đổi productSizes thành định dạng sizes để phù hợp với component
-          sizes: productData.productSizes.reduce((acc, sizeObj) => {
-            // Loại bỏ "Size " khỏi chuỗi size để lấy giá trị như 'M', 'S'
-            const sizeKey = sizeObj.size.replace('Size ', '');
-            acc[sizeKey] = {
-              price: sizeObj.price,
-              quantity: sizeObj.quantity,
-            };
-            return acc;
-          }, {}),
-        });
+// Lấy userId từ JWT token
+const token = Cookies.get("accessToken");
+let userIdFromToken = null;
+if (token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    userIdFromToken = payload.userId;
+  } catch (err) {
+    console.error("Token không hợp lệ:", err);
+  }
+}
 
-        // Lấy danh sách sản phẩm cho RelatedProducts
-        const productsData = await getProducts();
-        setAllProducts(productsData);
-      } catch (error) {
-        console.error('Error loading data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [id]);
+// Fetch reviews
+const fetchReviews = async () => {
+  const res = await getReviews(id);
+if (res.success) {
+  const items = reviewSize > 0 ? res.reviews.slice(0, reviewSize) : res.reviews;
+  setReviews(items);
+}
+};
 
-  // Update selectedSize dựa trên kích thước khả dụng
-  useEffect(() => {
-    if (product) {
-      const availableSizes = Object.keys(product.sizes).filter(
-        (size) => product.sizes[size].quantity > 0
-      );
-      if (availableSizes.length > 0 && !availableSizes.includes(selectedSize)) {
-        setSelectedSize(availableSizes[0]);
-      }
+useEffect(() => {
+  fetchReviews();
+}, [id, reviewSize]);
+
+// Fetch product + related products
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const productData = await getProductById(id);
+      setProduct({
+        ...productData,
+        sizes: productData.productSizes.reduce((acc, sizeObj) => {
+          const sizeKey = sizeObj.size.replace('Size ', '');
+          acc[sizeKey] = {
+            price: sizeObj.price,
+            quantity: sizeObj.quantity,
+          };
+          return acc;
+        }, {}),
+      });
+
+      const productsData = await getProducts();
+      setAllProducts(productsData);
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setLoading(false);
     }
-  }, [product, selectedSize]);
-
-  const handleAddToCart = (product) => {
-    const productWithSize = {
-      ...product,
-      selectedSize,
-      price: product.sizes[selectedSize].price,
-      quantity,
-    };
-    addToCart(productWithSize);
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-    }, 2000);
   };
+  fetchData();
+}, [id]);
 
-  // Hàm chọn sao (dùng cho mock, có thể xóa khi tích hợp review thật)
-  const handleStarSelect = () => {
-    // Mock function, không làm gì cả
+// Auto select size
+useEffect(() => {
+  if (product) {
+    const availableSizes = Object.keys(product.sizes).filter(
+      (size) => product.sizes[size].quantity > 0
+    );
+    if (availableSizes.length > 0 && !availableSizes.includes(selectedSize)) {
+      setSelectedSize(availableSizes[0]);
+    }
+  }
+}, [product, selectedSize]);
+
+const handleAddToCart = (product) => {
+  const productWithSize = {
+    ...product,
+    selectedSize,
+    price: product.sizes[selectedSize].price,
+    quantity,
   };
+  addToCart(productWithSize);
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 2000);
+};
 
-  if (loading) {
-    return <Container><h2>Đang tải...</h2></Container>;
+const handleSubmitReview = async () => {
+  if (!newReview) return;
+  const res = await addReview(id, {
+    content: newReview,
+    rating: rating,
+  });
+  if (res.success) {
+    await fetchReviews(); // Refresh review list
+    setNewReview("");
+    setRating(5);
+    setShowModal(false);
+  } else {
+    alert(res.message);
   }
+};
 
-  if (!product) {
-    return <Container><h2>Sản phẩm không tồn tại</h2></Container>;
+const handleDeleteReview = async (reviewId) => {
+  if (!window.confirm("Bạn có chắc muốn xóa review này?")) return;
+  const res = await deleteReview(reviewId);
+  if (res.success) {
+    setReviews((prev) => prev.filter((r) => r.id !== reviewId));
+  } else {
+    alert(res.message);
   }
+};
 
-  const currentPrice = product.sizes[selectedSize]?.price || product.price || 0;
-  const availableQuantity = product.sizes[selectedSize]?.quantity || 0;
-  const availableSizes = Object.keys(product.sizes).filter(
-    (size) => product.sizes[size].quantity > 0
-  );
+if (loading) return <Container><h2>Đang tải...</h2></Container>;
+if (!product) return <Container><h2>Sản phẩm không tồn tại</h2></Container>;
+
+const currentPrice = product.sizes[selectedSize]?.price || product.price || 0;
+const availableQuantity = product.sizes[selectedSize]?.quantity || 0;
+const availableSizes = Object.keys(product.sizes).filter(
+  (size) => product.sizes[size].quantity > 0
+);
+
 
   return (
     <div style={{ backgroundColor: '#f8f9fa', padding: '20px 0' }}>
@@ -287,81 +308,115 @@ function ProductDetailPage() {
 
         {/* Tabs for Description and Reviews */}
         <div style={{ marginBottom: '40px' }}>
-          <Tabs defaultActiveKey="description" id="product-tabs" className="mb-3">
-            <Tab eventKey="description" title="Mô Tả">
-              <p style={{ color: '#6c757d', lineHeight: '1.6' }}>{product.description}</p>
-            </Tab>
-            <Tab eventKey="reviews" title={`Đánh Giá (${reviews.length})`}>
-              {/* Hiển thị danh sách review */}
-              {reviews.length === 0 ? (
-                <p>Chưa có đánh giá nào cho sản phẩm này.</p>
-              ) : (
-                <ListGroup variant="flush" className="review-grid">
-                  <div className="review-container">
-                    {reviews.map((review) => (
-                      <ListGroup.Item
-                        key={review.id}
-                        className="mb-3 review-card"
-                        style={{
-                          border: '1px solid #e9ecef',
-                          borderRadius: '8px',
-                          padding: '15px',
-                          backgroundColor: '#fff',
-                          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                          width: '100%',
-                          margin: '0 0.5%',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                          <img
-                            src={defaultAvatar}
-                            alt="Avatar"
-                            style={{
-                              width: '40px',
-                              height: '40px',
-                              borderRadius: '50%',
-                              marginRight: '10px',
-                              border: '1px solid #ddd',
-                            }}
-                          />
-                          <div style={{ flex: '1' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div>
-                                <strong style={{ fontSize: '16px', color: '#343a40' }}>
-                                  {users[review.userId]?.name || `User ${review.userId}`}
-                                </strong>
-                                <div>
-                                  {[...Array(5)].map((_, index) => (
-                                    <FaStar
-                                      key={index}
-                                      style={{
-                                        color: index < review.ratingPoint ? '#ffd700' : '#e4e4e4',
-                                        fontSize: '16px',
-                                        marginRight: '2px',
-                                      }}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                              <div style={{ color: '#6c757d', fontSize: '14px' }}>
-                                {new Date(review.date).toLocaleString('vi-VN', {
-                                  dateStyle: 'medium',
-                                  timeStyle: 'short',
-                                })}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <p style={{ color: '#495057', lineHeight: '1.6', marginBottom: '10px' }}>
-                          {review.content}
-                        </p>
-                      </ListGroup.Item>
-                    ))}
-                  </div>
-                </ListGroup>
-              )}
-            </Tab>
-          </Tabs>
+        <Tabs defaultActiveKey="description" id="product-tabs" className="mb-3">
+          <Tab eventKey="description" title="Mô Tả">
+            <p>{product.description}</p>
+          </Tab>
+          <Tab eventKey="reviews" title={`Đánh Giá (${reviews.length})`}>
+  <div className="d-flex justify-content-between align-items-center mb-3">
+    <h5>Danh sách đánh giá</h5>
+    <div className="d-flex align-items-center">
+      <Form.Select
+        value={reviewSize}
+        onChange={(e) => setReviewSize(Number(e.target.value))}
+        style={{ width: '120px', marginRight: '10px' }}
+      >
+        <option value={4}>4 đánh giá</option>
+        <option value={8}>8 đánh giá</option>
+        <option value={0}>Tất cả</option>
+      </Form.Select>
+      <Button onClick={() => setShowModal(true)}>+ Tạo đánh giá</Button>
+    </div>
+  </div>
+
+  {reviews.length === 0 ? (
+    <p>Chưa có đánh giá nào cho sản phẩm này.</p>
+  ) : (
+    <Row className="g-4">
+      {reviews.map((review) => (
+        <Col key={review.id} xs={12} sm={6} md={4} lg={3}>
+          <div className="card h-100 shadow-sm border-0 rounded-3">
+            <div className="card-body d-flex flex-column">
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <h6 className="mb-0 fw-bold">
+                  {review.fullName || "Người dùng ẩn danh"}
+                </h6>
+                <span className="text-warning">
+                  {[...Array(5)].map((_, i) => (
+                    <FaStar
+                      key={i}
+                      style={{
+                        color: i < (review.rating || review.ratingPoint) ? "#ffc107" : "#e4e4e4",
+                      }}
+                    />
+                  ))}
+                </span>
+              </div>
+              <p className="flex-grow-1">{review.content}</p>
+              <div className="d-flex justify-content-between align-items-center mt-2">
+                <small className="text-muted">
+                  {new Date(review.createAt).toLocaleDateString("vi-VN")}
+                </small>
+                {userIdFromToken && userIdFromToken === review.user?.id && (
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => handleDeleteReview(review.id)}
+                  >
+                    Xóa
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+        </Col>
+      ))}
+    </Row>
+  )}
+</Tab>
+
+        </Tabs>
+
+        {/* Modal Tạo Review */}
+        <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Tạo đánh giá</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Nội dung</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  value={newReview}
+                  onChange={(e) => setNewReview(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group className="mt-3">
+                <Form.Label>Số sao</Form.Label>
+                <Form.Select
+                  value={rating}
+                  onChange={(e) => setRating(Number(e.target.value))}
+                >
+                  {[5, 4, 3, 2, 1].map((star) => (
+                    <option key={star} value={star}>
+                      {star} sao
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Hủy
+            </Button>
+            <Button variant="primary" onClick={handleSubmitReview}>
+              Gửi
+            </Button>
+          </Modal.Footer>
+        </Modal>
         </div>
 
         {/* Related Products */}
