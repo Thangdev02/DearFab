@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Table, Button, Modal, Image } from 'react-bootstrap';
+import { Container, Row, Col, Table, Button, Modal, Image, Pagination } from 'react-bootstrap';
 import { deleteProduct, getProducts } from '../../services/api';
 import EditProductModal from './EditProductModal';
 import CreateProductModal from './CreateProductModal';
@@ -10,11 +10,12 @@ function ProductManagementPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
-  // Modal xem chi tiết
   const [showSizeModal, setShowSizeModal] = useState(false);
   const [productDetail, setProductDetail] = useState(null);
   const [loadingSizes, setLoadingSizes] = useState(false);
+  // State cho phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,6 +28,19 @@ function ProductManagementPage() {
     };
     fetchProducts();
   }, []);
+
+  // Tính toán sản phẩm hiển thị trên trang hiện tại
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Tính tổng số trang
+  const totalPages = Math.ceil(products.length / productsPerPage);
+
+  // Xử lý chuyển trang
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleAddProduct = (newProduct) => {
     if (!products.find((p) => p.id === newProduct.id)) {
@@ -43,6 +57,10 @@ function ProductManagementPage() {
       try {
         await deleteProduct(id);
         setProducts(products.filter((p) => p.id !== id));
+        // Nếu trang hiện tại không còn sản phẩm, chuyển về trang trước
+        if (currentProducts.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        }
       } catch (error) {
         console.error('Error deleting product:', error);
         alert('Failed to delete product. Please try again.');
@@ -50,7 +68,6 @@ function ProductManagementPage() {
     }
   };
 
-  // View Size & Detail
   const handleViewSizes = async (id) => {
     setLoadingSizes(true);
     try {
@@ -93,7 +110,7 @@ function ProductManagementPage() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
+          {currentProducts.map((product) => (
             <tr key={product.id} style={{ cursor: 'pointer' }}>
               <td style={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis' }}>{product.id}</td>
               <td>{product.name}</td>
@@ -131,6 +148,27 @@ function ProductManagementPage() {
           ))}
         </tbody>
       </Table>
+
+      {/* Phân trang */}
+      <Pagination className="justify-content-center mt-3">
+        <Pagination.Prev
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        />
+        {[...Array(totalPages)].map((_, index) => (
+          <Pagination.Item
+            key={index + 1}
+            active={index + 1 === currentPage}
+            onClick={() => handlePageChange(index + 1)}
+          >
+            {index + 1}
+          </Pagination.Item>
+        ))}
+        <Pagination.Next
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        />
+      </Pagination>
 
       {/* Modal tạo */}
       <CreateProductModal
@@ -171,7 +209,6 @@ function ProductManagementPage() {
             </div>
           ) : productDetail ? (
             <>
-              {/* Card thông tin cơ bản */}
               <div
                 style={{
                   display: 'flex',
@@ -229,7 +266,6 @@ function ProductManagementPage() {
                 </div>
               </div>
 
-              {/* Bảng size & giá */}
               <div
                 style={{
                   border: '1px solid #e9ecef',
@@ -305,7 +341,6 @@ function ProductManagementPage() {
   );
 }
 
-// Inline styles cho ô bảng
 const thStyle = {
   padding: '12px 10px',
   textAlign: 'center',

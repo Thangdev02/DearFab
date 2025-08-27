@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 
 export const getProducts = async () => {
   try {
-    const response = await fetch(`${API_URL}/product`);
+    const response = await fetch(`${API_URL}/product?size=1000`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch products');

@@ -2,7 +2,6 @@ import axios from 'axios';
 import Cookies from "js-cookie";
 
 const   API_URL = import.meta.env.VITE_API_URL;
-const API_URL_USERS = 'https://dearfab.onrender.com/users'; // Endpoint cho người dùng
 
 // Lấy danh sách tất cả đơn hàng
 export const getOrders = async () => {
@@ -20,7 +19,7 @@ export const getOrders = async () => {
     }
 
     // Gọi API với header chứa access token
-    const response = await axios.get(`${API_URL}/order`, {
+    const response = await axios.get(`${API_URL}/order?size=1000`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

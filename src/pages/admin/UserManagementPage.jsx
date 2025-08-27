@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Card, Table, Spinner, Alert } from 'react-bootstrap';
+import { Container, Card, Table, Spinner, Alert, Pagination } from 'react-bootstrap';
 import { getUsers } from '../../services/userApi';
 
 function UserManagementPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // State cho phân trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 10;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -20,6 +23,19 @@ function UserManagementPage() {
     };
     fetchUsers();
   }, []);
+
+  // Tính toán người dùng hiển thị trên trang hiện tại
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+  // Tính tổng số trang
+  const totalPages = Math.ceil(users.length / usersPerPage);
+
+  // Xử lý chuyển trang
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   if (loading) {
     return (
@@ -63,7 +79,7 @@ function UserManagementPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map(user => (
+              {currentUsers.map(user => (
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.fullName}</td>
@@ -74,6 +90,26 @@ function UserManagementPage() {
               ))}
             </tbody>
           </Table>
+          {/* Phân trang */}
+          <Pagination className="justify-content-center mt-3">
+            <Pagination.Prev
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            />
+            {[...Array(totalPages)].map((_, index) => (
+              <Pagination.Item
+                key={index + 1}
+                active={index + 1 === currentPage}
+                onClick={() => handlePageChange(index + 1)}
+              >
+                {index + 1}
+              </Pagination.Item>
+            ))}
+            <Pagination.Next
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            />
+          </Pagination>
         </Card.Body>
       </Card>
     </Container>

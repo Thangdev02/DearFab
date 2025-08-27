@@ -10,7 +10,7 @@ export const getUsers = async () => {
       throw new Error("Không tìm thấy access token. Vui lòng đăng nhập lại.");
     }
 
-    const response = await axios.get(`${API_URL}/account`, {
+    const response = await axios.get(`${API_URL}/account?size=1000`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
