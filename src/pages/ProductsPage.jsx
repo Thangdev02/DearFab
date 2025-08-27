@@ -5,7 +5,7 @@ import { CartContext } from '../context/CartContext';
 import { getProducts } from '../services/api';
 import TopRatedProducts from '../components/products/TopRatedProduct';
 import ScrollReveal from 'scrollreveal';
-import ProductListBanner from '../components/products/Product\bListBanner';
+import ProductListBanner from '../components/products/ProductBanner';
 
 const debounce = (func, delay) => {
   let timeoutId;
