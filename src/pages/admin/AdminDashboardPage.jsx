@@ -67,7 +67,7 @@ function AdminDashboardPage() {
 
             // Fetch orders
             const ordersResponse = await getOrders();
-            const orders = ordersResponse.success ? ordersResponse.orders : [];
+            const orders = ordersResponse?.data?.items || [];
 
             // Fetch users
             const usersResponse = await getUsers();
@@ -96,13 +96,15 @@ function AdminDashboardPage() {
             }).length || 0;
 
             // Revenue
-            const revenueTotal = orders?.reduce((sum, o) => sum + (o.totalPrice || 0), 0) || 0;
-            const revenueThisMonth = orders?.filter(o => {
-                const orderDate = parseVietnameseDate(o.orderDate);
-                if (!orderDate) return false; // Skip invalid dates
-                return orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
-            }).reduce((sum, o) => sum + (o.totalPrice || 0), 0) || 0;
-
+            const revenueTotal = orders.filter(o => o.status !== 'Pending').reduce((sum, o) => sum + (o.totalPrice || 0), 0) || 0;
+            const revenueThisMonth = orders
+    .filter(o => {
+        if (!o.status || o.status.toLowerCase() !== "Pending") return false; 
+        const orderDate = parseVietnameseDate(o.orderDate);
+        if (!orderDate) return false;
+        return orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
+    })
+    .reduce((sum, o) => sum + (o.totalPrice || 0), 0) || 0;
             // Users this month
             const usersThisMonth = users?.filter(u => {
                 const createdAt = new Date(u.createdAt || u.dateJoined || currentDate);
